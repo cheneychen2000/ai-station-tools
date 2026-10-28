@@ -4,12 +4,13 @@
  * 并向手写页注入静态内容（模型卡片/工具分组/成本参考表/页脚）→ 生成 sitemap.xml
  * 运行：node scripts/build.mjs（幂等，产物与构建日期无关）
  */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, statSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { DIST, SITE, BRAND } from './lib/paths.mjs';
 import { SAMPLE_PARAMS as P, monthly, monthlyBase, money, price, verdict, modelCurrency, fxEntry, toBase } from './lib/pricing.mjs';
 import { esc, safeUrl, jsStr, jsonld } from './lib/escape.mjs';
 import { loadData, maxDate, comparePairs, isToolIndexable, buildManifest } from './lib/manifest.mjs';
+import { navHeaderHtml, footerNavHtml } from './lib/nav.mjs';
 
 const { models, tools, pagesMeta, fx, compares } = loadData();
 const round2 = n => Math.round(n * 100) / 100;
@@ -38,7 +39,8 @@ function footerHtml(base) {
     <p>模型价格最近核验日期：<span class="num">${esc(verified)}</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
-    <p><a href="${base}about/">关于本站</a> · © 2026 ${BRAND} · 免费 · 免注册 · 打开即用</p>`;
+    ${footerNavHtml(base)}
+    <p>© 2026 ${BRAND} · 免费 · 免注册 · 打开即用</p>`;
 }
 
 /* ---------- 共享模板 ---------- */
@@ -48,7 +50,7 @@ function tagsHtml(m) {
   return mods || feats ? `<span class="m-tags">${mods}${feats}</span>` : '';
 }
 
-function page({ depth, title, desc, canonicalPath, robots = null, jsonld: lds = [], crumb, main, inlineScript = '' }) {
+function page({ depth, title, desc, canonicalPath, robots = null, jsonld: lds = [], crumb, main, inlineScript = '', active = null }) {
   const base = '../'.repeat(depth);
   const ld = lds
     .map(o => `  <script type="application/ld+json">\n${jsonld(o).split('\n').map(l => '  ' + l).join('\n')}\n  </script>`)
@@ -71,14 +73,9 @@ ${robots ? `  <meta name="robots" content="${esc(robots)}">\n` : ''}  <link rel=
 ${ld}
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap">
-      <a class="brand" href="${base}">${BRAND}</a>
-      <span class="crumb">${crumb}</span>
-    </div>
-  </header>
+  ${navHeaderHtml(base, active, crumb)}
 
-  <main class="wrap">
+  <main class="wrap" id="main">
 ${main}
   </main>
 
@@ -186,7 +183,7 @@ function modelDetail(m) {
     <p class="lede">${esc(lede)}</p>
 
     <section class="panel">
-      <h2>价格（人民币 / 百万Token）</h2>
+      <h2>价格（${cur === 'USD' ? '美元' : '人民币'} / 百万Token）</h2>
       <div class="table-scroll">
         <table class="spec">
           <tbody>
@@ -226,6 +223,7 @@ ${priceTable(m)}
     <div class="cta-row">
       <a class="btn btn-primary" href="../../cost/?models=${esc(m.id)}">在成本计算器中估算 →</a>
       <a class="btn btn-ghost" href="../../compare/?a=${esc(m.id)}">与其他模型对比 →</a>
+      <a class="btn btn-ghost" href="../../models/">返回模型库</a>
     </div>`;
 
   const ld = {
@@ -251,6 +249,7 @@ ${priceTable(m)}
     ],
     crumb: `/ <a href="../" style="color:inherit">模型库</a> / ${esc(m.name)}`,
     main,
+    active: 'models',
     inlineScript: `  <script>window.track('model_view', { id: ${jsStr(m.id)} });</script>`
   });
 }
@@ -351,7 +350,7 @@ function compareDetail(a, b) {
   } else {
     sum.push(`支持模态：${esc(a.name)}=${esc(modA.join('、'))}；${esc(b.name)}=${esc(modB.join('、'))}${onlyA.length ? `（${esc(a.name)} 多出 ${esc(onlyA.join('、'))}）` : ''}${onlyB.length ? `（${esc(b.name)} 多出 ${esc(onlyB.join('、'))}）` : ''}。`);
   }
-  sum.push(`数据来源：${esc(a.sourceName)}（核验 ${esc(a.verifiedAt)}）、${esc(b.sourceName)}（核验 ${esc(b.verifiedAt)}）；计价单位：人民币 / 百万 Token。`);
+  sum.push(`数据来源：${esc(a.sourceName)}（核验 ${esc(a.verifiedAt)}）、${esc(b.sourceName)}（核验 ${esc(b.verifiedAt)}）；计价单位：官方原币种 / 百万 Token（${esc(a.name)} ${curA === 'USD' ? '美元' : '人民币'}、${esc(b.name)} ${curB === 'USD' ? '美元' : '人民币'}${mixed ? '；跨币种按上方参考汇率折算为人民币估算，仅供参考' : ''}）。`);
 
   const main = `    <section class="hero" style="text-align:left;padding-bottom:0">
       <h1 style="font-size:26px">${esc(a.name)} <span style="color:var(--muted);font-weight:400">vs</span> ${esc(b.name)}</h1>
@@ -396,6 +395,7 @@ ${sum.map(s => `        <li>${s}</li>`).join('\n')}
     ],
     crumb: `/ <a href="../../" style="color:inherit">模型对比</a> / ${esc(a.name)} vs ${esc(b.name)}`,
     main,
+    active: 'compare',
     inlineScript: `  <script>window.track('compare_view', { a: ${jsStr(a.id)}, b: ${jsStr(b.id)} });</script>`
   });
 }
@@ -463,7 +463,8 @@ function toolDetail(t) {
     robots: indexable ? null : 'noindex,follow',
     jsonld: [ld, breadcrumb([{ name: '首页', path: '/' }, { name: '工具库', path: '/tools/' }, { name: t.name, path: `/tools/${t.id}/` }])],
     crumb: `/ <a href="../" style="color:inherit">工具库</a> / ${esc(t.name)}`,
-    main
+    main,
+    active: 'tools'
   });
 }
 
@@ -533,7 +534,8 @@ function modelCardsHtml() {
     const cnyLine = cur === 'USD'
       ? `<p class="lib-meta">约 ¥${(m.priceIn * (fxEntry(fx, 'USD')?.rate || 0)).toFixed(2)} / ¥${(m.priceOut * (fxEntry(fx, 'USD')?.rate || 0)).toFixed(2)}（按中间价折算，仅供参考）</p>`
       : '';
-    return `      <a class="module-card active" href="${esc(m.id)}/">
+    const costCny = monthlyBase(m, fx); /* 价格排序键：默认用量月成本统一折算 CNY，未核实不参与排序（空串） */
+    return `      <a class="module-card active" href="${esc(m.id)}/" data-search="${esc(`${m.name} ${m.id} ${m.vendor}`.toLowerCase())}" data-vendor="${esc(m.vendor)}" data-cur="${cur}" data-cost="${costCny == null ? '' : costCny.toFixed(4)}" data-ctx="${m.context}" data-verified="${esc(m.verifiedAt)}">
         <h3>${esc(m.name)}</h3>
         <p>${esc(m.vendor)}</p>
         <p class="num">${priceLine}</p>
@@ -546,7 +548,9 @@ function modelCardsHtml() {
 
 const TOOL_ORDER = ['自研', '对话', '绘图', '视频', '编程', '办公'];
 const TOOL_TITLES = { '自研': '本站自研工具' };
-function toolGroupsHtml() {
+function toolGroupsHtml(pairsCount) {
+  /* 自研工具 tagline 中的数量占位符由真实数据填充，杜绝硬编码旧值 */
+  const fill = s => s.replace(/\{modelCount\}/g, String(models.length)).replace(/\{compareCount\}/g, String(pairsCount));
   const out = [];
   for (const cat of TOOL_ORDER) {
     const list = tools.filter(t => t.category === cat);
@@ -556,7 +560,7 @@ function toolGroupsHtml() {
       if (t.own) {
         out.push(`        <div class="result-card">
           <div class="r-head"><span class="r-name">${esc(t.name)}<span class="free-badge own-badge">自研</span></span></div>
-          <p style="font-size:14px;margin-top:6px">${esc(t.tagline)}</p>
+          <p style="font-size:14px;margin-top:6px">${fill(esc(t.tagline))}</p>
           <p class="lib-meta">场景：${esc(t.scene)}</p>
           <div class="cta-row"><a class="btn btn-primary btn-s" href="${esc(t.url)}">立即使用 →</a></div>
         </div>`);
@@ -605,15 +609,20 @@ ${rows}
 }
 
 /* ---------- 生成 ---------- */
-/* 先清理生成的子目录（保留手写的 index.html），防止模型/工具下架后残留过期页面 */
-function cleanSubdirs(dir) {
+/* 仅清理已下架模型/工具/组合的过期目录（保留手写的 index.html）；仍在清单内的目录直接覆盖写入，
+   不做全量删除——构建幂等且减少无谓的删除操作 */
+function pruneStale(dir, keep) {
+  if (!existsSync(dir)) return;
   for (const name of readdirSync(dir)) {
-    if (statSync(join(dir, name)).isDirectory()) rmSync(join(dir, name), { recursive: true, force: true });
+    const p = join(dir, name);
+    if (statSync(p).isDirectory() && !keep.has(name)) rmSync(p, { recursive: true, force: true });
   }
 }
-cleanSubdirs(join(DIST, 'models'));
-cleanSubdirs(join(DIST, 'compare'));
-cleanSubdirs(join(DIST, 'tools'));
+
+const pairs = comparePairs(models, compares.extraPairs || []);
+pruneStale(join(DIST, 'models'), new Set(models.map(m => m.id)));
+pruneStale(join(DIST, 'tools'), new Set(tools.filter(t => !t.own).map(t => t.id)));
+pruneStale(join(DIST, 'compare'), new Set(pairs.map(([a]) => a)));
 
 let count = 0;
 for (const m of models) {
@@ -626,7 +635,6 @@ for (const t of tools) {
   count++;
 }
 
-const pairs = comparePairs(models, compares.extraPairs || []);
 for (const [a, b] of pairs) {
   const ma = models.find(m => m.id === a), mb = models.find(m => m.id === b);
   writePage(`compare/${a}/${b}/index.html`, compareDetail(ma, mb));
@@ -640,10 +648,35 @@ writeFileSync(join(DIST, 'assets/data/compare-pairs.json'), JSON.stringify({
 
 /* 手写页静态注入：模型卡片 / 工具分组 / 成本参考表 / 全站页脚 */
 injectRegion('models/index.html', '<!-- MODEL_CARDS_START -->', '<!-- MODEL_CARDS_END -->', modelCardsHtml());
-injectRegion('tools/index.html', '<!-- TOOL_GROUPS_START -->', '<!-- TOOL_GROUPS_END -->', toolGroupsHtml());
+injectRegion('tools/index.html', '<!-- TOOL_GROUPS_START -->', '<!-- TOOL_GROUPS_END -->', toolGroupsHtml(pairs.length));
 injectRegion('cost/index.html', '<!-- COST_TABLE_START -->', '<!-- COST_TABLE_END -->', costTableHtml());
 injectRegion('cost/index.html', '<!-- COST_EXAMPLE_START -->', '<!-- COST_EXAMPLE_END -->', costExampleHtml());
 injectRegion('guides/llm-api-cost/index.html', '<!-- GUIDE_EXAMPLE_START -->', '<!-- GUIDE_EXAMPLE_END -->', guideExampleHtml());
+
+/* 数据驱动的数量文案：全部来自构建时真实数据，禁止手写数量 */
+injectRegion('compare/index.html', '<!-- CMP_STATS_START -->', '<!-- CMP_STATS_END -->',
+  `<p class="s-hint">全部 ${pairs.length} 组对比（${models.length} 款模型两两全组合）均可通过上方选择器进入；每个对比页都有固定口径摘要与双向模型档案链接。</p>`);
+injectRegion('index.html', '<!-- HOME_CMP_START -->', '<!-- HOME_CMP_END -->', `${pairs.length} 组`);
+const sortFxNote = fxNote('USD');
+injectRegion('models/index.html', '<!-- MODEL_TOOLBAR_META_START -->', '<!-- MODEL_TOOLBAR_META_END -->',
+  `<p class="s-hint" style="margin:-6px 0 14px">价格排序按默认用量估算月成本（与成本计算器同口径）统一折算为人民币${sortFxNote ? `（${esc(sortFxNote)}，折算仅供参考）` : '（参考汇率未核实，美元模型不参与价格排序）'}；费率未核实的模型不参与价格排序。</p>`);
+
+/* 统一全站导航：手写页与 404 经标记注入共享模板（生成页由 page() 直接输出） */
+const NAV_PAGES = [
+  ['index.html', '', 'home', ''],
+  ['cost/index.html', '../', 'cost', '/ 成本计算器'],
+  ['models/index.html', '../', 'models', '/ 模型库'],
+  ['compare/index.html', '../', 'compare', '/ 模型对比'],
+  ['quiz/index.html', '../', null, '/ 段位测试'],
+  ['tools/index.html', '../', 'tools', '/ 工具库'],
+  ['prompts/index.html', '../', 'prompts', '/ Prompt库'],
+  ['about/index.html', '../', null, '/ 关于本站'],
+  ['guides/llm-api-cost/index.html', '../../', 'cost', '/ <a href="../../cost/" style="color:inherit">成本计算器</a> / 计算指南'],
+  ['404.html', '/', null, '']
+];
+for (const [rel, base, active, crumb] of NAV_PAGES) {
+  injectRegion(rel, '<!-- NAV_START -->', '<!-- NAV_END -->', '  ' + navHeaderHtml(base, active, crumb));
+}
 
 const FOOTER_PAGES = [
   ['index.html', ''],

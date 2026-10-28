@@ -59,14 +59,26 @@
   </script>
 </head>
 <body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
-    <div class="wrap">
+    <div class="wrap topbar-row">
       <a class="brand" href="../">Reflex Hub</a>
       <span class="crumb">/ 成本计算器</span>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../cost/" class="active" aria-current="page">成本计算器</a></li>
+          <li><a href="../models/">模型库</a></li>
+          <li><a href="../compare/">模型对比</a></li>
+          <li><a href="../tools/">AI 工具目录</a></li>
+          <li><a href="../prompts/">Prompt 资源</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
+      <!-- NAV_END -->
 
-  <main class="wrap">
+  <main class="wrap" id="main">
     <section class="hero">
       <h1>AI大模型 API 成本计算器</h1>
       <p class="tagline">国内外主流模型 · 错峰低谷价 · 缓存命中率加权 · 美元按中间价折算</p>
@@ -163,7 +175,7 @@
         <p><strong>输入 Token</strong>：每次调用发送给模型的内容量（含系统提示词与历史对话）；<strong>输出 Token</strong>：模型生成的内容量。两者分开计价，输出价通常高于输入价。</p>
         <p><strong>缓存命中率</strong>：输入中命中上下文缓存的比例，命中部分按更低的缓存命中价计费；仅对有公开缓存价的模型生效，未公开的模型按未命中价计，不假设缓存折扣。</p>
         <p><strong>错峰（峰谷定价）</strong>：部分厂商（如 DeepSeek）分时段计价，高峰时段外（夜间、午间、周末与法定节假日全天）按约为高峰一半的低谷价计费。</p>
-        <p><strong>计算公式</strong>：月成本 = 日均调用 × 30 天 ×（单次输入 Token ÷ 1,000,000 × 输入有效单价 + 单次输出 Token ÷ 1,000,000 × 输出单价），其中输入有效单价 = 命中率 × 缓存命中价 +（1 − 命中率）× 未命中价。价格单位统一为人民币 / 百万 Token。</p>
+        <p><strong>计算公式</strong>：月成本 = 日均调用 × 30 天 ×（单次输入 Token ÷ 1,000,000 × 输入有效单价 + 单次输出 Token ÷ 1,000,000 × 输出单价），其中输入有效单价 = 命中率 × 缓存命中价 +（1 − 命中率）× 未命中价。价格单位为各厂商官方原币种（人民币或美元 / 百万 Token），跨币种比价时按参考汇率折算为人民币，折算值仅供参考。</p>
       </div>
       <!-- COST_EXAMPLE_START -->
       <div class="table-scroll">
@@ -203,7 +215,11 @@
     <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
-    <p><a href="../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+    <nav class="footer-nav" aria-label="页脚导航">
+    <p>核心工具：<a href="../cost/">成本计算器</a> · <a href="../models/">模型库</a> · <a href="../compare/">模型对比</a> · <a href="../tools/">AI 工具目录</a> · <a href="../prompts/">Prompt 资源</a> · <a href="../quiz/">AI 认知测试</a></p>
+    <p><a href="../about/">关于本站</a> · <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+  </nav>
+    <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
       <!-- FOOTER_END -->
     </div>
   </footer>
@@ -476,6 +492,7 @@
       document.body.removeChild(ta);
     }
     function shareResults(rows, min, max) {
+      var okRows = rows.filter(function (r) { return r.cny != null; });
       var EPS = 0.005;
       var allTie = max - min < EPS;
       var lines = ['【AI大模型 API 月成本估算】'];

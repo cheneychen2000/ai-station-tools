@@ -29,14 +29,26 @@
   </script>
 </head>
 <body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
-    <div class="wrap">
+    <div class="wrap topbar-row">
       <a class="brand" href="../">Reflex Hub</a>
       <span class="crumb">/ 关于本站</span>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../cost/">成本计算器</a></li>
+          <li><a href="../models/">模型库</a></li>
+          <li><a href="../compare/">模型对比</a></li>
+          <li><a href="../tools/">AI 工具目录</a></li>
+          <li><a href="../prompts/">Prompt 资源</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
+      <!-- NAV_END -->
 
-  <main class="wrap">
+  <main class="wrap" id="main">
     <section class="hero">
       <h1>关于 Reflex Hub</h1>
       <p class="tagline">独立维护的 AI 开发者工具项目</p>
@@ -77,8 +89,8 @@
     <section class="panel">
       <h2>隐私与使用</h2>
       <p style="font-size:14px;line-height:1.8">
-        本站不要求注册账号，工具均在浏览器本地完成计算。本站使用 Cloudflare Web Analytics 进行匿名访问统计
-        （无 Cookie、不采集可识别个人的信息），具体统计行为以网站实际部署配置为准；其他数据处理与技术行为以现行隐私说明为准。
+        本站不要求注册账号，工具均在浏览器本地完成计算。访问统计功能（Cloudflare Web Analytics，无 Cookie、
+        不采集可识别个人的信息）当前未在页面中启用；如未来在部署配置中启用，仅用于匿名访问统计，届时以实际部署配置为准。
       </p>
     </section>
 
@@ -102,7 +114,11 @@
     <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
-    <p><a href="../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+    <nav class="footer-nav" aria-label="页脚导航">
+    <p>核心工具：<a href="../cost/">成本计算器</a> · <a href="../models/">模型库</a> · <a href="../compare/">模型对比</a> · <a href="../tools/">AI 工具目录</a> · <a href="../prompts/">Prompt 资源</a> · <a href="../quiz/">AI 认知测试</a></p>
+    <p><a href="../about/">关于本站</a> · <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+  </nav>
+    <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
       <!-- FOOTER_END -->
     </div>
   </footer>

@@ -2,7 +2,7 @@
   {
     "id": "own-cost",
     "name": "成本计算器",
-    "tagline": "12 款大模型 API 月成本比价，错峰与缓存加权",
+    "tagline": "{modelCount} 款大模型 API 月成本比价，错峰与缓存加权",
     "category": "自研",
     "free": "免费",
     "url": "/cost/",
@@ -13,7 +13,7 @@
   {
     "id": "own-models",
     "name": "模型库",
-    "tagline": "12 款主流模型的上下文、模态、价格档案",
+    "tagline": "{modelCount} 款主流模型的上下文、模态、价格档案",
     "category": "自研",
     "free": "免费",
     "url": "/models/",
@@ -24,7 +24,7 @@
   {
     "id": "own-compare",
     "name": "模型对比器",
-    "tagline": "两款模型 11 个维度逐项对比，66 组组合",
+    "tagline": "两款模型 11 个维度逐项对比，{compareCount} 组组合",
     "category": "自研",
     "free": "免费",
     "url": "/compare/",

@@ -15,14 +15,26 @@
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
-    <div class="wrap">
+    <div class="wrap topbar-row">
       <a class="brand" href="../">Reflex Hub</a>
       <span class="crumb">/ 模型库</span>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../cost/">成本计算器</a></li>
+          <li><a href="../models/" class="active" aria-current="page">模型库</a></li>
+          <li><a href="../compare/">模型对比</a></li>
+          <li><a href="../tools/">AI 工具目录</a></li>
+          <li><a href="../prompts/">Prompt 资源</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
+      <!-- NAV_END -->
 
-  <main class="wrap">
+  <main class="wrap" id="main">
     <section class="hero">
       <h1>大模型库</h1>
       <p class="tagline">价格 · 上下文 · 模态 · 特点，一页一档</p>
@@ -30,13 +42,34 @@
 
     <p class="lede">
       本库收录国内外主流大模型（含美元定价的国际模型）的 API 档案：厂商、上下文窗口、支持模态、输入/输出/缓存命中价格与核验日期，
-      全部标注来源链接。点击卡片查看单模型完整档案，或用 <a href="../compare/">模型对比器</a> 两款逐项对比。
+      全部标注来源链接。点击卡片查看单模型完整档案，或用 <a href="../compare/">模型对比器</a> 两款逐项对比、
+      在 <a href="../cost/">成本计算器</a> 按你的实际用量估算月成本。
       价格均为厂商公开刊例原价（部分模型按标注的输入长度档位），实际以官方页面与控制台为准；档案页注明每项数据的不确定性与使用限制。
     </p>
 
+    <div class="lib-toolbar" role="search" aria-label="模型筛选与排序">
+      <input type="search" id="libSearch" placeholder="搜索模型名称 / ID / 厂商" aria-label="搜索模型名称、模型 ID 或厂商">
+      <select id="libVendor" aria-label="按厂商或渠道筛选"><option value="">全部厂商 / 渠道</option></select>
+      <select id="libCur" aria-label="按计价币种筛选">
+        <option value="">全部币种</option>
+        <option value="CNY">人民币（CNY）</option>
+        <option value="USD">美元（USD）</option>
+      </select>
+      <select id="libSort" aria-label="排序方式">
+        <option value="">默认排序</option>
+        <option value="cost-asc">估算月成本：低到高（人民币折算）</option>
+        <option value="ctx-desc">上下文窗口：大到小</option>
+        <option value="date-desc">核验日期：新到旧</option>
+      </select>
+    </div>
+    <!-- MODEL_TOOLBAR_META_START -->
+<p class="s-hint" style="margin:-6px 0 14px">价格排序按默认用量估算月成本（与成本计算器同口径）统一折算为人民币（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23），折算仅供参考）；费率未核实的模型不参与价格排序。</p>
+      <!-- MODEL_TOOLBAR_META_END -->
+    <p class="lib-count" id="libCount" aria-live="polite"></p>
+
     <div class="module-grid" id="modelList">
       <!-- MODEL_CARDS_START -->
-      <a class="module-card active" href="deepseek-v41-flash/">
+      <a class="module-card active" href="deepseek-v41-flash/" data-search="deepseek v4.1 flash deepseek-v41-flash deepseek" data-vendor="DeepSeek" data-cur="CNY" data-cost="13.8360" data-ctx="1000" data-verified="2026-09-18">
         <h3>DeepSeek V4.1 Flash</h3>
         <p>DeepSeek</p>
         <p class="num">高峰 入¥2 / 出¥8 · 低谷半价</p>
@@ -44,7 +77,7 @@
         <p class="lib-meta">上下文 1000K · 分时段 · 核验 2026-09-18</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="deepseek-v4-pro/">
+      <a class="module-card active" href="deepseek-v4-pro/" data-search="deepseek v4 pro 0813 deepseek-v4-pro 腾讯云原厂直供" data-vendor="腾讯云原厂直供" data-cur="CNY" data-cost="51.5700" data-ctx="1000" data-verified="2026-09-18">
         <h3>DeepSeek V4 Pro 0813</h3>
         <p>腾讯云原厂直供</p>
         <p class="num">高峰 入¥9 / 出¥27 · 低谷半价</p>
@@ -52,7 +85,7 @@
         <p class="lib-meta">上下文 1000K · 分时段 · 核验 2026-09-18</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="glm-53/">
+      <a class="module-card active" href="glm-53/" data-search="glm-5.3 glm-53 阿里云百炼·智谱直供" data-vendor="阿里云百炼·智谱直供" data-cur="CNY" data-cost="104.4000" data-ctx="1024" data-verified="2026-10-28">
         <h3>GLM-5.3</h3>
         <p>阿里云百炼·智谱直供</p>
         <p class="num">输入 ¥8 / 输出 ¥28</p>
@@ -60,7 +93,7 @@
         <p class="lib-meta">上下文 1024K · 单一价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="glm-53-flash/">
+      <a class="module-card active" href="glm-53-flash/" data-search="glm-5.3-flash glm-53-flash 阿里云百炼·智谱直供" data-vendor="阿里云百炼·智谱直供" data-cur="CNY" data-cost="10.4940" data-ctx="1024" data-verified="2026-10-28">
         <h3>GLM-5.3-Flash</h3>
         <p>阿里云百炼·智谱直供</p>
         <p class="num">输入 ¥0.8 / 输出 ¥2.8</p>
@@ -68,7 +101,7 @@
         <p class="lib-meta">上下文 1024K · 单一价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="kimi-k3/">
+      <a class="module-card active" href="kimi-k3/" data-search="kimi k3 kimi-k3 阿里云百炼" data-vendor="阿里云百炼" data-cur="CNY" data-cost="327.6000" data-ctx="1024" data-verified="2026-10-28">
         <h3>Kimi K3</h3>
         <p>阿里云百炼</p>
         <p class="num">输入 ¥20 / 输出 ¥100</p>
@@ -76,7 +109,7 @@
         <p class="lib-meta">上下文 1024K · 单一价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="qwen35-plus/">
+      <a class="module-card active" href="qwen35-plus/" data-search="qwen3.5-plus qwen35-plus 阿里云百炼（≤128k档）" data-vendor="阿里云百炼（≤128K档）" data-cur="CNY" data-cost="16.3200" data-ctx="1000" data-verified="2026-09-18">
         <h3>Qwen3.5-Plus</h3>
         <p>阿里云百炼（≤128K档）</p>
         <p class="num">输入 ¥0.8 / 输出 ¥4.8</p>
@@ -84,7 +117,7 @@
         <p class="lib-meta">上下文 1000K · 单一价 · 核验 2026-09-18</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="qwen37-plus/">
+      <a class="module-card active" href="qwen37-plus/" data-search="qwen3.7-plus qwen37-plus 阿里云百炼（≤256k档，原价）" data-vendor="阿里云百炼（≤256K档，原价）" data-cur="CNY" data-cost="31.2000" data-ctx="1000" data-verified="2026-09-18">
         <h3>Qwen3.7-Plus</h3>
         <p>阿里云百炼（≤256K档，原价）</p>
         <p class="num">输入 ¥2 / 输出 ¥8</p>
@@ -92,7 +125,7 @@
         <p class="lib-meta">上下文 1000K · 单一价 · 核验 2026-09-18</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="qwen38-flash/">
+      <a class="module-card active" href="qwen38-flash/" data-search="qwen3.8-flash qwen38-flash 阿里云百炼" data-vendor="阿里云百炼" data-cur="CNY" data-cost="10.0200" data-ctx="1000" data-verified="2026-10-28">
         <h3>Qwen3.8-Flash</h3>
         <p>阿里云百炼</p>
         <p class="num">输入 ¥0.8 / 输出 ¥2.7</p>
@@ -100,7 +133,7 @@
         <p class="lib-meta">上下文 1000K · 单一价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="hunyuan-turbos-vision/">
+      <a class="module-card active" href="hunyuan-turbos-vision/" data-search="混元 turbos vision hunyuan-turbos-vision 腾讯云" data-vendor="腾讯云" data-cur="CNY" data-cost="39.6000" data-ctx="128" data-verified="2026-09-18">
         <h3>混元 TurboS Vision</h3>
         <p>腾讯云</p>
         <p class="num">输入 ¥3 / 输出 ¥9</p>
@@ -108,7 +141,7 @@
         <p class="lib-meta">上下文 128K · 单一价 · 核验 2026-09-18</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="minimax-m3/">
+      <a class="module-card active" href="minimax-m3/" data-search="minimax m3 minimax-m3 minimax 稀宇科技" data-vendor="MiniMax 稀宇科技" data-cur="CNY" data-cost="32.7600" data-ctx="1024" data-verified="2026-10-28">
         <h3>MiniMax M3</h3>
         <p>MiniMax 稀宇科技</p>
         <p class="num">输入 ≤512K 入¥2.1 / 出¥8.4 · 分档</p>
@@ -116,7 +149,7 @@
         <p class="lib-meta">上下文 1024K · 分档计价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="mimo-v25-pro/">
+      <a class="module-card active" href="mimo-v25-pro/" data-search="小米 mimo v2.5 pro mimo-v25-pro 阿里云百炼·小米（≤256k档）" data-vendor="阿里云百炼·小米（≤256K档）" data-cur="CNY" data-cost="92.4000" data-ctx="1000" data-verified="2026-09-18">
         <h3>小米 MiMo V2.5 Pro</h3>
         <p>阿里云百炼·小米（≤256K档）</p>
         <p class="num">输入 ¥7 / 输出 ¥21</p>
@@ -124,7 +157,7 @@
         <p class="lib-meta">上下文 1000K · 单一价 · 核验 2026-09-18</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="step-37-flash/">
+      <a class="module-card active" href="step-37-flash/" data-search="step 3.7 flash step-37-flash 阿里云百炼·阶跃星辰" data-vendor="阿里云百炼·阶跃星辰" data-cur="CNY" data-cost="25.5960" data-ctx="256" data-verified="2026-10-28">
         <h3>Step 3.7 Flash</h3>
         <p>阿里云百炼·阶跃星辰</p>
         <p class="num">输入 ¥1.35 / 输出 ¥8.1</p>
@@ -132,7 +165,7 @@
         <p class="lib-meta">上下文 256K · 单一价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="gpt-6-luna/">
+      <a class="module-card active" href="gpt-6-luna/" data-search="gpt-6 luna gpt-6-luna openai" data-vendor="OpenAI" data-cur="USD" data-cost="11.0041" data-ctx="1050" data-verified="2026-10-28">
         <h3>GPT-6 Luna</h3>
         <p>OpenAI</p>
         <p class="num">输入 ≤272K 入$0.1 / 出$0.5 · 分档</p>
@@ -140,7 +173,7 @@
         <p class="lib-meta">上下文 1050K · 分档计价 · 美元原价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="gpt-6-1-sol/">
+      <a class="module-card active" href="gpt-6-1-sol/" data-search="gpt-6.1 sol gpt-6-1-sol openai" data-vendor="OpenAI" data-cur="USD" data-cost="218.8724" data-ctx="1050" data-verified="2026-10-28">
         <h3>GPT-6.1 Sol</h3>
         <p>OpenAI</p>
         <p class="num">输入 ≤272K 入$2 / 出$10 · 分档</p>
@@ -148,7 +181,7 @@
         <p class="lib-meta">上下文 1050K · 分档计价 · 美元原价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="claude-haiku-5-5/">
+      <a class="module-card active" href="claude-haiku-5-5/" data-search="claude haiku 5.5 claude-haiku-5-5 anthropic" data-vendor="Anthropic" data-cur="USD" data-cost="11.0041" data-ctx="1024" data-verified="2026-10-28">
         <h3>Claude Haiku 5.5</h3>
         <p>Anthropic</p>
         <p class="num">提示 ≤100K 入$0.1 / 出$0.5 · 分档</p>
@@ -156,7 +189,7 @@
         <p class="lib-meta">上下文 1024K · 分档计价 · 美元原价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="claude-sonnet-5-5/">
+      <a class="module-card active" href="claude-sonnet-5-5/" data-search="claude sonnet 5.5 claude-sonnet-5-5 anthropic" data-vendor="Anthropic" data-cur="USD" data-cost="218.8724" data-ctx="1024" data-verified="2026-10-28">
         <h3>Claude Sonnet 5.5</h3>
         <p>Anthropic</p>
         <p class="num">输入 $2 / 输出 $10</p>
@@ -164,7 +197,7 @@
         <p class="lib-meta">上下文 1024K · 单一价 · 美元原价 · 核验 2026-10-28</p>
         <span class="go">查看档案 →</span>
       </a>
-      <a class="module-card active" href="gemini-3-1-flash-lite/">
+      <a class="module-card active" href="gemini-3-1-flash-lite/" data-search="gemini 3.1 flash-lite gemini-3-1-flash-lite google" data-vendor="Google" data-cur="USD" data-cost="31.5410" data-ctx="1024" data-verified="2026-10-28">
         <h3>Gemini 3.1 Flash-Lite</h3>
         <p>Google</p>
         <p class="num">输入 $0.25 / 输出 $1.5</p>
@@ -174,6 +207,8 @@
       </a>
       <!-- MODEL_CARDS_END -->
     </div>
+
+    <p class="empty-hint" id="libEmpty" hidden>没有匹配的模型，请调整关键词或筛选条件。<br><button type="button" class="btn btn-ghost btn-s" id="libClear" style="margin-top:10px">清除全部筛选</button></p>
   </main>
 
   <footer>
@@ -183,12 +218,78 @@
     <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
-    <p><a href="../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+    <nav class="footer-nav" aria-label="页脚导航">
+    <p>核心工具：<a href="../cost/">成本计算器</a> · <a href="../models/">模型库</a> · <a href="../compare/">模型对比</a> · <a href="../tools/">AI 工具目录</a> · <a href="../prompts/">Prompt 资源</a> · <a href="../quiz/">AI 认知测试</a></p>
+    <p><a href="../about/">关于本站</a> · <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+  </nav>
+    <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
       <!-- FOOTER_END -->
     </div>
   </footer>
 
   <script>window.ASSETS_BASE = '../assets';</script>
   <script src="../assets/app.js"></script>
+  <script>
+  /* 模型库浏览器端搜索/筛选/排序：直接操作构建期静态卡片，无 JS 时全部卡片照常可见。
+     价格排序键 data-cost 由构建脚本用 models.json + fx.json 统一折算 CNY 生成，不比较不同币种原始数字。 */
+  (function () {
+    var list = document.getElementById('modelList');
+    var search = document.getElementById('libSearch');
+    var vendor = document.getElementById('libVendor');
+    var cur = document.getElementById('libCur');
+    var sort = document.getElementById('libSort');
+    var count = document.getElementById('libCount');
+    var empty = document.getElementById('libEmpty');
+    if (!list || !search) return;
+    var cards = Array.prototype.slice.call(list.querySelectorAll('.module-card'));
+    cards.forEach(function (c, i) { c.dataset.idx = i; });
+
+    /* 厂商选项从卡片数据属性生成，与 models.json 保持一致（构建期写入） */
+    var vendors = [];
+    cards.forEach(function (c) {
+      var v = c.dataset.vendor || '';
+      if (v && vendors.indexOf(v) < 0) vendors.push(v);
+    });
+    vendors.forEach(function (v) { vendor.add(new Option(v, v)); });
+
+    function costOf(c) { var v = parseFloat(c.dataset.cost); return isFinite(v) ? v : null; }
+    function cmp(a, b) {
+      if (sort.value === 'cost-asc') {
+        var ca = costOf(a), cb = costOf(b);
+        if (ca == null && cb == null) return a.dataset.idx - b.dataset.idx;
+        if (ca == null) return 1;
+        if (cb == null) return -1;
+        return ca - cb || a.dataset.idx - b.dataset.idx;
+      }
+      if (sort.value === 'ctx-desc') return (parseFloat(b.dataset.ctx) - parseFloat(a.dataset.ctx)) || a.dataset.idx - b.dataset.idx;
+      if (sort.value === 'date-desc') return ((b.dataset.verified || '') < (a.dataset.verified || '') ? -1 : (b.dataset.verified || '') > (a.dataset.verified || '') ? 1 : 0) || a.dataset.idx - b.dataset.idx;
+      return a.dataset.idx - b.dataset.idx;
+    }
+    function apply() {
+      var q = search.value.trim().toLowerCase();
+      var visible = 0;
+      cards.forEach(function (c) {
+        var show = (!q || (c.dataset.search || '').indexOf(q) >= 0) &&
+          (!vendor.value || c.dataset.vendor === vendor.value) &&
+          (!cur.value || c.dataset.cur === cur.value);
+        c.hidden = !show;
+        if (show) visible++;
+      });
+      cards.slice().sort(cmp).forEach(function (c) { list.appendChild(c); });
+      count.textContent = '显示 ' + visible + ' / ' + cards.length + ' 款模型';
+      empty.hidden = visible > 0;
+    }
+    [search, vendor, cur, sort].forEach(function (el) {
+      el.addEventListener('input', apply);
+      el.addEventListener('change', apply);
+    });
+    document.getElementById('libClear').addEventListener('click', function () {
+      search.value = ''; vendor.value = ''; cur.value = ''; sort.value = '';
+      apply();
+      search.focus();
+    });
+    apply();
+  })();
+  </script>
 </body>
 </html>

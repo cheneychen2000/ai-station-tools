@@ -1,4 +1,4 @@
-/* AI驿站工具箱 · 全站唯一样式表 */
+/* Reflex Hub · 全站唯一样式表 */
 :root {
   --primary: #1F3A8A;
   --primary-dark: #162B66;
@@ -36,9 +36,11 @@ a:hover { text-decoration: underline; }
   background: var(--card);
   border-bottom: 1px solid var(--border);
 }
-.topbar .wrap {
+/* header 统一 flex 容器：品牌居左、面包屑紧随、主导航靠右，全部垂直居中不换行 */
+.topbar-row {
   display: flex;
   align-items: center;
+  gap: 10px;
   min-height: 56px;
 }
 .brand {
@@ -47,7 +49,94 @@ a:hover { text-decoration: underline; }
   color: var(--primary);
 }
 .brand:hover { text-decoration: none; color: var(--primary-dark); }
-.topbar .crumb { color: var(--muted); font-size: 14px; margin-left: 10px; }
+.topbar .crumb {
+  color: var(--muted);
+  font-size: 14px;
+  margin-left: 10px;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* 面包屑收缩省略，不挤压右侧导航 */
+}
+
+/* 跳到正文：仅聚焦时可见，不占用常规布局 */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 200;
+  background: var(--primary);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: top 0.15s;
+}
+.skip-link:focus { top: 8px; color: #fff; text-decoration: none; }
+
+/* 全站主导航：同一 flex 行内 margin-left:auto 靠右；无 width:100%（移动端才整行换行）；
+   横向滚动发生在导航自身内部，不产生页面级横向溢出 */
+.site-nav { margin-left: auto; min-width: 0; /* 覆盖 flex item 默认 min-width:auto(min-content)，否则导航最小内容宽会撑破窄屏容器 */ }
+.site-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.site-nav li { flex-shrink: 0; }
+.site-nav a {
+  display: block;
+  min-height: 44px;
+  line-height: 24px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--muted);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--primary); text-decoration: none; }
+.site-nav a.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+
+/* 移动端：导航整行换到第二行并横向滚动（品牌行不受影响） */
+@media (max-width: 719px) {
+  .topbar-row { flex-wrap: wrap; row-gap: 0; }
+  .topbar-row .site-nav {
+    flex: 0 0 100%; /* 仅窄屏占满整行换行，桌面端不触发 */
+    margin-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* 统一焦点样式（键盘可用性） */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 页脚站内导航区 */
+.footer-nav { margin: 12px 0 8px; }
+.footer-nav p { margin: 4px 0; }
+
+/* 模型库工具栏（无 JS 时仅不工作，静态卡片始终可见） */
+.lib-toolbar { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 0 0 16px; }
+.lib-toolbar input[type="search"], .lib-toolbar select {
+  width: 100%;
+  min-height: 44px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 15px;
+  background: var(--card);
+  color: var(--text);
+}
+.lib-count { font-size: 13px; color: var(--muted); margin: -4px 0 12px; }
+.module-card[hidden] { display: none; } /* class 的 display:block 会覆盖 hidden 属性，需显式声明 */
+@media (min-width: 720px) {
+  .lib-toolbar { grid-template-columns: 2fr 1.2fr 1fr 1.4fr; }
+}
 
 /* 首屏 */
 .hero { padding: 40px 0 8px; text-align: center; }

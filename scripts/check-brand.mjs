@@ -27,8 +27,8 @@ const quizJs = readFileSync(join(DIST, 'assets/quiz.js'), 'utf8');
 const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 
 /* 1. 首页主品牌 */
-R.check('B01 首页主品牌 Reflex Hub（header 标识 + H1 定位）',
-  home.includes('<span class="brand">Reflex Hub</span>') &&
+R.check('B01 首页主品牌 Reflex Hub（品牌链接可回首页且当前页标记 + H1 定位）',
+  home.includes('<a class="brand" href="./" aria-current="page">Reflex Hub</a>') &&
   home.includes('<h1>大模型 API 成本与模型选型工具</h1>'));
 
 /* 2. 首页标题准确表达定位 */
