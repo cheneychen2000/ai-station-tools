@@ -3,11 +3,12 @@
   "pages": [
     { "path": "/", "contentUpdatedAt": "2026-10-28" },
     { "path": "/cost/", "contentUpdatedAt": "2026-10-28", "dependsOnModels": true },
-    { "path": "/models/", "contentUpdatedAt": "2026-09-18", "dependsOnModels": true },
-    { "path": "/compare/", "contentUpdatedAt": "2026-09-18" },
+    { "path": "/models/", "contentUpdatedAt": "2026-10-28", "dependsOnModels": true },
+    { "path": "/compare/", "contentUpdatedAt": "2026-10-28" },
     { "path": "/quiz/", "contentUpdatedAt": "2026-09-19" },
     { "path": "/tools/", "contentUpdatedAt": "2026-09-18", "dependsOnTools": true },
     { "path": "/prompts/", "contentUpdatedAt": "2026-09-18" },
-    { "path": "/about/", "contentUpdatedAt": "2026-10-28" }
+    { "path": "/about/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/guides/llm-api-cost/", "contentUpdatedAt": "2026-10-28" }
   ]
 }

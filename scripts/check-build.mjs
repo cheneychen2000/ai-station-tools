@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { ROOT, DIST } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
 import { loadData, buildManifest, comparePairs, isToolIndexable } from './lib/manifest.mjs';
-import { monthly, money, price, verdict } from './lib/pricing.mjs';
+import { monthly, money, price, verdict, toBase, modelCurrency } from './lib/pricing.mjs';
 import { esc, safeUrl, jsonld } from './lib/escape.mjs';
 
 const R = createReporter('check-build');
@@ -34,9 +34,9 @@ run();
 const h2 = hashDist();
 R.check('B1 幂等（连跑两次产物逐字节一致）', h1 === h2);
 
-const { models, tools, pagesMeta } = loadData();
+const { models, tools, pagesMeta, fx, compares } = loadData();
 const N = models.length;
-const PAIRS = (N * (N - 1)) / 2;
+const PAIRS = comparePairs(models, compares.extraPairs || []).length; /* CNY 全组合 + allowlist 跨厂商组合 */
 
 const modelDirs = readdirSync(join(DIST, 'models')).filter(d => statSync(join(DIST, 'models', d)).isDirectory());
 R.check(`B2 模型详情页数 = ${modelDirs.length}（期望 ${N}）`, modelDirs.length === N);
@@ -55,7 +55,7 @@ R.check('B3b 对比页 URL 全部归一（a<b）', normalized);
 
 const sitemap = readFileSync(join(DIST, 'sitemap.xml'), 'utf8');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
-const manifest = buildManifest({ models, tools, pagesMeta });
+const manifest = buildManifest({ models, tools, pagesMeta, compares });
 R.check(`B4 sitemap URL 数 = ${locs.length}（与页面清单 ${manifest.length} 一致）`, locs.length === manifest.length);
 
 const extTools = tools.filter(t => !t.own);
@@ -82,7 +82,7 @@ const sample = models.find(m => !m.peakOffpeak && m.priceIn != null) || models[0
 const detail = readFileSync(join(DIST, 'models', sample.id, 'index.html'), 'utf8');
 R.check(`B5 价格传播（${sample.id} 详情页含 ${price(sample.priceIn)}）`, detail.includes(price(sample.priceIn)));
 
-const [pa, pb] = comparePairs(models)[0];
+const [pa, pb] = comparePairs(models, compares.extraPairs || [])[0];
 const ma = models.find(m => m.id === pa), mb = models.find(m => m.id === pb);
 const pair = readFileSync(join(DIST, 'compare', pa, pb, 'index.html'), 'utf8');
 R.check(`B5b 对比页含两款模型名（${ma.name} / ${mb.name}）`, pair.includes(ma.name) && pair.includes(mb.name));
@@ -91,10 +91,12 @@ R.check(`B5b 对比页含两款模型名（${ma.name} / ${mb.name}）`, pair.inc
 const costHtml = readFileSync(join(DIST, 'cost/index.html'), 'utf8');
 let costTableOk = true;
 for (const m of models) {
-  if (!costHtml.includes(money(monthly(m)))) { costTableOk = false; R.fail(`B9 成本参考表缺 ${m.id} 的估算值 ${money(monthly(m))}`); }
+  const cur = modelCurrency(m);
+  const expect = cur === 'USD' ? `约 ${money(toBase(monthly(m), 'USD', fx))}` : money(monthly(m), cur);
+  if (!costHtml.includes(expect)) { costTableOk = false; R.fail(`B9 成本参考表缺 ${m.id} 的估算值 ${expect}`); }
 }
-R.check('B9 /cost/ 静态参考表覆盖全部模型的公式估算值', costTableOk);
-R.check('B9b 对比页示例月成本与公式一致', pair.includes(money(monthly(ma))) && pair.includes(money(monthly(mb))));
+R.check('B9 /cost/ 静态参考表覆盖全部模型的公式估算值（官方币种/折算口径）', costTableOk);
+R.check('B9b 对比页示例月成本与公式一致（官方币种原价）', pair.includes(money(monthly(ma), modelCurrency(ma))) && pair.includes(money(monthly(mb), modelCurrency(mb))));
 R.check('B9c 对比页含示例参数脚注（日均 100 次调用）', pair.includes('日均 100 次调用'));
 R.check('B9d 平局判定函数（同值=tie / 低者胜出 / 精度内=tie）',
   verdict(1, 1) === 'tie' && verdict(1, 2) === 'a' && verdict(2, 1) === 'b' && verdict(1, 1.001) === 'tie');
@@ -143,5 +145,57 @@ R.check('B14c JSON-LD 序列化防 </script> 闭合', !jsonld({ x: '</script><sc
 
 /* B15 /cost/ FAQPage 结构化数据有可见正文对应 */
 R.check('B15 /cost/ FAQ 三个问题均有可见正文', ['这个计算器怎么算？', 'DeepSeek 低谷价什么时候适用？', '缓存命中率是什么意思？'].every(q => costHtml.includes(q)));
+
+/* B16 计算示例与公式一致：示例由 build.mjs 从 models.json 用同一公式生成 */
+const exModel = models.find(x => x.peakOffpeak) || models[0];
+const exTotal = money(Math.round(monthly(exModel) * 100) / 100);
+R.check(`B16 /cost/ 计算示例与公式一致（示例模型 ${exModel.id}，示例合计 ${exTotal} 在页面上）`, costHtml.includes(exTotal));
+R.check('B16b /cost/ 含变量说明与计算公式文本', costHtml.includes('输入有效单价 = 命中率 × 缓存命中价') && costHtml.includes('不适用情形'));
+
+/* B17 条件价档 schema 与折扣语义 */
+const tierModels = models.filter(m => Array.isArray(m.priceTiers));
+const tierOk = tierModels.every(m =>
+  m.priceTiers.length >= 2 &&
+  m.priceTiers.every((t, i) => t.unverified || (typeof t.priceIn === 'number' && typeof t.priceOut === 'number' && t.priceIn > 0 && t.priceOut > 0)) &&
+  m.priceTiers.every((t, i) => i === m.priceTiers.length - 1 ? t.upToInputTokens == null : Number.isInteger(t.upToInputTokens) && t.upToInputTokens > 0) &&
+  m.priceTiers.slice(0, -1).every((t, i) => t.upToInputTokens < (m.priceTiers[i + 1].upToInputTokens ?? Infinity)));
+R.check(`B17 条件价档 schema 合法（${tierModels.length} 款价档模型：升序、末档无上界、正价格）`, tierOk);
+const mm = models.find(m => m.id === 'minimax-m3');
+R.check('B17b MiniMax M3 高低两档并存且高档生效（>512K 时低档不被无条件套用）',
+  !!mm && mm.priceTiers.length === 2 && mm.priceTiers[1].priceIn === 4.2 && mm.priceTiers[1].priceOut === 16.8 &&
+  monthly(mm, { calls: 100, inTok: 600000, outTok: 800, hit: 0.3 }) > monthly(mm));
+R.check('B17c 限时折扣无虚构结束日期（qwen37-plus 仅有未公布结束日期的说明）',
+  (models.find(m => m.id === 'qwen37-plus').priceNote || '').includes('未公布') &&
+  !JSON.stringify(models).includes('discountEnd'));
+R.check('B17d 未知价格不被当 0（价档缓存未公开保持 null 且页面有未公开标记）',
+  mm.priceTiers.every(t => t.priceCacheHit == null) &&
+  readFileSync(join(DIST, 'models/minimax-m3/index.html'), 'utf8').includes('未公开'));
+
+/* B19 多币种：美元原价不得显示为 ¥；详情页展示官方 USD 报价与折算说明 */
+const usdModels = models.filter(m => (m.currency || 'CNY') === 'USD');
+R.check(`B19 ${usdModels.length} 款美元模型的详情页以 $ 展示原价（description/正文均不得伪装成 ¥）`,
+  usdModels.length === 5 && usdModels.every(m => {
+    const t = readFileSync(join(DIST, 'models', m.id, 'index.html'), 'utf8');
+    const metaOk = t.includes(`输入 $${m.priceIn}/输出 $${m.priceOut}`) &&
+      !t.includes(`输入 ¥${m.priceIn}`) && !t.includes(`¥${m.priceIn}/输出`);
+    return metaOk && t.includes('$' + m.priceIn) && t.includes('美元');
+  }));
+R.check('B19b 美元模型详情页含人民币折算参考与汇率日期',
+  usdModels.every(m => readFileSync(join(DIST, 'models', m.id, 'index.html'), 'utf8').includes('6.718')));
+R.check('B19c 人民币模型显示不受多币种改造影响（仍 ¥ 原价）',
+  models.filter(m => (m.currency || 'CNY') === 'CNY').every(m =>
+    readFileSync(join(DIST, 'models', m.id, 'index.html'), 'utf8').includes('¥' + m.priceIn)));
+
+/* B20 参考汇率：有来源/日期/核验；折算正确；未核实汇率不得参与计算 */
+R.check('B20 fx.json 汇率记录完整（rate/rateDate/verifiedAt/source）',
+  !!fx && !!fx.rates.USD_CNY && fx.rates.USD_CNY.rate > 0 && !!fx.rates.USD_CNY.rateDate && !!fx.rates.USD_CNY.verifiedAt && !!fx.rates.USD_CNY.source);
+R.check('B20b 折算正确（0.10 USD = 0.6718 CNY）', Math.abs(toBase(0.1, 'USD', fx) - 0.6718) < 1e-9);
+R.check('B20c 未核实汇率不参与计算（缺 verifiedAt 的汇率返回 null）',
+  toBase(0.1, 'USD', { rates: { USD_CNY: { rate: 6.7, rateDate: '2026-10-23', source: 'x' } } }) === null &&
+  toBase(0.1, 'CNY', fx) === 0.1);
+R.check('B20d 未核实价档不产出成本（OpenAI >272K 档位 monthly 为 NaN）',
+  models.filter(m => m.priceTiers && m.priceTiers.some(t => t.unverified)).every(m =>
+    Number.isNaN(monthly(m, { calls: 100, inTok: 600000, outTok: 800, hit: 0.3 })) &&
+    !Number.isNaN(monthly(m))));
 
 R.summary();

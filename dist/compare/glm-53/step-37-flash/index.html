@@ -63,31 +63,32 @@
         </thead>
         <tbody>
           <tr><th>厂商 / 渠道</th><td>阿里云百炼·智谱直供</td><td>阿里云百炼·阶跃星辰</td></tr>
-          <tr><th>上下文窗口</th><td>200K</td><td>128K</td></tr>
-          <tr><th>支持模态</th><td>文本</td><td>文本</td></tr>
+          <tr><th>上下文窗口</th><td>1024K</td><td>256K</td></tr>
+          <tr><th>支持模态</th><td>文本</td><td>文本、图像理解、视频理解</td></tr>
           <tr><th>特点</th><td>旗舰推理、工具调用强</td><td>低价轻量、阶跃出品</td></tr>
           <tr><th>输入价（未命中）</th><td>¥8</td><td>¥1.35</td></tr>
           <tr><th>输出价</th><td>¥28</td><td>¥8.1</td></tr>
-          <tr><th>缓存命中价</th><td>¥2</td><td>未公开</td></tr>
+          <tr><th>缓存命中价</th><td>¥2</td><td>¥0.27</td></tr>
           <tr><th>分时段</th><td><svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round"/></svg></td><td><svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round"/></svg></td></tr>
-          <tr><th>示例月成本*</th><td class="num">¥104.40</td><td class="win num">¥27.54</td></tr>
-          <tr><th>数据来源</th><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th>核验日期</th><td>2026-09-18</td><td>2026-09-18</td></tr>
+          <tr><th>示例月成本*</th><td class="num">¥104.40</td><td class="win num">¥25.60</td></tr>
+          <tr><th>数据来源</th><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td><td><a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
+          <tr><th>核验日期</th><td>2026-10-28</td><td>2026-10-28</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="s-hint">* 示例月成本固定参数：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰（低谷价）· 缓存命中率 30%，公式与默认值同 <a href="../../../cost/">成本计算器</a> 一致。两者成本在展示精度内相同时标记持平，不突出任何一方。</p>
+    <p class="s-hint">* 示例月成本固定参数：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰（低谷价）· 缓存命中率 30%，公式与默认值同 <a href="../../../cost/">成本计算器</a> 一致。美元模型按参考汇率统一折算为人民币后比较（折算见摘要）。两者成本在展示精度内相同时标记持平，不突出任何一方。</p>
 
     <section class="panel">
       <h2>对比摘要（固定用量口径）</h2>
       <ul style="font-size:14px;line-height:1.9;padding-left:20px;margin:0">
-        <li>估算月成本：GLM-5.3 ¥104.40 vs Step 3.7 Flash ¥27.54——在该固定用量下 Step 3.7 Flash 更低，相差 ¥76.86/月。</li>
-        <li>输入单价（错峰低谷/单一价口径）：¥8 vs ¥1.35，Step 3.7 Flash 更低（差 ¥6.65/百万Token）。</li>
-        <li>输出单价（错峰低谷/单一价口径）：¥28 vs ¥8.1，Step 3.7 Flash 更低（差 ¥19.9/百万Token）。</li>
-        <li>缓存命中价（低谷口径）：GLM-5.3 ¥2；Step 3.7 Flash 未公开缓存价（估算时按未命中价计）。</li>
-        <li>上下文窗口：GLM-5.3 200K vs Step 3.7 Flash 128K，GLM-5.3 为 Step 3.7 Flash 的 1.6 倍。</li>
-        <li>支持模态相同：文本。</li>
-        <li>数据来源：阿里云百炼定价（核验 2026-09-18）、阿里云百炼定价（核验 2026-09-18）。</li>
+        <li>估算月成本：统一折算后 GLM-5.3 ¥104.40 vs Step 3.7 Flash ¥25.60（原价 ¥104.40 / ¥25.60）——在该固定用量下 Step 3.7 Flash 更低，相差 ¥78.8/月。</li>
+        <li>成本比例：按该口径，GLM-5.3 的估算月成本约为 Step 3.7 Flash 的 4.1 倍（Step 3.7 Flash 便宜约 75%）。该比例只在当前刊例价、汇率与上述固定用量假设下成立，不代表模型能力、输出质量或综合性价比。</li>
+        <li>输入单价（错峰低谷/单一价口径）：原价 ¥8 vs ¥1.35，折算后 Step 3.7 Flash 更低（差约 ¥6.65/百万Token）。</li>
+        <li>输出单价（错峰低谷/单一价口径）：原价 ¥28 vs ¥8.1，折算后 Step 3.7 Flash 更低（差约 ¥19.9/百万Token）。</li>
+        <li>缓存命中价（低谷口径）：GLM-5.3 ¥2；Step 3.7 Flash ¥0.27。</li>
+        <li>上下文窗口：GLM-5.3 1024K vs Step 3.7 Flash 256K，GLM-5.3 为 Step 3.7 Flash 的 4.0 倍。</li>
+        <li>支持模态：GLM-5.3=文本；Step 3.7 Flash=文本、图像理解、视频理解（Step 3.7 Flash 多出 图像理解、视频理解）。</li>
+        <li>数据来源：阿里云百炼模型页（核验 2026-10-28）、阿里云百炼模型页（核验 2026-10-28）；计价单位：人民币 / 百万 Token。</li>
       </ul>
       <p class="s-hint" style="margin-top:10px">以上仅为公开价目在指定调用量、输入输出 Token 数、缓存假设与计费规则下的计算结果与数据对比，不代表模型能力、输出质量或综合性价比排名，不构成采购建议。</p>
     </section>
@@ -101,8 +102,8 @@
 
   <footer>
     <div class="wrap" id="site-footer">
-    <p>数据来源：<a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 官方定价</a> · <a href="https://cloud.tencent.com/pricing" target="_blank" rel="noopener">腾讯云定价</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></p>
-    <p>模型价格最近核验日期：<span class="num">2026-09-18</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
     <p><a href="../../../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>

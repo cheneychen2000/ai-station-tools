@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { DIST } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
-import { monthlyFull } from './lib/pricing.mjs';
+import { monthlyFull, monthly, money, tierFor, toBase, fxEntry, monthlyBase } from './lib/pricing.mjs';
 import { join } from 'node:path';
 
 const R = createReporter('selftest');
@@ -162,6 +162,59 @@ R.check(`T11 长 URL(${MP_QR_URL.length} 字符) QRMini 可编码`, t11);
   }
   R.check(`T10c 数据头（模式+长度${url.length}）与 URL 载荷逐字节一致`, headOk && payloadOk);
 })();
+
+/* T12 条件价档：按输入长度选档正确；12 款默认用量月成本快照（防价档改造引入非预期变化） */
+const mm = models.find(m => m.id === 'minimax-m3');
+R.check('T12 MiniMax M3 价档选择正确（≤512K 低档 / >512K 高档 / 边界 524288）',
+  mm && mm.priceTiers.length === 2 &&
+  tierFor(mm, 2000).priceIn === 2.1 && tierFor(mm, 524288).priceIn === 2.1 && tierFor(mm, 524289).priceIn === 4.2 &&
+  tierFor(mm, 600000).priceOut === 16.8);
+R.check('T12b 无价档模型 tierFor 返回 null（回退顶层价格）',
+  models.filter(m => !m.priceTiers).every(m => tierFor(m, 100) === null));
+const SNAP = {
+  'deepseek-v41-flash': '¥13.84', 'deepseek-v4-pro': '¥51.57', 'glm-53': '¥104.40', 'glm-53-flash': '¥10.49',
+  'kimi-k3': '¥327.60', 'qwen35-plus': '¥16.32', 'qwen37-plus': '¥31.20', 'qwen38-flash': '¥10.02',
+  'hunyuan-turbos-vision': '¥39.60', 'minimax-m3': '¥32.76', 'mimo-v25-pro': '¥92.40', 'step-37-flash': '¥25.60'
+};
+R.check('T12c 12 款人民币模型默认用量月成本快照不变（无非预期变化）',
+  models.filter(m => (m.currency || 'CNY') === 'CNY').every(m => money(monthly(m)) === SNAP[m.id]),
+  models.filter(m => (m.currency || 'CNY') === 'CNY' && money(monthly(m)) !== SNAP[m.id]).map(m => m.id + ':' + money(monthly(m))).join(',') || '全部一致');
+R.check('T12d 高档输入成本显著高于低档（不会无条件套用低档价）',
+  monthly(mm, { calls: 100, inTok: 600000, outTok: 800, hit: 0.3 }) > monthly(mm) * 100);
+
+/* T13 时间语义分离：verifiedAt 仅全核验；price/spec 核验时间独立；contentUpdatedAt 反映内容变更 */
+R.check('T13 每款模型四种时间字段齐全且为合法 YYYY-MM-DD',
+  models.every(m => ['verifiedAt', 'priceVerifiedAt', 'specVerifiedAt', 'contentUpdatedAt'].every(k => /^\d{4}-\d{2}-\d{2}$/.test(m[k] || ''))));
+R.check('T13b VERIFIED 模型的价格与规格核验时间同日（部分核验不伪装全部）',
+  models.filter(m => m.verifiedAt === '2026-10-28').every(m => m.priceVerifiedAt === '2026-10-28' && m.specVerifiedAt === '2026-10-28'));
+R.check('T13c PARTIAL 模型规格核验时间保持 2026-09-18',
+  models.filter(m => m.verifiedAt !== '2026-10-28').every(m => m.specVerifiedAt === '2026-09-18'));
+const dsChanged = models.filter(m => m.id.startsWith('deepseek'));
+R.check('T13d sourceUrl 实质变更的模型 contentUpdatedAt 已更新（deepseek 两款=2026-10-28）',
+  dsChanged.every(m => m.contentUpdatedAt === '2026-10-28' && m.verifiedAt === '2026-09-18'));
+
+/* T14 多币种：币种字段、汇率折算、未核实汇率拒绝参与计算、未核实价档不产出成本 */
+const fxData = JSON.parse(readFileSync(join(DIST, 'assets/data/fx.json'), 'utf8'));
+R.check('T14 每款模型币种明确（12 CNY + 5 USD）',
+  models.filter(m => m.currency === 'CNY').length === 12 && models.filter(m => m.currency === 'USD').length === 5);
+R.check('T14b 折算正确（$0.10 → ¥0.6718，按 2026-10-23 中间价 6.718）',
+  Math.abs(toBase(0.1, 'USD', fxData) - 0.6718) < 1e-9 && fxEntry(fxData, 'USD').rateDate === '2026-10-23');
+R.check('T14c 未核实汇率不参与计算（缺 source/rateDate/verifiedAt/rate<=0 均返回 null）',
+  toBase(1, 'USD', { rates: { USD_CNY: { rate: 6.7 } } }) === null &&
+  toBase(1, 'USD', { rates: { USD_CNY: { rate: 6.7, rateDate: '2026-10-23' } } }) === null &&
+  toBase(1, 'USD', { rates: { USD_CNY: { rate: 0, rateDate: '2026-10-23', verifiedAt: '2026-10-28', source: 'x' } } }) === null &&
+  toBase(1, 'USD', { rates: { USD_CNY: { rate: -1, rateDate: '2026-10-23', verifiedAt: '2026-10-28', source: 'x' } } }) === null);
+R.check('T14d 未核实价档不产出成本（OpenAI >272K 为 NaN；≤272K 正常）',
+  models.filter(m => m.priceTiers && m.priceTiers.some(t => t.unverified)).length === 2 &&
+  models.filter(m => m.priceTiers && m.priceTiers.some(t => t.unverified)).every(m =>
+    Number.isNaN(monthly(m, { calls: 100, inTok: 600000, outTok: 800, hit: 0.3 })) && !Number.isNaN(monthly(m))));
+R.check('T14e Haiku 5.5 双档均经官方核验（≤100K / >100K 自动选档）',
+  (function () { const h = models.find(m => m.id === 'claude-haiku-5-5');
+    return h.priceTiers.length === 2 && !h.priceTiers[1].unverified &&
+      tierFor(h, 102400).priceIn === 0.1 && tierFor(h, 102401).priceIn === 0.5; })());
+R.check('T14f monthlyBase 折算为 CNY（USD 模型返回折算值，CNY 模型原值）',
+  monthlyBase(models.find(m => m.id === 'gpt-6-luna'), fxData) > 0 &&
+  monthlyBase(models.find(m => m.id === 'glm-53'), fxData) === monthly(models.find(m => m.id === 'glm-53')));
 
 /* T3b 页面无价格硬编码（cost 页脚本除 models.json 外不应出现价格数字字面量） */
 const costHtml = readFileSync(join(DIST, 'cost/index.html'), 'utf8');

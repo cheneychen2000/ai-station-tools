@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini 3.1 Flash-Lite vs GPT-6.1 Sol 对比 - 价格/上下文/模态 | Reflex Hub</title>
+  <meta name="description" content="Gemini 3.1 Flash-Lite（Google）与 GPT-6.1 Sol（OpenAI）API 逐项对比：输入输出价格、缓存命中、分时段、上下文窗口、模态与示例月成本。">
+  <link rel="canonical" href="https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/gpt-6-1-sol/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="Gemini 3.1 Flash-Lite vs GPT-6.1 Sol 对比 - 价格/上下文/模态 | Reflex Hub">
+  <meta property="og:description" content="Gemini 3.1 Flash-Lite（Google）与 GPT-6.1 Sol（OpenAI）API 逐项对比：输入输出价格、缓存命中、分时段、上下文窗口、模态与示例月成本。">
+  <meta property="og:url" content="https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/gpt-6-1-sol/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="stylesheet" href="../../../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "首页",
+        "item": "https://www.reflex-hub.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "模型对比",
+        "item": "https://www.reflex-hub.com/compare/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Gemini 3.1 Flash-Lite vs GPT-6.1 Sol",
+        "item": "https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/gpt-6-1-sol/"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="../../../">Reflex Hub</a>
+      <span class="crumb">/ <a href="../../" style="color:inherit">模型对比</a> / Gemini 3.1 Flash-Lite vs GPT-6.1 Sol</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">Gemini 3.1 Flash-Lite <span style="color:var(--muted);font-weight:400">vs</span> GPT-6.1 Sol</h1>
+      <p class="tagline">Google vs OpenAI · 价格与规格逐项对比</p>
+    </section>
+
+    <p class="lede">Gemini 3.1 Flash-Lite（Google）与 GPT-6.1 Sol（OpenAI）的逐项对比：输入/输出/缓存命中价格、分时段、上下文窗口、支持模态与固定参数示例月成本。绿色为该项更优。</p>
+
+    <div class="table-scroll" style="margin-top:20px">
+      <table class="spec wide">
+        <thead>
+          <tr><th>维度</th><th>Gemini 3.1 Flash-Lite</th><th>GPT-6.1 Sol</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>厂商 / 渠道</th><td>Google</td><td>OpenAI</td></tr>
+          <tr><th>上下文窗口</th><td>1024K</td><td>1050K</td></tr>
+          <tr><th>支持模态</th><td>文本、图像理解、视频理解</td><td>文本、图像理解</td></tr>
+          <tr><th>特点</th><td>海量轻任务、翻译数据处理</td><td>复杂编码、智能体任务</td></tr>
+          <tr><th>输入价（未命中）</th><td>$0.25</td><td>输入 ≤272K $2　输入 &gt;272K（长上下文） 未公开</td></tr>
+          <tr><th>输出价</th><td>$1.5</td><td>输入 ≤272K $10　输入 &gt;272K（长上下文） 未公开</td></tr>
+          <tr><th>缓存命中价</th><td>$0.025</td><td>输入 ≤272K $0.1　输入 &gt;272K（长上下文） 未公开</td></tr>
+          <tr><th>分时段</th><td><svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round"/></svg></td><td><svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round"/></svg></td></tr>
+          <tr><th>示例月成本*</th><td class="win num">$4.69</td><td class="num">$32.58</td></tr>
+          <tr><th>数据来源</th><td><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td></tr>
+          <tr><th>核验日期</th><td>2026-10-28</td><td>2026-10-28</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="s-hint">* 示例月成本固定参数：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰（低谷价）· 缓存命中率 30%，公式与默认值同 <a href="../../../cost/">成本计算器</a> 一致。美元模型按参考汇率统一折算为人民币后比较（折算见摘要）。两者成本在展示精度内相同时标记持平，不突出任何一方。</p>
+
+    <section class="panel">
+      <h2>对比摘要（固定用量口径）</h2>
+      <ul style="font-size:14px;line-height:1.9;padding-left:20px;margin:0">
+        <li>估算月成本：统一折算后 Gemini 3.1 Flash-Lite ¥31.54 vs GPT-6.1 Sol ¥218.87（原价 $4.69 / $32.58）——在该固定用量下 Gemini 3.1 Flash-Lite 更低，相差 ¥187.33/月。</li>
+        <li>成本比例：按该口径，GPT-6.1 Sol 的估算月成本约为 Gemini 3.1 Flash-Lite 的 6.9 倍（Gemini 3.1 Flash-Lite 便宜约 86%）。该比例只在当前刊例价、汇率与上述固定用量假设下成立，不代表模型能力、输出质量或综合性价比。</li>
+        <li>输入单价（错峰低谷/单一价口径）：原价 $0.25 vs $2，折算后 Gemini 3.1 Flash-Lite 更低（差约 ¥11.76/百万Token）。</li>
+        <li>输出单价（错峰低谷/单一价口径）：原价 $1.5 vs $10，折算后 Gemini 3.1 Flash-Lite 更低（差约 ¥57.1/百万Token）。</li>
+        <li>缓存命中价（低谷口径）：Gemini 3.1 Flash-Lite $0.025；GPT-6.1 Sol $0.1。</li>
+        <li>上下文窗口：Gemini 3.1 Flash-Lite 1024K vs GPT-6.1 Sol 1050K，GPT-6.1 Sol 为 Gemini 3.1 Flash-Lite 的 1.0 倍。</li>
+        <li>支持模态：Gemini 3.1 Flash-Lite=文本、图像理解、视频理解；GPT-6.1 Sol=文本、图像理解（Gemini 3.1 Flash-Lite 多出 视频理解）。</li>
+        <li>数据来源：Google AI 定价（核验 2026-10-28）、OpenAI API 定价（核验 2026-10-28）；计价单位：人民币 / 百万 Token。</li>
+      </ul>
+      <p class="s-hint" style="margin-top:10px">以上仅为公开价目在指定调用量、输入输出 Token 数、缓存假设与计费规则下的计算结果与数据对比，不代表模型能力、输出质量或综合性价比排名，不构成采购建议。</p>
+    </section>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../../../cost/?models=gemini-3-1-flash-lite,gpt-6-1-sol" onclick="window.track('compare_to_cost', { a: "gemini-3-1-flash-lite", b: "gpt-6-1-sol" })">按你的用量精确算 →</a>
+      <a class="btn btn-ghost" href="../../../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite 档案</a>
+      <a class="btn btn-ghost" href="../../../models/gpt-6-1-sol/">GPT-6.1 Sol 档案</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
+    <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
+    <p><a href="../../../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../../assets';</script>
+  <script src="../../../assets/app.js"></script>
+  <script>window.track('compare_view', { a: "gemini-3-1-flash-lite", b: "gpt-6-1-sol" });</script>
+</body>
+</html>

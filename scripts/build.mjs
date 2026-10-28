@@ -7,11 +7,16 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { DIST, SITE, BRAND } from './lib/paths.mjs';
-import { SAMPLE_PARAMS, monthly, money, price, verdict } from './lib/pricing.mjs';
+import { SAMPLE_PARAMS as P, monthly, monthlyBase, money, price, verdict, modelCurrency, fxEntry, toBase } from './lib/pricing.mjs';
 import { esc, safeUrl, jsStr, jsonld } from './lib/escape.mjs';
 import { loadData, maxDate, comparePairs, isToolIndexable, buildManifest } from './lib/manifest.mjs';
 
-const { models, tools, pagesMeta } = loadData();
+const { models, tools, pagesMeta, fx, compares } = loadData();
+const round2 = n => Math.round(n * 100) / 100;
+const fxNote = cur => {
+  const e = fxEntry(fx, cur);
+  return e && e.rateDate ? `1 USD = ${e.rate} CNY（中国外汇交易中心中间价 ${e.rateDate}）` : null;
+};
 
 /* 是/否图标（内联 SVG，替代 ✅/❌ emoji，跨设备渲染一致） */
 const ICON_YES = '<svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#0E8A5F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -112,18 +117,29 @@ function breadcrumb(items) {
 
 /* ---------- 模型详情页 ---------- */
 function priceTable(m) {
+  const cur = modelCurrency(m);
   const rows = [];
-  if (m.peakOffpeak) {
+  if (m.priceTiers) {
+    rows.push(['输入价（未命中）', m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '费率未公开' : price(t.priceIn, cur)}`).join('　')]);
+    rows.push(['输出价', m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '费率未公开' : price(t.priceOut, cur)}`).join('　')]);
+    rows.push(['缓存命中价', m.priceTiers.every(t => t.priceCacheHit == null) ? '未公开' : m.priceTiers.map(t => `${esc(t.desc)} ${price(t.priceCacheHit, cur)}`).join('　')]);
+    rows.push(['分档规则', `${ICON_YES} 按输入长度分档，计算器按你的输入长度自动选档`]);
+  } else if (m.peakOffpeak) {
     const p = m.peakOffpeak;
-    rows.push(['输入价（未命中）', `高峰 ${price(p.peakIn)} / 低谷 ${price(p.offIn)}`]);
-    rows.push(['输出价', `高峰 ${price(p.peakOut)} / 低谷 ${price(p.offOut)}`]);
-    rows.push(['缓存命中价', `高峰 ${price(p.peakCache)} / 低谷 ${price(p.offCache)}`]);
+    rows.push(['输入价（未命中）', `高峰 ${price(p.peakIn, cur)} / 低谷 ${price(p.offIn, cur)}`]);
+    rows.push(['输出价', `高峰 ${price(p.peakOut, cur)} / 低谷 ${price(p.offOut, cur)}`]);
+    rows.push(['缓存命中价', `高峰 ${price(p.peakCache, cur)} / 低谷 ${price(p.offCache, cur)}`]);
     rows.push(['分时段', `${ICON_YES} 高峰时段 = ${esc(p.peakWindow)}，其余时间为低谷价`]);
   } else {
-    rows.push(['输入价（未命中）', price(m.priceIn)]);
-    rows.push(['输出价', price(m.priceOut)]);
-    rows.push(['缓存命中价', price(m.priceCacheHit)]);
+    rows.push(['输入价（未命中）', price(m.priceIn, cur)]);
+    rows.push(['输出价', price(m.priceOut, cur)]);
+    rows.push(['缓存命中价', price(m.priceCacheHit, cur)]);
     rows.push(['分时段', `${ICON_NO} 单一价格`]);
+  }
+  if (m.priceCacheWrite != null) rows.push(['缓存写入价', `${price(m.priceCacheWrite, cur)}（30 分钟 / 5 分钟档，未计入月成本估算）`]);
+  if (cur === 'USD') {
+    const note = fxNote('USD');
+    rows.push(['计价币种', `美元（USD / 百万 Token）${note ? `；人民币折算参考：${esc(note)}` : '；参考汇率未核实，暂不提供折算'}`]);
   }
   return rows.map(r => `          <tr><th>${r[0]}</th><td class="num">${r[1]}</td></tr>`).join('\n');
 }
@@ -135,16 +151,30 @@ function modelDetail(m) {
   const srcCell = src
     ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(m.sourceName)}</a>`
     : esc(m.sourceName);
-  const lede = `${m.name} 是${m.vendor}推出的大模型，支持${modText}，上下文窗口 ${m.context}K。API 定价：输入 ${price(m.priceIn)}/百万Token、输出 ${price(m.priceOut)}/百万Token${m.priceCacheHit != null ? `、缓存命中 ${price(m.priceCacheHit)}` : ''}${m.peakOffpeak ? '，分时段定价（低谷价约为高峰一半）' : ''}。数据核验日期 ${m.verifiedAt}，来源可点击查验。`;
+  const cur = modelCurrency(m);
+  const curName = cur === 'USD' ? '美元' : '人民币';
+  const lede = `${m.name} 是${m.vendor}推出的大模型，支持${modText}，上下文窗口 ${m.context}K。API 定价（${curName}刊例原价）：输入 ${price(m.priceIn, cur)}/百万Token、输出 ${price(m.priceOut, cur)}/百万Token${m.priceCacheHit != null ? `、缓存命中 ${price(m.priceCacheHit, cur)}` : ''}${m.peakOffpeak ? '，分时段定价（低谷价约为高峰一半）' : ''}。数据核验日期 ${m.verifiedAt}，来源可点击查验。`;
   const siblings = models.filter(x => x.vendor === m.vendor && x.id !== m.id);
   const siblingHtml = siblings.length
     ? `<p class="lib-meta">同厂商收录：${siblings.map(s => `<a href="../${esc(s.id)}/">${esc(s.name)}</a>`).join(' · ')}</p>`
     : '';
-  const compareHtml = siblings.length
-    ? `<p class="lib-meta">相关对比：${siblings.map(s => {
-        const [x, y] = [m.id, s.id].sort();
-        return `<a href="../../compare/${esc(x)}/${esc(y)}/">${esc(m.name)} vs ${esc(s.name)}</a>`;
-      }).join(' · ')}</p>`
+  /* 相关对比：同厂商兄弟 + compares.json allowlist 中含该模型的组合（每模型至多 4 条，重建不丢失） */
+  const allow = (compares.extraPairs || [])
+    .filter(([x, y]) => x === m.id || y === m.id)
+    .slice(0, 4)
+    .map(([x, y]) => {
+      const [nx, ny] = [x, y].sort(); /* URL 必须 a<b 归一，与 comparePairs 生成路径一致 */
+      const other = x === m.id ? y : x;
+      const om = models.find(mm => mm.id === other);
+      return om ? `<a href="../../compare/${esc(nx)}/${esc(ny)}/">${esc(m.name)} vs ${esc(om.name)}</a>` : '';
+    }).filter(Boolean);
+  const siblingLinks = siblings.map(s => {
+    const [x, y] = [m.id, s.id].sort();
+    return `<a href="../../compare/${esc(x)}/${esc(y)}/">${esc(m.name)} vs ${esc(s.name)}</a>`;
+  });
+  const allCmpLinks = [...new Set([...siblingLinks, ...allow])];
+  const compareHtml = allCmpLinks.length
+    ? `<p class="lib-meta">相关对比：${allCmpLinks.slice(0, 5).join(' · ')}</p>`
     : '';
 
   const main = `    <section class="hero" style="text-align:left;padding-bottom:0">
@@ -184,6 +214,15 @@ ${priceTable(m)}
       ${compareHtml}
     </section>
 
+    <section class="panel">
+      <h2>数据说明与使用限制</h2>
+      <p class="s-hint" style="line-height:1.9">
+        · 价格为厂商公开刊例原价（人民币 / 百万 Token），不含限时活动与套餐优惠，实际以官方页面与控制台为准；<br>
+        · 成本估算结果不等同于服务商实际账单，不构成采购建议；本页不推断模型性能或质量排名；<br>
+        · 厂商 / 渠道标注的是该价格的官方来源，不代表本站与厂商存在隶属或背书关系。${m.priceNote ? '<br>· ' + esc(m.priceNote) : ''}
+      </p>
+    </section>
+
     <div class="cta-row">
       <a class="btn btn-primary" href="../../cost/?models=${esc(m.id)}">在成本计算器中估算 →</a>
       <a class="btn btn-ghost" href="../../compare/?a=${esc(m.id)}">与其他模型对比 →</a>
@@ -204,7 +243,7 @@ ${priceTable(m)}
   return page({
     depth: 2,
     title: `${m.name} 价格与参数档案 - ${m.vendor} | ${BRAND}`,
-    desc: `${m.name}（${m.vendor}）API 价格：输入 ${price(m.priceIn)}/输出 ${price(m.priceOut)} 每百万Token，上下文 ${m.context}K，支持${modText}。数据核验于 ${m.verifiedAt}。`,
+    desc: `${m.name}（${m.vendor}）API 价格（${modelCurrency(m) === 'USD' ? '美元' : '人民币'}）：输入 ${price(m.priceIn, modelCurrency(m))}/输出 ${price(m.priceOut, modelCurrency(m))} 每百万Token，上下文 ${m.context}K，支持${modText}。数据核验于 ${m.verifiedAt}。`,
     canonicalPath: `/models/${m.id}/`,
     jsonld: [
       ld,
@@ -218,15 +257,21 @@ ${priceTable(m)}
 
 /* ---------- 对比页 ---------- */
 function cellPrice(m, kind) {
+  const cur = modelCurrency(m);
+  if (m.priceTiers) {
+    const key = kind === 'in' ? 'priceIn' : kind === 'out' ? 'priceOut' : 'priceCacheHit';
+    if (kind === 'cache' && m.priceTiers.every(t => t.priceCacheHit == null)) return '未公开';
+    return m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '未公开' : price(t[key], cur)}`).join('　');
+  }
   if (m.peakOffpeak) {
     const p = m.peakOffpeak;
-    if (kind === 'in') return `高峰 ${price(p.peakIn)} / 低谷 ${price(p.offIn)}`;
-    if (kind === 'out') return `高峰 ${price(p.peakOut)} / 低谷 ${price(p.offOut)}`;
-    return `高峰 ${price(p.peakCache)} / 低谷 ${price(p.offCache)}`;
+    if (kind === 'in') return `高峰 ${price(p.peakIn, cur)} / 低谷 ${price(p.offIn, cur)}`;
+    if (kind === 'out') return `高峰 ${price(p.peakOut, cur)} / 低谷 ${price(p.offOut, cur)}`;
+    return `高峰 ${price(p.peakCache, cur)} / 低谷 ${price(p.offCache, cur)}`;
   }
-  if (kind === 'in') return price(m.priceIn);
-  if (kind === 'out') return price(m.priceOut);
-  return price(m.priceCacheHit);
+  if (kind === 'in') return price(m.priceIn, cur);
+  if (kind === 'out') return price(m.priceOut, cur);
+  return price(m.priceCacheHit, cur);
 }
 
 /* 示例月成本口径（错峰低谷价）下的单价，用于摘要区的事实性单价对比 */
@@ -238,8 +283,13 @@ function lowPrices(m) {
 const fmtDiff = n => '¥' + (Math.round(Math.abs(n) * 100) / 100);
 
 function compareDetail(a, b) {
-  const ca = monthly(a), cb = monthly(b);
-  const v = verdict(ca, cb); /* 'a' | 'b' | 'tie'：展示精度（0.01 元）内相同即为持平，不标记任何一方胜出 */
+  const curA = modelCurrency(a), curB = modelCurrency(b);
+  const mixed = curA !== curB;
+  const ca = monthly(a), cb = monthly(b); /* 各自官方币种原价 */
+  const ba = toBase(ca, curA, fx), bb = toBase(cb, curB, fx); /* 统一折算 CNY；汇率未核实为 null */
+  const fxOk = ba != null && bb != null;
+  const v = fxOk ? verdict(ba, bb) : 'na'; /* 'a' | 'b' | 'tie' | 'na'（无法统一折算时不标任何一方） */
+  const cnyEst = (x, cur) => (cur === 'CNY' ? money(x, 'CNY') : toBase(x, cur, fx) != null ? `约 ${money(toBase(x, cur, fx))}` : '汇率未核实，无法折算');
   const rows = [
     ['厂商 / 渠道', esc(a.vendor), esc(b.vendor), false],
     ['上下文窗口', `${a.context}K`, `${b.context}K`, false],
@@ -249,7 +299,7 @@ function compareDetail(a, b) {
     ['输出价', cellPrice(a, 'out'), cellPrice(b, 'out'), false],
     ['缓存命中价', cellPrice(a, 'cache'), cellPrice(b, 'cache'), false],
     ['分时段', a.peakOffpeak ? `${ICON_YES} 低谷价约为高峰一半（高峰=${esc(a.peakOffpeak.peakWindow)}）` : ICON_NO, b.peakOffpeak ? `${ICON_YES} 低谷价约为高峰一半（高峰=${esc(b.peakOffpeak.peakWindow)}）` : ICON_NO, false],
-    ['示例月成本*', money(ca) + (v === 'tie' ? '（持平）' : ''), money(cb) + (v === 'tie' ? '（持平）' : ''), true],
+    ['示例月成本*', `${money(ca, curA)}${mixed ? `<br><span class="lib-meta">${cnyEst(ca, curA)}</span>` : ''}${v === 'tie' ? '（持平）' : ''}`, `${money(cb, curB)}${mixed ? `<br><span class="lib-meta">${cnyEst(cb, curB)}</span>` : ''}${v === 'tie' ? '（持平）' : ''}`, true],
     ['数据来源', srcLink(a), srcLink(b), false],
     ['核验日期', esc(a.verifiedAt), esc(b.verifiedAt), false]
   ];
@@ -262,22 +312,31 @@ function compareDetail(a, b) {
   /* ---- 对比摘要：只写能从 models.json 数据直接推导、且口径明确的事实 ---- */
   const pa = lowPrices(a), pb = lowPrices(b);
   const sum = [];
-  if (v === 'tie') {
-    sum.push(`估算月成本持平：两者均为 ${money(ca)}（展示精度 0.01 元内相同）。`);
+  const fxDesc = mixed ? `；跨币种按参考汇率（${esc(fxNote('USD') || '未核实')}）统一折算为人民币后比较，折算值仅供参考` : '';
+  if (!fxOk) {
+    sum.push(`估算月成本：${esc(a.name)} ${money(ca, curA)} vs ${esc(b.name)} ${money(cb, curB)}——两者币种不同且参考汇率未核实，无法统一折算，不能直接比较成本。`);
+  } else if (v === 'tie') {
+    sum.push(`估算月成本持平：统一折算后两者均约 ${money(ba)}（展示精度 0.01 元内相同${mixed ? '，原价分别为 ' + money(ca, curA) + ' 与 ' + money(cb, curB) : ''}）。`);
+    sum.push('成本比例：按该口径两者相同；该结论仅在当前刊例价、汇率与上述固定用量假设下成立。');
   } else {
     const cheaper = v === 'a' ? a : b;
     const dearer = v === 'a' ? b : a;
-    sum.push(`估算月成本：${esc(a.name)} ${money(ca)} vs ${esc(b.name)} ${money(cb)}——在该固定用量下 ${esc(cheaper.name)} 更低，相差 ${fmtDiff(Math.abs(ca - cb))}/月。`);
+    const ct = v === 'a' ? ba : bb, dt = v === 'a' ? bb : ba; /* ct=便宜方成本, dt=贵方成本（CNY 折算口径） */
+    sum.push(`估算月成本：统一折算后 ${esc(a.name)} ${money(ba)} vs ${esc(b.name)} ${money(bb)}（原价 ${money(ca, curA)} / ${money(cb, curB)}）——在该固定用量下 ${esc(cheaper.name)} 更低，相差 ${fmtDiff(Math.abs(ba - bb))}/月。`);
+    sum.push(`成本比例：按该口径，${esc(dearer.name)} 的估算月成本约为 ${esc(cheaper.name)} 的 ${(dt / ct).toFixed(1)} 倍（${esc(cheaper.name)} 便宜约 ${((1 - ct / dt) * 100).toFixed(0)}%）。该比例只在当前刊例价、汇率与上述固定用量假设下成立，不代表模型能力、输出质量或综合性价比。`);
   }
   const unitRow = (label, x, y) => {
-    if (x === y) return `${label}持平：均为 ${price(x)}。`;
-    const lower = x < y ? a : b;
-    return `${label}：${price(x)} vs ${price(y)}，${esc(lower.name)} 更低（差 ${fmtDiff(x - y)}/百万Token）。`;
+    const bx = toBase(x, curA, fx), by = toBase(y, curB, fx);
+    if (bx == null || by == null) return `${label}：${esc(a.name)} ${price(x, curA)} vs ${esc(b.name)} ${price(y, curB)}（币种不同且汇率未核实，未做差额比较）。`;
+    if (Math.abs(bx - by) < 0.005) return `${label}折算后持平：均约 ${money(bx)}（原价 ${price(x, curA)} / ${price(y, curB)}）。`;
+    const lower = bx < by ? a : b;
+    return `${label}：原价 ${price(x, curA)} vs ${price(y, curB)}，折算后 ${esc(lower.name)} 更低（差约 ${fmtDiff(bx - by)}/百万Token）。`;
   };
   sum.push(unitRow('输入单价（错峰低谷/单一价口径）', pa.i, pb.i));
   sum.push(unitRow('输出单价（错峰低谷/单一价口径）', pa.o, pb.o));
-  const cacheNote = (m, c) => (c == null ? `${esc(m.name)} 未公开缓存价（估算时按未命中价计）` : `${esc(m.name)} ${price(c)}`);
+  const cacheNote = (m, c) => (c == null ? `${esc(m.name)} 未公开缓存价（估算时按未命中价计）` : `${esc(m.name)} ${price(c, modelCurrency(m))}`);
   sum.push(`缓存命中价（低谷口径）：${cacheNote(a, pa.c)}；${cacheNote(b, pb.c)}。`);
+  if (mixed) sum.push(`币种说明：${esc(a.name)} 为 ${curA} 官方原价，${esc(b.name)} 为 ${curB} 官方原价；折算采用中国外汇交易中心中间价（见下），仅供参考。`);
   if (a.context === b.context) {
     sum.push(`上下文窗口相同：均为 ${a.context}K。`);
   } else {
@@ -292,7 +351,7 @@ function compareDetail(a, b) {
   } else {
     sum.push(`支持模态：${esc(a.name)}=${esc(modA.join('、'))}；${esc(b.name)}=${esc(modB.join('、'))}${onlyA.length ? `（${esc(a.name)} 多出 ${esc(onlyA.join('、'))}）` : ''}${onlyB.length ? `（${esc(b.name)} 多出 ${esc(onlyB.join('、'))}）` : ''}。`);
   }
-  sum.push(`数据来源：${esc(a.sourceName)}（核验 ${esc(a.verifiedAt)}）、${esc(b.sourceName)}（核验 ${esc(b.verifiedAt)}）。`);
+  sum.push(`数据来源：${esc(a.sourceName)}（核验 ${esc(a.verifiedAt)}）、${esc(b.sourceName)}（核验 ${esc(b.verifiedAt)}）；计价单位：人民币 / 百万 Token。`);
 
   const main = `    <section class="hero" style="text-align:left;padding-bottom:0">
       <h1 style="font-size:26px">${esc(a.name)} <span style="color:var(--muted);font-weight:400">vs</span> ${esc(b.name)}</h1>
@@ -311,7 +370,7 @@ ${body}
         </tbody>
       </table>
     </div>
-    <p class="s-hint">* 示例月成本固定参数：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰（低谷价）· 缓存命中率 30%，公式与默认值同 <a href="../../../cost/">成本计算器</a> 一致。两者成本在展示精度内相同时标记持平，不突出任何一方。</p>
+    <p class="s-hint">* 示例月成本固定参数：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰（低谷价）· 缓存命中率 30%，公式与默认值同 <a href="../../../cost/">成本计算器</a> 一致。美元模型按参考汇率统一折算为人民币后比较（折算见摘要）。两者成本在展示精度内相同时标记持平，不突出任何一方。</p>
 
     <section class="panel">
       <h2>对比摘要（固定用量口径）</h2>
@@ -408,6 +467,51 @@ function toolDetail(t) {
   });
 }
 
+/* 成本计算示例：与交互计算器/静态表同一公式（pricing.mjs），数据全部来自 models.json */
+function costExampleHtml() {
+  const m = models.find(x => x.peakOffpeak) || models[0];
+  const b = m.peakOffpeak
+    ? { i: m.peakOffpeak.offIn, c: m.peakOffpeak.offCache, o: m.peakOffpeak.offOut, label: '低谷价（错峰）' }
+    : { i: m.priceIn, c: m.priceCacheHit, o: m.priceOut, label: '标准价' };
+  const effIn = b.c == null ? b.i : P.hit * b.c + (1 - P.hit) * b.i;
+  const inCost = P.calls * 30 * (P.inTok / 1e6) * effIn;
+  const outCost = P.calls * 30 * (P.outTok / 1e6) * b.o;
+  const cacheLine = b.c == null
+    ? `该模型未公开缓存价，输入按未命中价 ${price(b.i)} 计。`
+    : `输入有效单价 = 30% × ${price(b.c)}（缓存命中）+ 70% × ${price(b.i)}（未命中）= ${round2(effIn)} 元/百万 Token。`;
+  return `      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>示例模型</th><td><a href="../models/${esc(m.id)}/">${esc(m.name)}</a>（${esc(m.vendor)}，${b.label}，数据核验 ${esc(m.verifiedAt)}，<a href="${esc(safeUrl(m.sourceUrl) || '#')}" target="_blank" rel="noopener">官方来源</a>）</td></tr>
+            <tr><th>输入有效单价</th><td class="num">${cacheLine}</td></tr>
+            <tr><th>输入成本</th><td class="num">${P.calls} 次 × 30 天 × (${P.inTok} ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost))}</td></tr>
+            <tr><th>输出成本</th><td class="num">${P.calls} 次 × 30 天 × (${P.outTok} ÷ 1,000,000) × ${price(b.o)} = ${money(round2(outCost))}</td></tr>
+            <tr><th>估算月成本</th><td class="num"><strong>${money(round2(inCost + outCost))}</strong>（示例仅为固定假设下的估算，不构成采购建议）</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+}
+
+/* 指南页算例：从 models.json 选数据完整（含公开缓存价、单一价）的模型，步骤与 pricing.mjs 公式一致 */
+function guideExampleHtml() {
+  const m = models.find(x => x.priceCacheHit != null && !x.peakOffpeak) || models[0];
+  const src = safeUrl(m.sourceUrl);
+  const effIn = P.hit * m.priceCacheHit + (1 - P.hit) * m.priceIn;
+  const inCost = P.calls * 30 * (P.inTok / 1e6) * effIn;
+  const outCost = P.calls * 30 * (P.outTok / 1e6) * m.priceOut;
+  return `      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>模型与来源</th><td><a href="../../models/${esc(m.id)}/">${esc(m.name)}</a>（${esc(m.vendor)}），刊例原价：输入 ${price(m.priceIn)} / 输出 ${price(m.priceOut)} / 缓存命中 ${price(m.priceCacheHit)} 每百万 Token；<a href="${esc(src || '#')}" target="_blank" rel="noopener">官方来源</a>，核验日期 ${esc(m.verifiedAt)}</td></tr>
+            <tr><th>第 1 步：输入有效单价</th><td class="num">30% × ${price(m.priceCacheHit)} + 70% × ${price(m.priceIn)} = ${round2(effIn)} 元/百万 Token</td></tr>
+            <tr><th>第 2 步：输入成本</th><td class="num">100 次/天 × 30 天 × (2000 ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost))}</td></tr>
+            <tr><th>第 3 步：输出成本</th><td class="num">100 次/天 × 30 天 × (800 ÷ 1,000,000) × ${price(m.priceOut)} = ${money(round2(outCost))}</td></tr>
+            <tr><th>第 4 步：合计</th><td class="num"><strong>${money(round2(inCost + outCost))} / 月</strong>（刊例估算，不等于实际账单）</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+}
+
 /* ---------- 手写页静态内容注入 ---------- */
 function injectRegion(relPath, startMark, endMark, content) {
   const p = join(DIST, relPath);
@@ -420,14 +524,21 @@ function injectRegion(relPath, startMark, endMark, content) {
 
 function modelCardsHtml() {
   return models.map(m => {
-    const priceLine = m.peakOffpeak
-      ? `高峰 入${price(m.peakOffpeak.peakIn)} / 出${price(m.peakOffpeak.peakOut)} · 低谷半价`
-      : `输入 ${price(m.priceIn)} / 输出 ${price(m.priceOut)}`;
+    const cur = modelCurrency(m);
+    const priceLine = m.priceTiers
+      ? `${esc(m.priceTiers[0].desc)} 入${price(m.priceTiers[0].priceIn, cur)} / 出${price(m.priceTiers[0].priceOut, cur)} · 分档`
+      : m.peakOffpeak
+        ? `高峰 入${price(m.peakOffpeak.peakIn, cur)} / 出${price(m.peakOffpeak.peakOut, cur)} · 低谷半价`
+        : `输入 ${price(m.priceIn, cur)} / 输出 ${price(m.priceOut, cur)}`;
+    const cnyLine = cur === 'USD'
+      ? `<p class="lib-meta">约 ¥${(m.priceIn * (fxEntry(fx, 'USD')?.rate || 0)).toFixed(2)} / ¥${(m.priceOut * (fxEntry(fx, 'USD')?.rate || 0)).toFixed(2)}（按中间价折算，仅供参考）</p>`
+      : '';
     return `      <a class="module-card active" href="${esc(m.id)}/">
         <h3>${esc(m.name)}</h3>
         <p>${esc(m.vendor)}</p>
         <p class="num">${priceLine}</p>
-        <p class="lib-meta">上下文 ${m.context}K · ${m.peakOffpeak ? '分时段' : '单一价'} · 核验 ${esc(m.verifiedAt)}</p>
+        ${cnyLine}
+        <p class="lib-meta">上下文 ${m.context}K · ${m.peakOffpeak ? '分时段' : m.priceTiers ? '分档计价' : '单一价'} · ${cur === 'USD' ? '美元原价 · ' : ''}核验 ${esc(m.verifiedAt)}</p>
         <span class="go">查看档案 →</span>
       </a>`;
   }).join('\n');
@@ -467,24 +578,30 @@ function toolGroupsHtml() {
 /* 成本参考表：与交互计算器同一公式（scripts/lib/pricing.mjs monthly + SAMPLE_PARAMS） */
 function costTableHtml() {
   const rows = models.map(m => {
+    const cur = modelCurrency(m);
     const src = safeUrl(m.sourceUrl);
-    const inCell = m.peakOffpeak ? `高峰 ${price(m.peakOffpeak.peakIn)}<br>低谷 ${price(m.peakOffpeak.offIn)}` : price(m.priceIn);
-    const outCell = m.peakOffpeak ? `高峰 ${price(m.peakOffpeak.peakOut)}<br>低谷 ${price(m.peakOffpeak.offOut)}` : price(m.priceOut);
+    const inCell = m.priceTiers ? m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '未公开' : price(t.priceIn, cur)}`).join('<br>') : m.peakOffpeak ? `高峰 ${price(m.peakOffpeak.peakIn, cur)}<br>低谷 ${price(m.peakOffpeak.offIn, cur)}` : price(m.priceIn, cur);
+    const outCell = m.priceTiers ? m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '未公开' : price(t.priceOut, cur)}`).join('<br>') : m.peakOffpeak ? `高峰 ${price(m.peakOffpeak.peakOut, cur)}<br>低谷 ${price(m.peakOffpeak.offOut, cur)}` : price(m.priceOut, cur);
     const cacheRaw = m.peakOffpeak ? m.peakOffpeak.offCache : m.priceCacheHit;
-    const cacheCell = cacheRaw == null ? '未公开' : (m.peakOffpeak ? `高峰 ${price(m.peakOffpeak.peakCache)}<br>低谷 ${price(m.peakOffpeak.offCache)}` : price(m.priceCacheHit));
-    return `          <tr><th><a href="../models/${esc(m.id)}/">${esc(m.name)}</a></th><td>${esc(m.vendor)}</td><td class="num">${inCell}</td><td class="num">${outCell}</td><td class="num">${cacheCell}</td><td class="num">${money(monthly(m))}</td><td class="num">${esc(m.verifiedAt)}</td><td>${src ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(m.sourceName)}</a>` : esc(m.sourceName)}</td></tr>`;
+    const cacheCell = cacheRaw == null ? '未公开' : (m.peakOffpeak ? `高峰 ${price(m.peakOffpeak.peakCache, cur)}<br>低谷 ${price(m.peakOffpeak.offCache, cur)}` : price(m.priceCacheHit, cur));
+    const estCny = monthlyBase(m, fx);
+    const estCell = estCny == null ? '该档位费率未公开，无法估算' : (cur === 'USD' ? `约 ${money(estCny)}` : money(estCny));
+    return `          <tr><th><a href="../models/${esc(m.id)}/">${esc(m.name)}</a></th><td>${esc(m.vendor)}</td><td class="num">${inCell}</td><td class="num">${outCell}</td><td class="num">${cacheCell}</td><td class="num">${estCell}</td><td class="num">${esc(m.verifiedAt)}</td><td>${src ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(m.sourceName)}</a>` : esc(m.sourceName)}</td></tr>`;
   }).join('\n');
+  const usdNote = models.some(m => modelCurrency(m) === 'USD')
+    ? `美元为官方原始币种；估算月成本按中国外汇交易中心中间价（${esc(fxNote('USD') || '汇率未核实')}）折算为人民币，仅供参考。`
+    : '';
   return `      <div class="table-scroll">
         <table class="spec wide">
           <thead>
-            <tr><th>模型</th><th>厂商 / 渠道</th><th>输入价<br>（元/百万Token）</th><th>输出价<br>（元/百万Token）</th><th>缓存命中价</th><th>估算月成本</th><th>核验日期</th><th>官方价格来源</th></tr>
+            <tr><th>模型</th><th>厂商 / 渠道</th><th>输入价<br>（刊例原价/百万Token）</th><th>输出价<br>（刊例原价/百万Token）</th><th>缓存命中价</th><th>估算月成本（元）</th><th>核验日期</th><th>官方价格来源</th></tr>
           </thead>
           <tbody>
 ${rows}
           </tbody>
         </table>
       </div>
-      <p class="s-hint" style="margin-top:8px">缓存价未公开的模型按未命中价计（不假设缓存折扣）；分时段模型按低谷价计（与上方"错峰"开关一致）。估算月成本列与下方交互计算器使用完全相同的公式与默认参数。</p>`;
+      <p class="s-hint" style="margin-top:8px">缓存价未公开的模型按未命中价计（不假设缓存折扣）；分时段模型按低谷价计（与上方"错峰"开关一致）；分档模型按示例输入 2000 Token 落入的档位计价。估算月成本列与下方交互计算器使用完全相同的公式、默认参数与参考汇率。${usdNote}两款模型逐项对比请用 <a href="../compare/">模型对比</a>。</p>`;
 }
 
 /* ---------- 生成 ---------- */
@@ -509,17 +626,24 @@ for (const t of tools) {
   count++;
 }
 
-const pairs = comparePairs(models);
+const pairs = comparePairs(models, compares.extraPairs || []);
 for (const [a, b] of pairs) {
   const ma = models.find(m => m.id === a), mb = models.find(m => m.id === b);
   writePage(`compare/${a}/${b}/index.html`, compareDetail(ma, mb));
   count++;
 }
+/* 有效组合清单：供 /compare/ 选择器校验，避免跳转到未生成的组合（仅 allowlist 组合有页面） */
+writeFileSync(join(DIST, 'assets/data/compare-pairs.json'), JSON.stringify({
+  description: '已生成的对比页组合清单（a<b 归一）。/compare/ 选择器仅允许跳转清单内组合；新增组合须登记 compares.json allowlist 并重新构建。',
+  pairs
+}, null, 1) + '\n', 'utf8');
 
 /* 手写页静态注入：模型卡片 / 工具分组 / 成本参考表 / 全站页脚 */
 injectRegion('models/index.html', '<!-- MODEL_CARDS_START -->', '<!-- MODEL_CARDS_END -->', modelCardsHtml());
 injectRegion('tools/index.html', '<!-- TOOL_GROUPS_START -->', '<!-- TOOL_GROUPS_END -->', toolGroupsHtml());
 injectRegion('cost/index.html', '<!-- COST_TABLE_START -->', '<!-- COST_TABLE_END -->', costTableHtml());
+injectRegion('cost/index.html', '<!-- COST_EXAMPLE_START -->', '<!-- COST_EXAMPLE_END -->', costExampleHtml());
+injectRegion('guides/llm-api-cost/index.html', '<!-- GUIDE_EXAMPLE_START -->', '<!-- GUIDE_EXAMPLE_END -->', guideExampleHtml());
 
 const FOOTER_PAGES = [
   ['index.html', ''],
@@ -529,14 +653,15 @@ const FOOTER_PAGES = [
   ['quiz/index.html', '../'],
   ['tools/index.html', '../'],
   ['prompts/index.html', '../'],
-  ['about/index.html', '../']
+  ['about/index.html', '../'],
+  ['guides/llm-api-cost/index.html', '../../']
 ];
 for (const [rel, base] of FOOTER_PAGES) {
   injectRegion(rel, '<!-- FOOTER_START -->', '<!-- FOOTER_END -->', '    ' + footerHtml(base));
 }
 
 /* ---------- sitemap（清单与 lastmod 规则见 scripts/lib/manifest.mjs；不使用构建日期） ---------- */
-const entries = buildManifest({ models, tools, pagesMeta });
+const entries = buildManifest({ models, tools, pagesMeta, compares });
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries.map(e => e.lastmod

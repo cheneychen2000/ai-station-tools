@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>模型对比器 - 两款大模型价格与规格逐项对比 | Reflex Hub</title>
-  <meta name="description" content="任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本，共 12 款 66 组组合。">
+  <meta name="description" content="任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本，国内外模型均可任选两组对比，国际模型组合为精选入口。">
   <link rel="canonical" href="https://www.reflex-hub.com/compare/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="模型对比器 - 两款大模型价格与规格逐项对比 | Reflex Hub">
-  <meta property="og:description" content="任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本，共 12 款 66 组组合。">
+  <meta property="og:description" content="任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本，国内外模型均可任选两组对比，国际模型组合为精选入口。">
   <meta property="og:url" content="https://www.reflex-hub.com/compare/">
   <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
   <link rel="stylesheet" href="../assets/style.css">
@@ -30,7 +30,7 @@
 
     <p class="lede">
       选择两款大模型，生成逐项对比：输入/输出/缓存命中价格、分时段定价、上下文窗口、支持模态、特点，
-      以及与 <a href="../cost/">成本计算器</a> 同公式的示例月成本。共 12 款模型、66 组组合。
+      以及与 <a href="../cost/">成本计算器</a> 同公式的示例月成本。
     </p>
 
     <section class="panel">
@@ -42,6 +42,34 @@
       <p class="s-hint" id="cmpHint" style="margin-top:10px"></p>
     </section>
 
+    <section class="panel">
+      <h2>对比口径说明</h2>
+      <p style="font-size:14px;line-height:1.8">
+        每组对比固定比较：输入价、输出价、缓存命中价、分时段规则、上下文窗口与支持模态，并给出与
+        <a href="../cost/">成本计算器</a> 完全相同的示例月成本（日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰低谷价 · 缓存命中率 30%）。
+        价格均为厂商公开刊例原价（人民币 / 百万 Token），未公开缓存价的模型按未命中价计；示例月成本只是该固定用量下的估算，
+        不代表模型能力、输出质量或综合性价比排名，不构成采购建议。
+        计算方法与常见误区详见指南 <a href="../guides/llm-api-cost/">《如何计算 LLM API 成本》</a>。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>常用对比入口</h2>
+      <p style="font-size:14px;line-height:2">
+        · 低价轻量档：<a href="deepseek-v41-flash/glm-53-flash/">DeepSeek V4.1 Flash 对比 GLM-5.3-Flash</a>　<a href="deepseek-v41-flash/qwen38-flash/">DeepSeek V4.1 Flash 对比 Qwen3.8-Flash</a><br>
+        · 旗舰推理：<a href="deepseek-v4-pro/glm-53/">DeepSeek V4 Pro 对比 GLM-5.3</a>　<a href="glm-53/kimi-k3/">GLM-5.3 对比 Kimi K3</a><br>
+        · 长上下文：<a href="deepseek-v41-flash/kimi-k3/">DeepSeek V4.1 Flash 对比 Kimi K3</a>　<a href="kimi-k3/qwen38-flash/">Kimi K3 对比 Qwen3.8-Flash</a><br>
+        · 同系不同档：<a href="qwen35-plus/qwen37-plus/">Qwen3.5-Plus 对比 Qwen3.7-Plus</a>
+      </p>
+      <p style="font-size:14px;line-height:2;margin-top:10px">
+        · 国际·OpenAI 内部：<a href="gpt-6-1-sol/gpt-6-luna/">GPT-6 Luna 对比 GPT-6.1 Sol</a><br>
+        · 国际·Anthropic 内部：<a href="claude-haiku-5-5/claude-sonnet-5-5/">Claude Haiku 5.5 对比 Claude Sonnet 5.5</a><br>
+        · 低价轻量跨厂商：<a href="glm-53-flash/gpt-6-luna/">GLM-5.3-Flash 对比 GPT-6 Luna</a>　<a href="claude-haiku-5-5/glm-53-flash/">Claude Haiku 5.5 对比 GLM-5.3-Flash</a>　<a href="gemini-3-1-flash-lite/qwen38-flash/">Gemini 3.1 Flash-Lite 对比 Qwen3.8-Flash</a><br>
+        · 主力档跨厂商：<a href="deepseek-v4-pro/gpt-6-1-sol/">DeepSeek V4 Pro 对比 GPT-6.1 Sol</a>　<a href="claude-sonnet-5-5/deepseek-v4-pro/">Claude Sonnet 5.5 对比 DeepSeek V4 Pro</a>
+      </p>
+      <p class="s-hint">全部 136 组对比（17 款模型两两组合）均可通过上方选择器进入；每个对比页都有固定口径摘要与双向模型档案链接。</p>
+    </section>
+
     <noscript>
       <p class="empty-hint">模型选择器需要启用 JavaScript。你也可以直接浏览 <a href="../models/">模型库</a> 查看各模型价格与参数档案，或在 <a href="../cost/">成本计算器</a> 中估算月成本。</p>
     </noscript>
@@ -50,8 +78,8 @@
   <footer>
     <div class="wrap" id="site-footer">
       <!-- FOOTER_START -->
-    <p>数据来源：<a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 官方定价</a> · <a href="https://cloud.tencent.com/pricing" target="_blank" rel="noopener">腾讯云定价</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></p>
-    <p>模型价格最近核验日期：<span class="num">2026-09-18</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
     <p><a href="../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
@@ -62,7 +90,13 @@
   <script>window.ASSETS_BASE = '../assets';</script>
   <script src="../assets/app.js"></script>
   <script>
-  fetch('../assets/data/models.json').then(function (res) { return res.json(); }).then(function (models) {
+  Promise.all([
+    fetch('../assets/data/models.json').then(function (res) { return res.json(); }),
+    fetch('../assets/data/compare-pairs.json').then(function (res) { return res.json(); })
+  ]).then(function (res) {
+    var models = res[0];
+    var pairSet = {};
+    (res[1].pairs || []).forEach(function (p) { pairSet[p[0] + '/' + p[1]] = true; });
     var selA = document.getElementById('selA');
     var selB = document.getElementById('selB');
     models.forEach(function (m) {
@@ -81,6 +115,10 @@
         return;
       }
       var ids = [a, b].sort();
+      if (!pairSet[ids[0] + '/' + ids[1]]) {
+        document.getElementById('cmpHint').textContent = '这两款模型的对比页暂未提供（现有 ' + Object.keys(pairSet).length + ' 组精选对比），可在下方常用入口或模型库档案中查看';
+        return;
+      }
       location.href = ids[0] + '/' + ids[1] + '/';
     });
   }).catch(function () {

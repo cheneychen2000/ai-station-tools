@@ -1,0 +1,24 @@
+{
+  "description": "对比组合登记（历史 allowlist）。2026-10-28 起已启用全部模型两两全组合（comparePairs 全组合模式），本清单保留兼容：其中组合均已被全组合覆盖，去重后不额外生效；新增模型无需在此登记即自动参与全组合。仅已生成的对比页可进入内链、sitemap 与 JSON-LD。",
+  "extraPairs": [
+    ["gpt-6-luna", "gpt-6-1-sol"],
+    ["claude-haiku-5-5", "claude-sonnet-5-5"],
+    ["deepseek-v41-flash", "gpt-6-luna"],
+    ["glm-53-flash", "gpt-6-luna"],
+    ["qwen38-flash", "gpt-6-luna"],
+    ["gpt-6-luna", "step-37-flash"],
+    ["deepseek-v4-pro", "gpt-6-1-sol"],
+    ["deepseek-v41-flash", "gpt-6-1-sol"],
+    ["glm-53", "gpt-6-1-sol"],
+    ["gpt-6-1-sol", "kimi-k3"],
+    ["claude-haiku-5-5", "glm-53-flash"],
+    ["claude-haiku-5-5", "qwen38-flash"],
+    ["claude-haiku-5-5", "deepseek-v41-flash"],
+    ["claude-sonnet-5-5", "deepseek-v4-pro"],
+    ["claude-sonnet-5-5", "glm-53"],
+    ["claude-sonnet-5-5", "gpt-6-1-sol"],
+    ["gemini-3-1-flash-lite", "glm-53-flash"],
+    ["gemini-3-1-flash-lite", "qwen38-flash"],
+    ["gemini-3-1-flash-lite", "step-37-flash"]
+  ]
+}
