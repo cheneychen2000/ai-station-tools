@@ -94,9 +94,9 @@ const fakePaused = { ...fakeActiveNoUrl, partnerId: 'w', status: 'paused', refer
 R.check('A5 affiliate.mjs 安全闸：candidate/active-无链接/active-无披露/paused 均输出空串',
   !affiliateCtaHtml(sample) && !affiliateCtaHtml(fakeActiveNoUrl) && !affiliateCtaHtml(fakeActiveNoDisclosure) && !affiliateCtaHtml(fakePaused));
 
-/* A6 商业中立：价格与排序的唯一来源仍是 models.json（构建注入与联盟渲染相互独立） */
-const buildSrc = readFileSync(new URL('./build.mjs', import.meta.url), 'utf8');
-R.check('A6 价格/排序不受联盟数据影响（模型表与联盟 CTA 的渲染相互独立，且 selftest T12c 价格快照回归兜底）',
-  buildSrc.includes("affiliateCtaHtml(byId(partners, id))") && !affiliateCtaHtml(sample));
+/* A6 商业中立：价格与排序的唯一来源仍是 models.json（模型表渲染与联盟/广告渲染相互独立） */
+const placementSrc = readFileSync(new URL('./lib/placement.mjs', import.meta.url), 'utf8');
+R.check('A6 价格/排序不受联盟数据影响（placement.mjs 中联盟/广告渲染独立于模型数据，且 selftest T12c 价格快照回归兜底）',
+  placementSrc.includes('affiliateCtaHtml(byId(partners, id))') && placementSrc.includes('adSlotHtml(adsCfg, id)') && !affiliateCtaHtml(sample));
 
 R.summary();

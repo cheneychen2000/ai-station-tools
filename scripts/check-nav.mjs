@@ -255,7 +255,7 @@ const GUIDE_PAGES = [
   { path: 'guides/make-llm-workflow/', h1: '用 Make 搭建大模型 API 自动化工作流', table: '每 1,000 次运行', links: ['../../cost/', '../../models/', '../workflow-automation-choose/'],
     must: ['文档研究', '未做任何界面实测', '候选评估阶段', '不含任何推广链接', '未核验'] },
   { path: 'guides/workflow-automation-choose/', h1: 'Make、n8n 与自建 API：AI 工作流方案怎么选', table: '<th>维度</th>', links: ['../../cost/', '../make-llm-workflow/', '../../models/'],
-    must: ['fair-code', '均未核验', '不预设任何产品获胜', '不含任何推广链接'] }
+    must: ['fair-code', '不预设任何产品获胜', '不含任何推广链接', 'credits', 'executions', '2026-10-28 核验', '两个单位不可互换'] }
 ];
 let guideBad = [];
 for (const gp of GUIDE_PAGES) {

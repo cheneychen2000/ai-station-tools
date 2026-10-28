@@ -11,8 +11,7 @@ import { SAMPLE_PARAMS as P, monthly, monthlyFull, monthlyBase, money, price, ve
 import { esc, safeUrl, jsStr, jsonld } from './lib/escape.mjs';
 import { loadData, maxDate, comparePairs, isToolIndexable, buildManifest } from './lib/manifest.mjs';
 import { navHeaderHtml, footerNavHtml } from './lib/nav.mjs';
-import { affiliateCtaHtml, byId } from './lib/affiliate.mjs';
-import { adSlotHtml } from './lib/ads.mjs';
+import { replacePlacementMarkers } from './lib/placement.mjs';
 
 const { models, tools, pagesMeta, fx, compares } = loadData();
 const round2 = n => Math.round(n * 100) / 100;
@@ -834,24 +833,15 @@ for (const [rel, base, active, crumb] of NAV_PAGES) {
   injectRegion(rel, '<!-- NAV_START -->', '<!-- NAV_END -->', '  ' + navHeaderHtml(base, active, crumb));
 }
 
-/* 联盟标记：手写页中的 <!-- AFFILIATE:<partnerId> --> 仅在合作 active 且有真实推广链接时替换为 CTA，
-   否则整段移除（未批准项目零展示）；当前无 active 合作，此循环为无操作，属常态 */
+/* 联盟/广告标记：持久化占位符（scripts/lib/placement.mjs）。未启用时保留不可见 BEGIN/END 注释，
+   启用时 CTA/容器写在标记对内；每次构建整段重写，幂等且支持 candidate→active→paused→active 全周期 */
 const partners = (JSON.parse(readFileSync(join(DIST, 'assets/data/partners.json'), 'utf8')).partners) || [];
-for (const [rel] of NAV_PAGES) {
-  const p = join(DIST, rel);
-  const html = readFileSync(p, 'utf8');
-  if (!html.includes('<!-- AFFILIATE:')) continue;
-  writeFileSync(p, html.replace(/<!-- AFFILIATE:([a-z0-9\-]+) -->/g, (m0, id) => affiliateCtaHtml(byId(partners, id))), 'utf8');
-}
-
-/* 广告位标记：手写页中的 <!-- ADSLOT:name --> 仅在广告配置开启且 Publisher ID 正式时输出容器，
-   否则整段移除（默认配置下输出零广告标记）；加载脚本另有运行时闸门（app.js：生产域名+CMP 同意） */
 const adsCfg = JSON.parse(readFileSync(join(DIST, 'assets/data/ads.json'), 'utf8'));
 for (const [rel] of NAV_PAGES) {
   const p = join(DIST, rel);
   const html = readFileSync(p, 'utf8');
-  if (!html.includes('<!-- ADSLOT:')) continue;
-  writeFileSync(p, html.replace(/<!-- ADSLOT:([a-z0-9\-]+) -->/g, (m0, name) => adSlotHtml(adsCfg, name)), 'utf8');
+  if (!html.includes('<!-- AFFILIATE:') && !html.includes('<!-- ADSLOT:')) continue;
+  writeFileSync(p, replacePlacementMarkers(html, partners, adsCfg), 'utf8');
 }
 
 const FOOTER_PAGES = [
