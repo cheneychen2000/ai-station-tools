@@ -178,4 +178,39 @@ R.check('N9c 模型详情页含成本计算器与模型库内链',
 R.check('N9d 比较器选择器读取同一份 models.json 与 compare-pairs.json',
   compareIdx.includes("fetch('../assets/data/models.json')") && compareIdx.includes("fetch('../assets/data/compare-pairs.json')"));
 
+/* N10 favicon：所有页面（含 404）含 4 条图标引用，且引用文件真实存在于发布根目录 */
+const ICON_LINKS = [
+  '<link rel="icon" href="/favicon.ico" sizes="any">',
+  '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">',
+  '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">',
+  '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
+];
+let iconBad = [];
+for (const file of pages) {
+  const txt = readFileSync(file, 'utf8');
+  for (const link of ICON_LINKS) {
+    if (!txt.includes(link)) { iconBad.push(`${relative(DIST, file)}（缺 ${link}）`); break; }
+  }
+}
+R.check(`N10 全站 ${pages.length} 页 favicon 引用齐全`, iconBad.length === 0, iconBad.join(' | ') || '全部具备');
+R.check('N10b 图标文件全部存在于发布根目录（ico/16/32/180/192/512）',
+  ['/favicon.ico', '/favicon-16x16.png', '/favicon-32x32.png', '/apple-touch-icon.png', '/favicon-192x192.png', '/favicon-512x512.png']
+    .every(p => existsSync(join(DIST, p))));
+/* N10c PWA：全站登记 manifest，且 manifest 本身合法（名称/起始页/显示模式/≥192 图标均存在） */
+let manBad = [];
+for (const file of pages) {
+  if (!readFileSync(file, 'utf8').includes('<link rel="manifest" href="/manifest.json">')) manBad.push(relative(DIST, file));
+}
+R.check(`N10c 全站 ${pages.length} 页登记 PWA manifest`, manBad.length === 0, manBad.join(' | ') || '全部具备');
+const manOk = (() => {
+  try {
+    const m = JSON.parse(readFileSync(join(DIST, 'manifest.json'), 'utf8'));
+    return !!m.name && !!m.short_name && !!m.start_url && ['standalone', 'fullscreen', 'minimal-ui'].includes(m.display) &&
+      Array.isArray(m.icons) && m.icons.length >= 2 &&
+      m.icons.every(i => i.sizes && i.src && existsSync(join(DIST, i.src.replace(/^\//, '')))) &&
+      m.icons.some(i => i.sizes.startsWith('192')) && m.icons.some(i => i.sizes.startsWith('512'));
+  } catch { return false; }
+})();
+R.check('N10d manifest.json 合法（名称/start_url/standalone/192+512 图标文件存在）', manOk);
+
 R.summary();

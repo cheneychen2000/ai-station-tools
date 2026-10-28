@@ -35,7 +35,7 @@ export function navHeaderHtml(base, active = null, crumb = '') {
   return `<a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
-      <a class="brand" href="${brandHref}"${homeCur}>${BRAND}</a>${crumb ? `
+      <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
       <span class="crumb">${crumb}</span>` : ''}
       <nav class="site-nav" aria-label="主导航">
         <ul>

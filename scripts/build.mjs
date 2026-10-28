@@ -69,6 +69,11 @@ ${robots ? `  <meta name="robots" content="${esc(robots)}">\n` : ''}  <link rel=
   <meta property="og:description" content="${esc(desc)}">
   <meta property="og:url" content="${SITE}${canonicalPath}">
   <meta property="og:image" content="${SITE}/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="${base}assets/style.css">
 ${ld}
 </head>
