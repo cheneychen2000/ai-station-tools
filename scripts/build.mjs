@@ -7,10 +7,12 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, statSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { DIST, SITE, BRAND } from './lib/paths.mjs';
-import { SAMPLE_PARAMS as P, monthly, monthlyBase, money, price, verdict, modelCurrency, fxEntry, toBase } from './lib/pricing.mjs';
+import { SAMPLE_PARAMS as P, monthly, monthlyFull, monthlyBase, money, price, verdict, modelCurrency, fxEntry, toBase } from './lib/pricing.mjs';
 import { esc, safeUrl, jsStr, jsonld } from './lib/escape.mjs';
 import { loadData, maxDate, comparePairs, isToolIndexable, buildManifest } from './lib/manifest.mjs';
 import { navHeaderHtml, footerNavHtml } from './lib/nav.mjs';
+import { affiliateCtaHtml, byId } from './lib/affiliate.mjs';
+import { adSlotHtml } from './lib/ads.mjs';
 
 const { models, tools, pagesMeta, fx, compares } = loadData();
 const round2 = n => Math.round(n * 100) / 100;
@@ -518,6 +520,142 @@ function guideExampleHtml() {
       </div>`;
 }
 
+/* 指南《定价比较》用：官方原币单价三列（分档/分时段/单一价同口径） */
+function guidePriceCells(m) {
+  const cur = modelCurrency(m);
+  if (m.priceTiers) {
+    return {
+      in: m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '未公开' : price(t.priceIn, cur)}`).join('<br>'),
+      out: m.priceTiers.map(t => `${esc(t.desc)} ${t.unverified ? '未公开' : price(t.priceOut, cur)}`).join('<br>'),
+      cache: m.priceTiers.every(t => t.priceCacheHit == null) ? '未公开' : m.priceTiers.map(t => price(t.priceCacheHit, cur)).join('<br>')
+    };
+  }
+  if (m.peakOffpeak) {
+    const p = m.peakOffpeak;
+    return {
+      in: `高峰 ${price(p.peakIn, cur)}<br>低谷 ${price(p.offIn, cur)}`,
+      out: `高峰 ${price(p.peakOut, cur)}<br>低谷 ${price(p.offOut, cur)}`,
+      cache: `高峰 ${price(p.peakCache, cur)}<br>低谷 ${price(p.offCache, cur)}`
+    };
+  }
+  return { in: price(m.priceIn, cur), out: price(m.priceOut, cur), cache: price(m.priceCacheHit, cur) };
+}
+
+/* 指南《定价比较》静态表：固定默认假设下全模型估算月成本，统一折算 CNY 升序；原价保留官方币种 */
+function pcompTableHtml() {
+  const rows = models.map(m => {
+    const cur = modelCurrency(m);
+    const v = monthlyFull(m, { off: true, hit: P.hit, calls: P.calls, inTok: P.inTok, outTok: P.outTok });
+    const cny = Number.isNaN(v.t) ? null : toBase(v.t, cur, fx);
+    return { m, cur, cny, usd: v.t, cells: guidePriceCells(m) };
+  }).sort((a, b) => (a.cny == null ? 1 : b.cny == null ? -1 : a.cny - b.cny));
+  const body = rows.map(r => `          <tr><th><a href="../../models/${esc(r.m.id)}/">${esc(r.m.name)}</a></th><td>${esc(r.m.vendor)}</td><td class="num">${r.cells.in}</td><td class="num">${r.cells.out}</td><td class="num">${r.cells.cache}</td><td class="num">${r.m.context}K</td><td class="num">${r.cny == null ? '该档位费率未公开' : (r.cur === 'USD' ? `约 ${money(r.cny)}<br><span class="lib-meta">原价 ${money(r.usd, 'USD')}</span>` : money(r.cny))}</td><td class="num">${esc(r.m.verifiedAt)}</td></tr>`).join('\n');
+  return `      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>模型</th><th>厂商 / 渠道</th><th>输入价<br>（刊例原价/百万Token）</th><th>输出价<br>（刊例原价/百万Token）</th><th>缓存命中价</th><th>上下文</th><th>估算月成本<br>（人民币折算）</th><th>核验日期</th></tr>
+          </thead>
+          <tbody>
+${body}
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">假设：日均 ${P.calls} 次 · 单次输入 ${P.inTok} / 输出 ${P.outTok} Token · 错峰低谷价 · 缓存命中率 ${P.hit * 100}% · 每月 30 天；美元模型按参考汇率（${esc(fxNote('USD') || '未核实')}）折算。估算仅为刊例口径，不构成采购建议。</p>`;
+}
+
+/* 指南《场景成本案例》静态内容：三组场景假设 × 全模型估算表（公式与交互计算器一致） */
+const GUIDE_SCENARIOS = [
+  { key: 'chat', title: '场景一：聊天机器人 / 在线客服', calls: 2000, inTok: 1200, outTok: 300, hit: 0.4,
+    why: '<strong>场景假设</strong>：单轮输入含系统提示词与近期历史（约 1,200 Token），回复简短（约 300 Token）；客服类应用调用高频，取日均 2,000 次。系统提示词稳定，缓存命中率取 40%。成本结构：调用次数是被放大器，轻量低价档优势明显。' },
+  { key: 'rag', title: '场景二：RAG 知识库问答', calls: 300, inTok: 10000, outTok: 500, hit: 0.6,
+    why: '<strong>场景假设</strong>：检索出的知识片段随提示词注入，单次输入约 10,000 Token；答案简短（约 500 Token）；日均 300 次问答。系统提示词与知识库前缀稳定，缓存命中率取 60%。成本结构：输入项占主导，缓存价与命中率是决定性变量。' },
+  { key: 'agent', title: '场景三：编码 Agent', calls: 100, inTok: 6000, outTok: 1500, hit: 0.2,
+    why: '<strong>场景假设</strong>：每次任务携带代码上下文与工具输出（约 6,000 Token），产出补丁与解释（约 1,500 Token）；日均 100 个任务。上下文随任务变化大，缓存命中率保守取 20%。成本结构：输出项权重高，输出单价差异直接拉开差距。' }
+];
+function cexScenariosHtml() {
+  return GUIDE_SCENARIOS.map(s => {
+    const rows = models.map(m => {
+      const cur = modelCurrency(m);
+      const v = monthlyFull(m, { off: true, hit: s.hit, calls: s.calls, inTok: s.inTok, outTok: s.outTok });
+      const cny = Number.isNaN(v.t) ? null : toBase(v.t, cur, fx);
+      return { m, cur, cny, usd: v.t };
+    }).sort((a, b) => (a.cny == null ? 1 : b.cny == null ? -1 : a.cny - b.cny));
+    const body = rows.map(r => `          <tr><th><a href="../../models/${esc(r.m.id)}/">${esc(r.m.name)}</a></th><td>${esc(r.m.vendor)}</td><td class="num">${r.cny == null ? '该档位费率未公开，无法估算' : (r.cur === 'USD' ? `约 ${money(r.cny)}<br><span class="lib-meta">原价 ${money(r.usd, 'USD')}</span>` : money(r.cny))}</td><td class="num">${esc(r.m.verifiedAt)}</td></tr>`).join('\n');
+    return `      <h2 id="scene-${s.key}">${s.title}</h2>
+      <p style="font-size:14px;line-height:1.9">${s.why}</p>
+      <p class="s-hint">计算假设：日均 ${s.calls} 次 · 单次输入 ${s.inTok} / 输出 ${s.outTok} Token · 缓存命中率 ${s.hit * 100}% · 错峰低谷价 · 每月 30 天。月成本 = 调用 × 30 ×（输入 ÷ 1,000,000 × 有效输入价 + 输出 ÷ 1,000,000 × 输出单价）；分档模型按 ${s.inTok} Token 自动选档，未公开费率的档位如实标注无法估算。</p>
+      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>模型</th><th>厂商 / 渠道</th><th>估算月成本（人民币折算）</th><th>核验日期</th></tr>
+          </thead>
+          <tbody>
+${body}
+          </tbody>
+        </table>
+      </div>`;
+  }).join('\n');
+}
+
+/* 指南《场景成本案例》敏感性示例：固定 RAG 场景假设，仅调整缓存命中率（示例假设，非行业统计） */
+const CEX_SENS_MODELS = ['deepseek-v41-flash', 'glm-53', 'gpt-6-1-sol', 'minimax-m3'];
+const CEX_SENS_HITS = [0, 0.3, 0.6, 0.9];
+function cexSensitivityHtml() {
+  const rag = GUIDE_SCENARIOS[1];
+  const rows = CEX_SENS_MODELS.map(id => {
+    const m = models.find(x => x.id === id);
+    if (!m) return '';
+    const cur = modelCurrency(m);
+    const cells = CEX_SENS_HITS.map(h => {
+      const v = monthlyFull(m, { off: true, hit: h, calls: rag.calls, inTok: rag.inTok, outTok: rag.outTok });
+      if (Number.isNaN(v.t)) return '<td class="num">无法估算</td>';
+      const cny = toBase(v.t, cur, fx);
+      return cur === 'USD'
+        ? `<td class="num">约 ${money(cny)}<br><span class="lib-meta">${money(v.t, 'USD')}</span></td>`
+        : `<td class="num">${money(v.t)}</td>`;
+    }).join('');
+    const first = monthlyFull(m, { off: true, hit: 0, calls: rag.calls, inTok: rag.inTok, outTok: rag.outTok });
+    const last = monthlyFull(m, { off: true, hit: 0.9, calls: rag.calls, inTok: rag.inTok, outTok: rag.outTok });
+    const drop = Number.isNaN(first.t) || Number.isNaN(last.t) || first.t === 0 ? null : (1 - last.t / first.t) * 100;
+    return `          <tr><th><a href="../../models/${esc(m.id)}/">${esc(m.name)}</a>${m.priceCacheHit == null && !m.peakOffpeak ? '<br><span class="lib-meta">未公开缓存价</span>' : ''}</th>${cells}<td class="num">${drop == null ? '—' : `约降 ${drop.toFixed(0)}%`}</td><td class="num">${esc(m.verifiedAt)}</td></tr>`;
+  }).join('\n');
+  return `      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>模型</th><th>命中率 0%</th><th>命中率 30%</th><th>命中率 60%</th><th>命中率 90%</th><th>0% → 90% 降幅</th><th>核验日期</th></tr>
+          </thead>
+          <tbody>
+${rows}
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">读表：缓存价越低的模型（如 DeepSeek V4.1 Flash 低谷缓存价 ¥0.02/百万），命中率提升带来的降幅越大；未公开缓存价的模型（如 MiniMax M3）输入按未命中价计，命中率变化不改变估算——这正是"先确认官方是否公开缓存价"的价值。美元模型保留 $ 原价并按参考汇率（${esc(fxNote('USD') || '未核实')}）折算。</p>`;
+}
+
+/* 指南《Make 工作流》成本表：每次运行 1 次模型调用（2000/800、命中 30%、错峰）的每千次运行成本 */
+const WF_COST_MODELS = ['deepseek-v41-flash', 'glm-53-flash', 'gpt-6-luna', 'kimi-k3'];
+function wfCostHtml() {
+  const rows = WF_COST_MODELS.map(id => models.find(m => m.id === id)).filter(Boolean).map(m => {
+    const cur = modelCurrency(m);
+    const v = monthlyFull(m, { off: true, hit: 0.3, calls: 1000, inTok: 2000, outTok: 800 });
+    const per1k = v.t / 30; /* monthlyFull 按 30 天计：calls=1000/天 → 除 30 得每千次 */
+    const cny = toBase(per1k, cur, fx);
+    const cell = cur === 'USD' ? `约 ${money(cny)}<br><span class="lib-meta">${money(per1k, 'USD')}</span>` : money(per1k);
+    return `          <tr><th><a href="../../models/${esc(m.id)}/">${esc(m.name)}</a></th><td>${esc(m.vendor)}</td><td class="num">输入 ${price(m.priceIn, cur)} / 输出 ${price(m.priceOut, cur)}${m.priceCacheHit != null ? ` / 缓存 ${price(m.priceCacheHit, cur)}` : ' / 缓存未公开'}</td><td class="num">${cell}</td><td class="num">${esc(m.verifiedAt)}</td></tr>`;
+  }).join('\n');
+  return `      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>模型</th><th>厂商 / 渠道</th><th>刊例原价（每百万 Token）</th><th>每 1,000 次运行（人民币折算）</th><th>核验日期</th></tr>
+          </thead>
+          <tbody>
+${rows}
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">口径：每次运行 = 1 次模型调用（输入 2,000 / 输出 800 Token · 缓存命中率 30% · 错峰低谷价）；美元模型按参考汇率（${esc(fxNote('USD') || '未核实')}）折算，仅供参考。每日运行 N 次的月成本 = 表中值 × N ÷ 1,000。官方未公开缓存价的模型按未命中价计。</p>`;
+}
+
 /* ---------- 手写页静态内容注入 ---------- */
 function injectRegion(relPath, startMark, endMark, content) {
   const p = join(DIST, relPath);
@@ -657,6 +795,10 @@ injectRegion('tools/index.html', '<!-- TOOL_GROUPS_START -->', '<!-- TOOL_GROUPS
 injectRegion('cost/index.html', '<!-- COST_TABLE_START -->', '<!-- COST_TABLE_END -->', costTableHtml());
 injectRegion('cost/index.html', '<!-- COST_EXAMPLE_START -->', '<!-- COST_EXAMPLE_END -->', costExampleHtml());
 injectRegion('guides/llm-api-cost/index.html', '<!-- GUIDE_EXAMPLE_START -->', '<!-- GUIDE_EXAMPLE_END -->', guideExampleHtml());
+injectRegion('guides/llm-api-pricing-comparison/index.html', '<!-- PCOMP_TABLE_START -->', '<!-- PCOMP_TABLE_END -->', pcompTableHtml());
+injectRegion('guides/llm-api-cost-examples/index.html', '<!-- CEX_SCENARIOS_START -->', '<!-- CEX_SCENARIOS_END -->', cexScenariosHtml());
+injectRegion('guides/llm-api-cost-examples/index.html', '<!-- CEX_SENSITIVITY_START -->', '<!-- CEX_SENSITIVITY_END -->', cexSensitivityHtml());
+injectRegion('guides/make-llm-workflow/index.html', '<!-- WF_COST_START -->', '<!-- WF_COST_END -->', wfCostHtml());
 
 /* 数据驱动的数量文案：全部来自构建时真实数据，禁止手写数量 */
 injectRegion('compare/index.html', '<!-- CMP_STATS_START -->', '<!-- CMP_STATS_END -->',
@@ -676,11 +818,40 @@ const NAV_PAGES = [
   ['tools/index.html', '../', 'tools', '/ 工具库'],
   ['prompts/index.html', '../', 'prompts', '/ Prompt库'],
   ['about/index.html', '../', null, '/ 关于本站'],
-  ['guides/llm-api-cost/index.html', '../../', 'cost', '/ <a href="../../cost/" style="color:inherit">成本计算器</a> / 计算指南'],
+  ['guides/llm-api-cost/index.html', '../../', 'guides', '/ <a href="../../guides/" style="color:inherit">指南</a> / 成本计算'],
+  ['pricing-methodology/index.html', '../', null, '/ 定价方法论'],
+  ['privacy/index.html', '../', null, '/ 隐私政策'],
+  ['affiliate-disclosure/index.html', '../', null, '/ 联盟推广披露'],
+  ['terms/index.html', '../', null, '/ 使用条款'],
+  ['guides/index.html', '../', 'guides', '/ 指南'],
+  ['guides/llm-api-pricing-comparison/index.html', '../../', 'guides', '/ <a href="../../guides/" style="color:inherit">指南</a> / 定价比较'],
+  ['guides/llm-api-cost-examples/index.html', '../../', 'guides', '/ <a href="../../guides/" style="color:inherit">指南</a> / 场景成本案例'],
+  ['guides/make-llm-workflow/index.html', '../../', 'guides', '/ <a href="../../guides/" style="color:inherit">指南</a> / Make 工作流'],
+  ['guides/workflow-automation-choose/index.html', '../../', 'guides', '/ <a href="../../guides/" style="color:inherit">指南</a> / 方案选型'],
   ['404.html', '/', null, '']
 ];
 for (const [rel, base, active, crumb] of NAV_PAGES) {
   injectRegion(rel, '<!-- NAV_START -->', '<!-- NAV_END -->', '  ' + navHeaderHtml(base, active, crumb));
+}
+
+/* 联盟标记：手写页中的 <!-- AFFILIATE:<partnerId> --> 仅在合作 active 且有真实推广链接时替换为 CTA，
+   否则整段移除（未批准项目零展示）；当前无 active 合作，此循环为无操作，属常态 */
+const partners = (JSON.parse(readFileSync(join(DIST, 'assets/data/partners.json'), 'utf8')).partners) || [];
+for (const [rel] of NAV_PAGES) {
+  const p = join(DIST, rel);
+  const html = readFileSync(p, 'utf8');
+  if (!html.includes('<!-- AFFILIATE:')) continue;
+  writeFileSync(p, html.replace(/<!-- AFFILIATE:([a-z0-9\-]+) -->/g, (m0, id) => affiliateCtaHtml(byId(partners, id))), 'utf8');
+}
+
+/* 广告位标记：手写页中的 <!-- ADSLOT:name --> 仅在广告配置开启且 Publisher ID 正式时输出容器，
+   否则整段移除（默认配置下输出零广告标记）；加载脚本另有运行时闸门（app.js：生产域名+CMP 同意） */
+const adsCfg = JSON.parse(readFileSync(join(DIST, 'assets/data/ads.json'), 'utf8'));
+for (const [rel] of NAV_PAGES) {
+  const p = join(DIST, rel);
+  const html = readFileSync(p, 'utf8');
+  if (!html.includes('<!-- ADSLOT:')) continue;
+  writeFileSync(p, html.replace(/<!-- ADSLOT:([a-z0-9\-]+) -->/g, (m0, name) => adSlotHtml(adsCfg, name)), 'utf8');
 }
 
 const FOOTER_PAGES = [
@@ -692,7 +863,16 @@ const FOOTER_PAGES = [
   ['tools/index.html', '../'],
   ['prompts/index.html', '../'],
   ['about/index.html', '../'],
-  ['guides/llm-api-cost/index.html', '../../']
+  ['guides/llm-api-cost/index.html', '../../'],
+  ['pricing-methodology/index.html', '../'],
+  ['privacy/index.html', '../'],
+  ['affiliate-disclosure/index.html', '../'],
+  ['terms/index.html', '../'],
+  ['guides/index.html', '../'],
+  ['guides/llm-api-pricing-comparison/index.html', '../../'],
+  ['guides/llm-api-cost-examples/index.html', '../../'],
+  ['guides/make-llm-workflow/index.html', '../../'],
+  ['guides/workflow-automation-choose/index.html', '../../']
 ];
 for (const [rel, base] of FOOTER_PAGES) {
   injectRegion(rel, '<!-- FOOTER_START -->', '<!-- FOOTER_END -->', '    ' + footerHtml(base));

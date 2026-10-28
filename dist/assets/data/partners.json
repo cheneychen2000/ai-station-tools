@@ -1,4 +1,47 @@
 {
-  "description": "联盟合作产品清单（扩展基础，当前无已确认合作项目）。字段：id / name / category / officialUrl / pricingUrl(可选) / affiliateUrl(可选) / markets[](已核实的目标地区) / status(candidate=候选未获批 | active=已确认合作) / verifiedAt(合作状态核验日期)。规则：affiliateUrl 仅在 status=active 且链接真实有效时填写；officialUrl 与 affiliateUrl 必须分开且不得相同；candidate 不得展示联盟链接；禁止写入任何 API 凭证、合同机密或秘密数据。由 scripts/check-affiliates.mjs 强制校验。",
-  "partners": []
+  "description": "联盟合作数据台账（唯一数据源）。字段：partnerId / name / category / officialUrl / officialTermsUrl / referralUrl(仅获批并拿到真实推广链接后填写) / status(candidate候选 | applied已申请待批 | approved已获批 | active上线展示 | paused暂停) / commissionTerms(公开页面条款摘录，申请前须重新核实；未核实为 null) / lastVerifiedAt / verifiedBy / placements[](获批后投放的页面与位置) / disclosureText(获批后展示用披露文案)。规则：仅 status=active 且 referralUrl 有效时才允许在页面展示 CTA；未批准项目不在任何公开页面显示；referralUrl 与 officialUrl 必须分开且不得相同；不写入任何凭证或机密。由 scripts/check-affiliates.mjs 强制校验，由 scripts/lib/affiliate.mjs 渲染（build.mjs 处理 <!-- AFFILIATE:partnerId --> 标记）。",
+  "partners": [
+    {
+      "partnerId": "elevenlabs",
+      "name": "ElevenLabs",
+      "category": "语音合成 / 音频 API",
+      "officialUrl": "https://elevenlabs.io/",
+      "officialTermsUrl": "https://elevenlabs.io/affiliates",
+      "referralUrl": null,
+      "status": "candidate",
+      "commissionTerms": "官方联盟页（2026-10-28 核实）称：新付费订阅前 12 个月付款的 22% 循环佣金，经 PartnerStack 平台结算；申请前须重新核实最新条款。",
+      "lastVerifiedAt": "2026-10-28",
+      "verifiedBy": "仓库维护者（官方联盟计划页面核实，未申请）",
+      "placements": [],
+      "disclosureText": "推广合作：通过本站链接注册 ElevenLabs，本站可能获得佣金；模型价格数据不受合作关系影响。"
+    },
+    {
+      "partnerId": "make",
+      "name": "Make",
+      "category": "自动化集成（iPaaS）",
+      "officialUrl": "https://www.make.com/",
+      "officialTermsUrl": "https://www.make.com/en/affiliate",
+      "referralUrl": null,
+      "status": "candidate",
+      "commissionTerms": "官方联盟页（2026-10-28 核实）称：被推荐用户订阅付款的 35% 佣金；主体写持续 12 个月、FAQ 一处写 24 个月（前后不一致，申请时须核实）；满 3 名付费推荐且累计 ≥$100 经 Wise 提现；cookie 有效期 30 天。注：用户提供的 https://www.make.com/en/affiliate-program 已 404，正确地址为 /en/affiliate。",
+      "lastVerifiedAt": "2026-10-28",
+      "verifiedBy": "仓库维护者（官方联盟计划页面核实，未申请）",
+      "placements": [],
+      "disclosureText": "推广合作：通过本站链接注册 Make，本站可能获得佣金；模型价格数据不受合作关系影响。"
+    },
+    {
+      "partnerId": "writesonic",
+      "name": "Writesonic",
+      "category": "AI 写作 / 营销内容",
+      "officialUrl": "https://writesonic.com/",
+      "officialTermsUrl": "https://affiliates.writesonic.com/",
+      "referralUrl": null,
+      "status": "candidate",
+      "commissionTerms": null,
+      "lastVerifiedAt": "2026-10-28",
+      "verifiedBy": "仓库维护者（联盟计划页面两次访问均超时，未能核实条款；officialTermsUrl 有效性待人工确认）",
+      "placements": [],
+      "disclosureText": "推广合作：通过本站链接注册 Writesonic，本站可能获得佣金；模型价格数据不受合作关系影响。"
+    }
+  ]
 }

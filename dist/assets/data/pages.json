@@ -9,6 +9,15 @@
     { "path": "/tools/", "contentUpdatedAt": "2026-09-18", "dependsOnTools": true },
     { "path": "/prompts/", "contentUpdatedAt": "2026-09-18" },
     { "path": "/about/", "contentUpdatedAt": "2026-10-28" },
-    { "path": "/guides/llm-api-cost/", "contentUpdatedAt": "2026-10-28" }
+    { "path": "/guides/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/guides/llm-api-cost/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/guides/llm-api-pricing-comparison/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/guides/llm-api-cost-examples/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/guides/make-llm-workflow/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/guides/workflow-automation-choose/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/pricing-methodology/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/privacy/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/affiliate-disclosure/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/terms/", "contentUpdatedAt": "2026-10-28" }
   ]
 }

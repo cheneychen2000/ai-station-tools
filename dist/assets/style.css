@@ -125,6 +125,24 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   outline-offset: 2px;
 }
 
+/* 广告位容器（仅广告配置开启且 Publisher ID 正式时由构建注入；默认输出为空） */
+.ad-slot { margin: 18px 0; min-height: 0; }
+
+/* 联盟 CTA（仅 status=active 且有真实推广链接时由构建注入） */
+.affiliate-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--card);
+  padding: 12px 14px;
+  margin: 14px 0;
+}
+.affiliate-cta .aff-note { font-size: 12px; color: var(--muted); margin: 0; flex: 1; min-width: 200px; }
+
 /* 页脚站内导航区 */
 .footer-nav { margin: 12px 0 8px; }
 .footer-nav p { margin: 4px 0; }

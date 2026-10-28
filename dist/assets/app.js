@@ -26,3 +26,28 @@ window.CF_ANALYTICS_TOKEN = window.CF_ANALYTICS_TOKEN || '';
 
 /* 页脚：合规文字、核验日期摘要与来源链接全部由 build.mjs 静态写入各页面 HTML（#site-footer），
    不再依赖客户端 fetch models.json；模型价格仍以 models.json 为唯一数据源（构建期读取）。 */
+
+/* Google AdSense 运行时加载闸（默认全关，当前配置下永不加载）：
+   仅当以下四个条件全部满足才请求 adsense 脚本，任一不满足 → 零请求：
+   1) assets/data/ads.json 中 enabled === true；
+   2) publisherId 为正式获批格式 ca-pub-16位数字（猜测/占位 ID 一律拒绝）；
+   3) 运行域名为生产域 www.reflex-hub.com——本地开发、Cloudflare 预览/测试域名一律不加载；
+   4) CMP 状态为 google-certified 且存在同意信号（向 EEA/英国/瑞士投放个性化广告的合规前提；
+      未部署 Google 认证 CMP 前不得开启 enabled）。
+   不自动刷新、不预点击、不在计算器交互流程内渲染广告。 */
+(function loadAdsGate() {
+  if (location.hostname !== 'www.reflex-hub.com') return;
+  fetch(window.ASSETS_BASE + '/data/ads.json')
+    .then(function (r) { return r.json(); })
+    .then(function (cfg) {
+      if (!cfg || cfg.enabled !== true) return;
+      if (typeof cfg.publisherId !== 'string' || !/^ca-pub-\d{16}$/.test(cfg.publisherId)) return;
+      if (!cfg.cmp || cfg.cmp.status !== 'google-certified') return;
+      var s = document.createElement('script');
+      s.async = true;
+      s.crossOrigin = 'anonymous';
+      s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(cfg.publisherId);
+      document.head.appendChild(s);
+    })
+    .catch(function () { /* 静默：广告配置不可用时零副作用 */ });
+})();

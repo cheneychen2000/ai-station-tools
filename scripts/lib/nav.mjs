@@ -10,13 +10,24 @@ export const NAV_ITEMS = [
   { key: 'cost', label: '成本计算器', path: 'cost/' },
   { key: 'models', label: '模型库', path: 'models/' },
   { key: 'compare', label: '模型对比', path: 'compare/' },
+  { key: 'guides', label: '开发指南', path: 'guides/' },
   { key: 'tools', label: 'AI 工具目录', path: 'tools/' },
   { key: 'prompts', label: 'Prompt 资源', path: 'prompts/' }
 ];
 
 /** 页脚"核心工具"额外收录（不在主导航，避免过多项） */
 export const FOOTER_EXTRA = [
-  { key: 'quiz', label: 'AI 认知测试', path: 'quiz/' }
+  { key: 'quiz', label: 'AI 认知测试', path: 'quiz/' },
+  { key: 'guides', label: '计算指南', path: 'guides/' }
+];
+
+/** 页脚"站点信息"信任页面 */
+export const FOOTER_INFO = [
+  { label: '关于本站', path: 'about/' },
+  { label: '定价方法论', path: 'pricing-methodology/' },
+  { label: '隐私政策', path: 'privacy/' },
+  { label: '联盟推广披露', path: 'affiliate-disclosure/' },
+  { label: '使用条款', path: 'terms/' }
 ];
 
 /**
@@ -50,8 +61,10 @@ ${items}
 export function footerNavHtml(base) {
   const core = [...NAV_ITEMS, ...FOOTER_EXTRA]
     .map(it => `<a href="${base}${it.path}">${esc(it.label)}</a>`).join(' · ');
+  const info = FOOTER_INFO.map(it => `<a href="${base}${it.path}">${esc(it.label)}</a>`).join(' · ');
   return `<nav class="footer-nav" aria-label="页脚导航">
     <p>核心工具：${core}</p>
-    <p><a href="${base}about/">关于本站</a> · <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+    <p>站点信息：${info}</p>
+    <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
   </nav>`;
 }

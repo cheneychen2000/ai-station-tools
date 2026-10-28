@@ -14,6 +14,7 @@ import { DIST, SITE } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
 import { loadData, comparePairs } from './lib/manifest.mjs';
 import { monthlyBase, monthly, modelCurrency } from './lib/pricing.mjs';
+import { adSlotHtml } from './lib/ads.mjs';
 
 const R = createReporter('check-nav');
 const { models, fx, compares } = loadData();
@@ -36,7 +37,8 @@ const read = rel => readFileSync(join(DIST, rel), 'utf8');
 /** 路径 → 期望的导航 active key */
 function expectedActive(rel) {
   if (rel === 'index.html') return 'home';
-  if (rel.startsWith('cost/') || rel.startsWith('guides/')) return 'cost';
+  if (rel.startsWith('cost/')) return 'cost';
+  if (rel.startsWith('guides/')) return 'guides';
   if (rel.startsWith('models/')) return 'models';
   if (rel.startsWith('compare/')) return 'compare';
   if (rel.startsWith('tools/')) return 'tools';
@@ -44,7 +46,7 @@ function expectedActive(rel) {
   return null; /* quiz / about / 404：无当前栏目 */
 }
 
-const NAV_LABELS = ['成本计算器', '模型库', '模型对比', 'AI 工具目录', 'Prompt 资源'];
+const NAV_LABELS = ['成本计算器', '模型库', '模型对比', '开发指南', 'AI 工具目录', 'Prompt 资源'];
 let navBad = [], linkBad = [], activeBad = [], skipBad = [], footerBad = [];
 
 for (const file of pages) {
@@ -74,7 +76,7 @@ for (const file of pages) {
   const currents = items.filter(m => m[2].includes('aria-current="page"'));
   const activeKey = expect && expect !== 'home' ? expect : null;
   if (activeKey) {
-    const target = NAV_LABELS[{ cost: 0, models: 1, compare: 2, tools: 3, prompts: 4 }[activeKey]];
+    const target = NAV_LABELS[{ cost: 0, models: 1, compare: 2, guides: 3, tools: 4, prompts: 5 }[activeKey]];
     if (currents.length !== 1 || currents[0][3] !== target || !currents[0][2].includes('class="active"')) {
       activeBad.push(`${rel}（期望 ${target} 唯一 aria-current+active）`);
     }
@@ -212,5 +214,108 @@ const manOk = (() => {
   } catch { return false; }
 })();
 R.check('N10d manifest.json 合法（名称/start_url/standalone/192+512 图标文件存在）', manOk);
+
+/* N11 信任页面（定价方法论/隐私政策/联盟披露/使用条款）：title/H1/canonical/可索引/导航/面包屑/sitemap/正文 */
+const TRUST_PAGES = [
+  { path: 'pricing-methodology/', name: '定价方法论', h1: '定价方法论' },
+  { path: 'privacy/', name: '隐私政策', h1: '隐私政策' },
+  { path: 'affiliate-disclosure/', name: '联盟推广披露', h1: '联盟推广披露' },
+  { path: 'terms/', name: '使用条款', h1: '使用条款' }
+];
+const sitemapTxt = readFileSync(join(DIST, 'sitemap.xml'), 'utf8');
+let trustBad = [];
+for (const tp of TRUST_PAGES) {
+  const rel = tp.path + 'index.html';
+  if (!existsSync(join(DIST, rel))) { trustBad.push(`${rel}（文件缺失）`); continue; }
+  const t = readFileSync(join(DIST, rel), 'utf8');
+  if (!(new RegExp(`<title>[^<]*${tp.name}[^<]*\\| Reflex Hub</title>`)).test(t)) trustBad.push(`${rel}（title 不符）`);
+  if (!t.includes(`<h1>${tp.h1}</h1>`)) trustBad.push(`${rel}（H1 缺失）`);
+  if (!t.includes(`<link rel="canonical" href="https://www.reflex-hub.com/${tp.path}">`)) trustBad.push(`${rel}（canonical 非自引用）`);
+  if (/noindex/.test(t)) trustBad.push(`${rel}（误带 noindex）`);
+  if (!t.includes('<nav class="site-nav" aria-label="主导航">')) trustBad.push(`${rel}（缺主导航）`);
+  if (!t.includes('跳到正文')) trustBad.push(`${rel}（缺跳到正文）`);
+  if (!t.includes('<nav class="footer-nav" aria-label="页脚导航">')) trustBad.push(`${rel}（缺页脚导航）`);
+  const ld = (t.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g) || []).join('');
+  if (!ld.includes('"@type": "BreadcrumbList"') || !ld.includes(tp.name)) trustBad.push(`${rel}（面包屑 JSON-LD 缺失）`);
+  if (!sitemapTxt.includes(`https://www.reflex-hub.com/${tp.path}`)) trustBad.push(`${rel}（未进 sitemap）`);
+  const body = t.split('<main')[1] || '';
+  if (body.replace(/<[^>]+>/g, '').replace(/\s+/g, '').length < 400) trustBad.push(`${rel}（正文过短）`);
+}
+R.check(`N11 ${TRUST_PAGES.length} 个信任页面元数据/导航/面包屑/sitemap/正文齐全`, trustBad.length === 0, trustBad.join(' | ') || '全部合规');
+R.check('N11b 全站页脚含站点信息组（4 个新页面内链入口）',
+  pages.every(f => f.endsWith('404.html') || readFileSync(f, 'utf8').includes('站点信息：')));
+
+/* N12 指南页（定价比较/场景案例）：存在、正文非空（含构建注入表）、内链、canonical、可索引、面包屑、sitemap */
+const GUIDE_PAGES = [
+  { path: 'guides/llm-api-cost/', h1: '如何计算 LLM API 成本', table: '输入有效单价', links: ['../../cost/', '../../models/', '../../compare/', '../../models/gpt-6-luna/'],
+    must: ['上下文长度分档', '多币种', '缓存写入费', '未公开档位不补价', '价格核验时间'] },
+  { path: 'guides/llm-api-pricing-comparison/', h1: '大模型 API 定价比较', table: '<th>估算月成本', links: ['../../cost/', '../../models/', '../../compare/'], must: [] },
+  { path: 'guides/llm-api-cost-examples/', h1: '大模型 API 月度成本案例', table: '场景一：聊天机器人', links: ['../../cost/', '../llm-api-cost/', '../../models/'],
+    must: ['敏感性', '命中率 0%', '示例假设', '无法估算'] },
+  { path: 'guides/make-llm-workflow/', h1: '用 Make 搭建大模型 API 自动化工作流', table: '每 1,000 次运行', links: ['../../cost/', '../../models/', '../workflow-automation-choose/'],
+    must: ['文档研究', '未做任何界面实测', '候选评估阶段', '不含任何推广链接', '未核验'] },
+  { path: 'guides/workflow-automation-choose/', h1: 'Make、n8n 与自建 API：AI 工作流方案怎么选', table: '<th>维度</th>', links: ['../../cost/', '../make-llm-workflow/', '../../models/'],
+    must: ['fair-code', '均未核验', '不预设任何产品获胜', '不含任何推广链接'] }
+];
+let guideBad = [];
+for (const gp of GUIDE_PAGES) {
+  const rel = gp.path + 'index.html';
+  const t = existsSync(join(DIST, rel)) ? readFileSync(join(DIST, rel), 'utf8') : '';
+  if (!t) { guideBad.push(`${rel}（文件缺失）`); continue; }
+  if (!t.includes(`<h1>${gp.h1}</h1>`)) guideBad.push(`${rel}（H1 缺失）`);
+  if (!t.includes(`<link rel="canonical" href="https://www.reflex-hub.com/${gp.path}">`)) guideBad.push(`${rel}（canonical 非自引用）`);
+  if (/noindex/.test(t)) guideBad.push(`${rel}（误带 noindex）`);
+  if (!t.includes('<nav class="site-nav" aria-label="主导航">')) guideBad.push(`${rel}（缺主导航）`);
+  if (!t.includes('BreadcrumbList')) guideBad.push(`${rel}（缺面包屑 JSON-LD）`);
+  if (!t.includes(gp.table)) guideBad.push(`${rel}（数据表注入缺失）`);
+  for (const m of gp.must) if (!t.includes(m)) guideBad.push(`${rel}（缺必需内容：${m}）`);
+  for (const l of gp.links) if (!t.includes(`href="${l}"`)) guideBad.push(`${rel}（缺内链 ${l}）`);
+  if (!sitemapTxt.includes(`https://www.reflex-hub.com/${gp.path}`)) guideBad.push(`${rel}（未进 sitemap）`);
+  const body = t.split('<main')[1] || '';
+  if (body.replace(/<[^>]+>/g, '').replace(/\s+/g, '').length < 800) guideBad.push(`${rel}（正文过短）`);
+}
+R.check('N12 两篇新指南页结构/数据表/内链/canonical/sitemap 齐全', guideBad.length === 0, guideBad.join(' | ') || '全部合规');
+R.check('N12b 指南目录页存在且三篇指南互链、页脚含计算指南入口',
+  existsSync(join(DIST, 'guides/index.html')) &&
+  ['llm-api-cost/', 'llm-api-pricing-comparison/', 'llm-api-cost-examples/'].every(g => read('guides/index.html').includes(`href="${g}"`)) &&
+  pages.every(f => f.endsWith('404.html') || readFileSync(f, 'utf8').includes('guides/')));
+const guidesIdx = read('guides/index.html');
+R.check('N14 指南中心：标题为"LLM API 成本与模型选型指南"且按三类分组、卡片均为普通 HTML 链接',
+  guidesIdx.includes('<title>LLM API 成本与模型选型指南 | Reflex Hub</title>') &&
+  guidesIdx.includes('<h1>LLM API 成本与模型选型指南</h1>') &&
+  ['API 成本计算', '模型定价与对比', '应用场景案例'].every(c => guidesIdx.includes(`>${c}<`)) &&
+  (guidesIdx.match(/href="llm-api-[^"]*"/g) || []).length >= 3);
+R.check('N14b 首页含"开发指南与成本案例"卡片入口（静态链接到 /guides/）',
+  home.includes('href="guides/"') && home.includes('开发指南与成本案例'));
+R.check('N14c 指南中心被主导航覆盖：/guides/ 出现在共享导航且 active=开发指南',
+  guidesIdx.includes('<li><a href="../guides/" class="active" aria-current="page">开发指南</a></li>'));
+
+/* N13 广告安全：默认不加载广告脚本；无正式 Publisher ID 不生成 ads.txt；广告说明与实际配置一致 */
+const adsCfg = JSON.parse(readFileSync(join(DIST, 'assets/data/ads.json'), 'utf8'));
+R.check('N13 广告默认关闭：ads.json enabled=false 且无 Publisher ID', adsCfg.enabled !== true && adsCfg.publisherId == null);
+let adLeak = [];
+for (const file of pages) {
+  const t = readFileSync(file, 'utf8');
+  if (/googlesyndication|adsbygoogle|doubleclick\.net|googletagmanager|fundingchoices/i.test(t)) adLeak.push(relative(DIST, file));
+  if (t.includes('data-ad-slot')) adLeak.push(relative(DIST, file) + '（残留广告容器）');
+}
+R.check('N13b 全站 HTML 零广告脚本引用、零广告容器（默认配置）', adLeak.length === 0, adLeak.join(' | ') || '零引用');
+const appTxt = read('assets/app.js');
+R.check('N13c app.js 广告加载器带四重闸（enabled/Publisher ID 格式/生产域名/CMP 认证状态）',
+  appTxt.includes("location.hostname !== 'www.reflex-hub.com'") &&
+  appTxt.includes('/^ca-pub-\\d{16}$/') &&
+  appTxt.includes("cfg.cmp.status !== 'google-certified'") &&
+  appTxt.includes('cfg.enabled !== true'));
+const adsTxtPath = join(DIST, 'ads.txt');
+const adsTxtOk = !existsSync(adsTxtPath) ||
+  (isValidPub(adsCfg.publisherId) && readFileSync(adsTxtPath, 'utf8').includes(`google.com, ${adsCfg.publisherId.replace('ca-pub-', 'pub-')}, DIRECT, f08c47fec0942fa0`));
+function isValidPub(s) { return typeof s === 'string' && /^ca-pub-\d{16}$/.test(s); }
+R.check('N13d 无正式 Publisher ID 时不生成 ads.txt（或有配置时内容匹配）', adsTxtOk, existsSync(adsTxtPath) ? 'ads.txt 已存在且与配置匹配' : 'ads.txt 不存在（符合预期）');
+R.check('N13e 渲染闸：默认配置/无效 ID/未登记位置输出空串', adSlotHtml({ enabled: false, publisherId: null, slots: { a: {} } }, 'a') === '' &&
+  adSlotHtml({ enabled: true, publisherId: 'ca-pub-123', slots: { a: {} } }, 'a') === '' &&
+  adSlotHtml({ enabled: true, publisherId: 'ca-pub-1234567890123456', slots: {} }, 'a') === '');
+const privacyTxt = read('privacy/index.html');
+R.check('N13f 隐私政策与实际一致（明确当前零广告 + 未来 AdSense 将部署认证 CMP）',
+  privacyTxt.includes('未接入任何广告') && privacyTxt.includes('认证') && privacyTxt.includes('欧洲经济区'));
 
 R.summary();

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本 | Reflex Hub</title>
+  <meta name="description" content="用 Make 类 iPaaS 把重复性文本任务自动化：触发器→模块→HTTP 调用大模型 API 的架构与概念级步骤，并用已核验的模型价格计算每次/每千次运行的 API 成本，含重试成本放大分析与 Make、n8n、自建方案的衔接。">
+  <link rel="canonical" href="https://www.reflex-hub.com/guides/make-llm-workflow/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本 | Reflex Hub">
+  <meta property="og:description" content="自动化工作流的架构与概念级步骤 + 基于官方刊例价的每千次运行成本表与重试放大分析；文档研究注明来源，价格可复算。">
+  <meta property="og:url" content="https://www.reflex-hub.com/guides/make-llm-workflow/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本",
+    "inLanguage": "zh-CN",
+    "datePublished": "2026-10-28",
+    "dateModified": "2026-10-28",
+    "author": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" },
+    "publisher": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.reflex-hub.com/" },
+      { "@type": "ListItem", "position": 2, "name": "指南", "item": "https://www.reflex-hub.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "Make 工作流", "item": "https://www.reflex-hub.com/guides/make-llm-workflow/" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ <a href="../../guides/" style="color:inherit">指南</a> / Make 工作流</span>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../../cost/">成本计算器</a></li>
+          <li><a href="../../models/">模型库</a></li>
+          <li><a href="../../compare/">模型对比</a></li>
+          <li><a href="../../guides/" class="active" aria-current="page">开发指南</a></li>
+          <li><a href="../../tools/">AI 工具目录</a></li>
+          <li><a href="../../prompts/">Prompt 资源</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>用 Make 搭建大模型 API 自动化工作流</h1>
+      <p class="tagline">架构 · 概念级步骤 · 每千次运行成本</p>
+    </section>
+
+    <p class="lede">
+      <strong>问题</strong>：每周重复的人工文本任务（汇总表单反馈、给新文章打标签、生成回复草稿）值得自动化，
+      但"自动化之后每个月花多少 API 费"常常被忽略。<strong>本文定位</strong>：给出 Make 类可视化 iPaaS 上
+      调用大模型 API 的通用架构与概念级步骤，并用本站已核验的模型价格把"每次运行的成本"算清楚。
+      本文为<strong>文档研究</strong>（界面细节以 Make 官方文档为准），未做任何界面实测。
+    </p>
+
+    <section class="panel">
+      <h2>一、工作流架构（五段式）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          1. <strong>触发器</strong>：定时（cron）或事件（新邮件、新表单行、Webhook）启动一次执行；<br>
+          2. <strong>数据准备</strong>：取出待处理内容，裁剪到模型需要的长度——这一步直接决定输入 Token 成本；<br>
+          3. <strong>调用大模型 API</strong>：通过平台的 HTTP 模块向模型端点发请求（Bearer Key 鉴权、JSON 正文）；Make 提供 REST 风格的开放 API 与自定义应用机制，多数管理端点需要付费订阅（以官方文档为准）；<br>
+          4. <strong>解析与校验</strong>：检查返回是否可用（超时、限流、空响应），决定重试或降级；<br>
+          5. <strong>后续动作</strong>：写回表格、发通知、更新工单。
+        </p>
+        <p>成本控制的关键在第 2 步与第 4 步：输入越长、重试越多，账单越高。模型的单价与缓存价见下表。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>二、概念级步骤（非界面教程）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          1. 在平台新建场景（Scenario），选触发器并配置调度间隔；<br>
+          2. 添加数据获取模块（读取表单/邮件/文件），做字段裁剪与长度截断；<br>
+          3. 添加 HTTP 模块：方法 POST，目标模型端点，Header 带鉴权，Body 为 {模型, 输入, 参数}；<br>
+          4. 配置错误处理：对 429/5xx 设有限次重试与退避，对空响应设默认值；<br>
+          5. 先以小流量试运行，统计每次执行的实际输入/输出 Token，再代入下方成本表估算月度账单；<br>
+          6. 设置平台侧告警（连续失败次数），避免" silently 烧额度 "。
+        </p>
+        <p class="s-hint">界面按钮、模块名称与计费细节随平台版本变化，本文刻意只给概念级步骤；请以 Make 官方文档与实际控制台为准。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>三、每次运行花多少：API 成本表</h2>
+      <p style="font-size:14px;line-height:1.9">
+        假设工作流每次运行调用 1 次模型（输入 2,000 / 输出 800 Token、缓存命中率 30%、错峰低谷价），
+        下表为<strong>每 1,000 次运行的 LLM API 成本</strong>，由本站构建脚本按官方刊例价实算：
+      </p>
+      <!-- WF_COST_START -->
+      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>模型</th><th>厂商 / 渠道</th><th>刊例原价（每百万 Token）</th><th>每 1,000 次运行（人民币折算）</th><th>核验日期</th></tr>
+          </thead>
+          <tbody>
+          <tr><th><a href="../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th><td>DeepSeek</td><td class="num">输入 ¥2 / 输出 ¥8 / 缓存 ¥0.04</td><td class="num">¥4.61</td><td class="num">2026-09-18</td></tr>
+          <tr><th><a href="../../models/glm-53-flash/">GLM-5.3-Flash</a></th><td>阿里云百炼·智谱直供</td><td class="num">输入 ¥0.8 / 输出 ¥2.8 / 缓存 ¥0.23</td><td class="num">¥3.50</td><td class="num">2026-10-28</td></tr>
+          <tr><th><a href="../../models/gpt-6-luna/">GPT-6 Luna</a></th><td>OpenAI</td><td class="num">输入 $0.1 / 输出 $0.5 / 缓存 $0.01</td><td class="num">约 ¥3.67<br><span class="lib-meta">$0.55</span></td><td class="num">2026-10-28</td></tr>
+          <tr><th><a href="../../models/kimi-k3/">Kimi K3</a></th><td>阿里云百炼</td><td class="num">输入 ¥20 / 输出 ¥100 / 缓存 ¥2</td><td class="num">¥109.20</td><td class="num">2026-10-28</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">口径：每次运行 = 1 次模型调用（输入 2,000 / 输出 800 Token · 缓存命中率 30% · 错峰低谷价）；美元模型按参考汇率（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算，仅供参考。每日运行 N 次的月成本 = 表中值 × N ÷ 1,000。官方未公开缓存价的模型按未命中价计。</p>
+      <!-- WF_COST_END -->
+      <p class="s-hint">把"每次输入/输出 Token"换成你试运行统计到的真实值，到 <a href="../../cost/">成本计算器</a> 重算；注意这是 API 侧成本，平台侧按模块操作数计费的部分未包含在内（见下节）。</p>
+    </section>
+
+    <section class="panel">
+      <h2>四、平台侧成本与重试放大（必须算两遍账）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>两遍账</strong>：总成本 = 平台操作数费用 + LLM API 费用。前者由平台套餐与每次执行消耗的模块数决定——<strong>Make 与 n8n 的当前定价本站尚未核验</strong>，请以各自官网为准，本文不引用任何未经核实的价格数字；<br>
+          · <strong>重试放大</strong>：若平均每条任务重试 0.5 次，实际 API 消耗 ×1.5；限流频繁时这个数字会更高。把重试上限、退避与"失败转人工"写进流程，比换便宜模型更优先；<br>
+          · <strong>输入裁剪</strong>：第 2 步把 2 万 Token 的原文裁到 2 千 Token，输入成本直接降一个数量级——这是自动化场景里最确定的优化。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、什么时候不选 Make</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          数据不能出内网（选可自托管的方案，如 n8n——fair-code 许可、支持 Docker 自托管，见 <a href="https://docs.n8n.io/" target="_blank" rel="noopener">n8n 官方文档</a>）；
+          流程高度定制、需要代码级控制（选自建 API）；执行量极大且团队有运维能力（自建通常更省，但需自己承担限流、重试、监控）。
+          三种方案的对比框架见 <a href="../workflow-automation-choose/">《Make、n8n 与自建 API 怎么选》</a>——<strong>本文与对比文均不含任何推广链接</strong>。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>六、联盟状态声明与数据来源</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · 商业关系：Make 官方联盟计划目前处于本站<strong>候选评估阶段（candidate）</strong>，尚未申请、未获批，本文<strong>不含任何推广链接</strong>；若未来获批，CTA 只会在本节附近出现并就近披露佣金关系（rel="sponsored nofollow noopener"），推荐结论不因合作关系改变；<br>
+          · 数据来源：上方成本表的模型价格来自本站唯一数据源 models.json（厂商官方刊例原价，逐条标注来源与核验日期，本页表内为 2026-10-28 口径）；美元模型按参考汇率（中国外汇交易中心中间价）折算，折算仅供参考；<br>
+          · 未核验项：Make 场景/操作的具体计费数字、n8n 定价均未核验，正文已逐项标注，不做猜测；<br>
+          · 本文为文档研究，不含实测结论；价格核验时间 ≠ 页面内容更新时间。
+        </p>
+      </div>
+      
+    </section>
+
+    <section class="panel">
+      <h2>七、下一步</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · 按你的真实 Token 用量重算：<a href="../../cost/">成本计算器</a>；<br>
+          · 查模型完整价格档案：<a href="../../models/">模型库</a>，两款候选模型用 <a href="../../compare/">模型对比</a>；<br>
+          · 方案选型：<a href="../workflow-automation-choose/">Make、n8n 与自建 API 怎么选</a>；<br>
+          · 回到 <a href="../">指南中心</a>。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
+    <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
+    <nav class="footer-nav" aria-label="页脚导航">
+    <p>核心工具：<a href="../../cost/">成本计算器</a> · <a href="../../models/">模型库</a> · <a href="../../compare/">模型对比</a> · <a href="../../guides/">开发指南</a> · <a href="../../tools/">AI 工具目录</a> · <a href="../../prompts/">Prompt 资源</a> · <a href="../../quiz/">AI 认知测试</a> · <a href="../../guides/">计算指南</a></p>
+    <p>站点信息：<a href="../../about/">关于本站</a> · <a href="../../pricing-methodology/">定价方法论</a> · <a href="../../privacy/">隐私政策</a> · <a href="../../affiliate-disclosure/">联盟推广披露</a> · <a href="../../terms/">使用条款</a></p>
+    <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+  </nav>
+    <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../assets';</script>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>

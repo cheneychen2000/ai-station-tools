@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make、n8n 与自建 API：AI 工作流方案怎么选 | Reflex Hub</title>
+  <meta name="description" content="Make（云 iPaaS）、n8n（fair-code、可自托管）与自建 API 三种 AI 工作流方案的决策框架：部署与控制、数据驻留、成本结构、运维负担与供应商锁定；两侧定价未核验如实标注，LLM API 成本用已核验价格数据统一口径比较。">
+  <link rel="canonical" href="https://www.reflex-hub.com/guides/workflow-automation-choose/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="Make、n8n 与自建 API：AI 工作流方案怎么选 | Reflex Hub">
+  <meta property="og:description" content="三种工作流方案的公平决策框架：不预设任何产品获胜，定价未核验双侧标注，LLM API 成本统一口径实算。">
+  <meta property="og:url" content="https://www.reflex-hub.com/guides/workflow-automation-choose/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Make、n8n 与自建 API：AI 工作流方案怎么选",
+    "inLanguage": "zh-CN",
+    "datePublished": "2026-10-28",
+    "dateModified": "2026-10-28",
+    "author": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" },
+    "publisher": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.reflex-hub.com/" },
+      { "@type": "ListItem", "position": 2, "name": "指南", "item": "https://www.reflex-hub.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "工作流方案选型", "item": "https://www.reflex-hub.com/guides/workflow-automation-choose/" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ <a href="../../guides/" style="color:inherit">指南</a> / 方案选型</span>
+      <nav class="site-nav" aria-label="主导航">
+        <ul>
+          <li><a href="../../cost/">成本计算器</a></li>
+          <li><a href="../../models/">模型库</a></li>
+          <li><a href="../../compare/">模型对比</a></li>
+          <li><a href="../../guides/" class="active" aria-current="page">开发指南</a></li>
+          <li><a href="../../tools/">AI 工具目录</a></li>
+          <li><a href="../../prompts/">Prompt 资源</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>Make、n8n 与自建 API：AI 工作流方案怎么选</h1>
+      <p class="tagline">部署 · 控制 · 成本结构 · 运维 · 锁定</p>
+    </section>
+
+    <p class="lede">
+      <strong>问题</strong>：把大模型接进业务流程，选可视化平台（Make）、可自托管的开源方案（n8n），
+      还是直接写代码自建？<strong>先说结论</strong>：三种方案调用的模型 API 是<strong>同一个、按同一价格计费</strong>——
+      差异不在"AI 成本"，而在部署形态、数据边界、平台费用与运维责任。本文给决策框架，不预设任何产品获胜。
+    </p>
+
+    <section class="panel">
+      <h2>一、三种方案是什么</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Make（云 iPaaS）</strong>：全托管可视化平台，场景（Scenario）由触发器与模块序列组成；提供 REST 风格开放 API 与自定义应用机制，多数管理端点需付费订阅（见 <a href="https://developers.make.com/api-documentation" target="_blank" rel="noopener">Make 开发者文档</a>，2026-10-28 核实）；<br>
+          · <strong>n8n（fair-code 自动化工具）</strong>：官方文档定义为"fair-code licensed workflow automation tool"，可自行安装（官方文档列出 Docker Compose 等部署方式），也可使用其云服务（见 <a href="https://docs.n8n.io/" target="_blank" rel="noopener">n8n 官方文档</a>，2026-10-28 核实）；<br>
+          · <strong>自建 API</strong>：用代码（队列 + 函数 + 定时任务）直接编排模型调用，无平台层，全部控制、全部责任。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>二、对比框架（六维度）</h2>
+      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>维度</th><th>Make（云 iPaaS）</th><th>n8n（fair-code / 可自托管）</th><th>自建 API</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>部署形态</th><td>全托管 SaaS，零运维</td><td>自托管（Docker 等）或官方云</td><td>自有环境，完全自控</td></tr>
+            <tr><th>数据驻留</th><td>数据流经平台服务器</td><td>自托管时数据不出内网</td><td>数据不出内网</td></tr>
+            <tr><th>上手速度</th><td>快：可视化拼装</td><td>快：可视化拼装</td><td>慢：需开发与调试</td></tr>
+            <tr><th>定制上限</th><td>受平台模块与 API 约束</td><td>可写自定义代码节点</td><td>无上限</td></tr>
+            <tr><th>成本结构</th><td>平台按操作数计 + LLM API</td><td>自托管=服务器成本 / 云=订阅 + LLM API</td><td>仅基础设施 + LLM API</td></tr>
+            <tr><th>运维责任</th><td>平台承担</td><td>自托管自担（升级/可用性）</td><td>全部自担</td></tr>
+            <tr><th>供应商锁定</th><td>高：流程资产在平台</td><td>中：可迁移到自托管</td><td>低</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">定价说明：Make 与 n8n 的当前价格<strong>本站均未核验</strong>（2026-10-28），上表刻意不含任何价格数字；请以各自官网为准。LLM API 成本三种方案完全相同——用 <a href="../../cost/">成本计算器</a> 统一口径估算。</p>
+    </section>
+
+    <section class="panel">
+      <h2>三、按场景选（含"不选"的边界）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>小团队快速验证</strong>：可视化平台更快；业务数据不敏感时优先考虑全托管（少一件运维差事）；<br>
+          · <strong>数据不能出内网</strong>：n8n 自托管或自建；两者都不需要把业务数据交给第三方平台；<br>
+          · <strong>执行量大且有运维能力</strong>：自建通常总成本最低（无平台操作费），但要把限流、重试、监控、告警自己建好——这些在平台上是自带的；<br>
+          · <strong>流程会频繁改</strong>：可视化方案改连线即可；自建改代码 + 重新部署；<br>
+          · <strong>不确定先跑量</strong>：先用平台小流量试运行并统计真实 Token 消耗（方法见 <a href="../make-llm-workflow/">Make 工作流成本指南</a>的架构节，架构思路对三种方案通用），再决定迁移与否。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>四、一个常被忽略的事实</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          模型 API 是三种方案共同的"原材料"，价格由厂商决定（本站 models.json 收录的刊例价，逐条可核验）。
+          选型争论里真正该比的是：平台费、运维人力、数据边界与锁定成本——而不是"哪个方案调模型更便宜"：都一样。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、联盟状态声明与数据来源</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · 商业关系：Make 官方联盟计划处于本站<strong>候选评估阶段（candidate）</strong>，尚未申请、未获批，本文<strong>不含任何推广链接</strong>；n8n 与自建方案无任何商业关系。若未来 Make 获批，CTA 只会在本节附近出现并就近披露佣金关系，对比结论不因合作关系改变；<br>
+          · 来源：n8n 与 Make 的概念性描述引自各自官方文档（2026-10-28 核实链接见正文）；两产品定价未核验，已逐项标注；<br>
+          · 本文为文档研究，不含实测结论；无点击或转化数据（本站未配置相关分析）。
+        </p>
+      </div>
+      
+    </section>
+
+    <section class="panel">
+      <h2>六、下一步</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · 估算三种方案共同的 LLM 成本：<a href="../../cost/">成本计算器</a>；<br>
+          · 平台工作流的成本结构：<a href="../make-llm-workflow/">Make 工作流成本指南</a>；<br>
+          · 查模型价格档案与对比：<a href="../../models/">模型库</a> / <a href="../../compare/">模型对比</a>；<br>
+          · 回到 <a href="../">指南中心</a>。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
+    <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
+    <nav class="footer-nav" aria-label="页脚导航">
+    <p>核心工具：<a href="../../cost/">成本计算器</a> · <a href="../../models/">模型库</a> · <a href="../../compare/">模型对比</a> · <a href="../../guides/">开发指南</a> · <a href="../../tools/">AI 工具目录</a> · <a href="../../prompts/">Prompt 资源</a> · <a href="../../quiz/">AI 认知测试</a> · <a href="../../guides/">计算指南</a></p>
+    <p>站点信息：<a href="../../about/">关于本站</a> · <a href="../../pricing-methodology/">定价方法论</a> · <a href="../../privacy/">隐私政策</a> · <a href="../../affiliate-disclosure/">联盟推广披露</a> · <a href="../../terms/">使用条款</a></p>
+    <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+  </nav>
+    <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../assets';</script>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>
