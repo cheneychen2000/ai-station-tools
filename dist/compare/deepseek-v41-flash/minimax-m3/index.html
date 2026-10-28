@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepSeek V4.1 Flash vs MiniMax M3 对比 - 价格/上下文/模态 | Reflex Hub</title>
+  <meta name="description" content="DeepSeek V4.1 Flash（DeepSeek）与 MiniMax M3（MiniMax 稀宇科技）API 逐项对比：输入输出价格、缓存命中、分时段、上下文窗口、模态与示例月成本。">
+  <link rel="canonical" href="https://www.reflex-hub.com/compare/deepseek-v41-flash/minimax-m3/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="DeepSeek V4.1 Flash vs MiniMax M3 对比 - 价格/上下文/模态 | Reflex Hub">
+  <meta property="og:description" content="DeepSeek V4.1 Flash（DeepSeek）与 MiniMax M3（MiniMax 稀宇科技）API 逐项对比：输入输出价格、缓存命中、分时段、上下文窗口、模态与示例月成本。">
+  <meta property="og:url" content="https://www.reflex-hub.com/compare/deepseek-v41-flash/minimax-m3/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="stylesheet" href="../../../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "首页",
+        "item": "https://www.reflex-hub.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "模型对比",
+        "item": "https://www.reflex-hub.com/compare/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "DeepSeek V4.1 Flash vs MiniMax M3",
+        "item": "https://www.reflex-hub.com/compare/deepseek-v41-flash/minimax-m3/"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="../../../">Reflex Hub</a>
+      <span class="crumb">/ <a href="../../" style="color:inherit">模型对比</a> / DeepSeek V4.1 Flash vs MiniMax M3</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">DeepSeek V4.1 Flash <span style="color:var(--muted);font-weight:400">vs</span> MiniMax M3</h1>
+      <p class="tagline">DeepSeek vs MiniMax 稀宇科技 · 价格与规格逐项对比</p>
+    </section>
+
+    <p class="lede">DeepSeek V4.1 Flash（DeepSeek）与 MiniMax M3（MiniMax 稀宇科技）的逐项对比：输入/输出/缓存命中价格、分时段、上下文窗口、支持模态与固定参数示例月成本。绿色为该项更优。</p>
+
+    <div class="table-scroll" style="margin-top:20px">
+      <table class="spec wide">
+        <thead>
+          <tr><th>维度</th><th>DeepSeek V4.1 Flash</th><th>MiniMax M3</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>厂商 / 渠道</th><td>DeepSeek</td><td>MiniMax 稀宇科技</td></tr>
+          <tr><th>上下文窗口</th><td>1000K</td><td>256K</td></tr>
+          <tr><th>支持模态</th><td>文本、图像理解</td><td>文本</td></tr>
+          <tr><th>特点</th><td>低谷半价、批量跑批首选、推理快</td><td>最新旗舰、双模式</td></tr>
+          <tr><th>输入价（未命中）</th><td>高峰 ¥2 / 低谷 ¥1</td><td>¥4.2</td></tr>
+          <tr><th>输出价</th><td>高峰 ¥8 / 低谷 ¥4</td><td>¥16.8</td></tr>
+          <tr><th>缓存命中价</th><td>高峰 ¥0.04 / 低谷 ¥0.02</td><td>未公开</td></tr>
+          <tr><th>分时段</th><td><svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#0E8A5F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 低谷价约为高峰一半（高峰=工作日 9:00-12:00、14:00-18:00）</td><td><svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round"/></svg></td></tr>
+          <tr><th>示例月成本*</th><td class="win num">¥13.84</td><td class="num">¥65.52</td></tr>
+          <tr><th>数据来源</th><td><a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 官方定价</a></td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
+          <tr><th>核验日期</th><td>2026-09-18</td><td>2026-09-18</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="s-hint">* 示例月成本固定参数：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰（低谷价）· 缓存命中率 30%，公式与默认值同 <a href="../../../cost/">成本计算器</a> 一致。两者成本在展示精度内相同时标记持平，不突出任何一方。</p>
+
+    <section class="panel">
+      <h2>对比摘要（固定用量口径）</h2>
+      <ul style="font-size:14px;line-height:1.9;padding-left:20px;margin:0">
+        <li>估算月成本：DeepSeek V4.1 Flash ¥13.84 vs MiniMax M3 ¥65.52——在该固定用量下 DeepSeek V4.1 Flash 更低，相差 ¥51.68/月。</li>
+        <li>输入单价（错峰低谷/单一价口径）：¥1 vs ¥4.2，DeepSeek V4.1 Flash 更低（差 ¥3.2/百万Token）。</li>
+        <li>输出单价（错峰低谷/单一价口径）：¥4 vs ¥16.8，DeepSeek V4.1 Flash 更低（差 ¥12.8/百万Token）。</li>
+        <li>缓存命中价（低谷口径）：DeepSeek V4.1 Flash ¥0.02；MiniMax M3 未公开缓存价（估算时按未命中价计）。</li>
+        <li>上下文窗口：DeepSeek V4.1 Flash 1000K vs MiniMax M3 256K，DeepSeek V4.1 Flash 为 MiniMax M3 的 3.9 倍。</li>
+        <li>支持模态：DeepSeek V4.1 Flash=文本、图像理解；MiniMax M3=文本（DeepSeek V4.1 Flash 多出 图像理解）。</li>
+        <li>数据来源：DeepSeek 官方定价（核验 2026-09-18）、阿里云百炼定价（核验 2026-09-18）。</li>
+      </ul>
+      <p class="s-hint" style="margin-top:10px">以上仅为公开价目在指定调用量、输入输出 Token 数、缓存假设与计费规则下的计算结果与数据对比，不代表模型能力、输出质量或综合性价比排名，不构成采购建议。</p>
+    </section>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../../../cost/?models=deepseek-v41-flash,minimax-m3" onclick="window.track('compare_to_cost', { a: "deepseek-v41-flash", b: "minimax-m3" })">按你的用量精确算 →</a>
+      <a class="btn btn-ghost" href="../../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash 档案</a>
+      <a class="btn btn-ghost" href="../../../models/minimax-m3/">MiniMax M3 档案</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+    <p>数据来源：<a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 官方定价</a> · <a href="https://cloud.tencent.com/pricing" target="_blank" rel="noopener">腾讯云定价</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-09-18</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
+    <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
+    <p><a href="../../../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../../assets';</script>
+  <script src="../../../assets/app.js"></script>
+  <script>window.track('compare_view', { a: "deepseek-v41-flash", b: "minimax-m3" });</script>
+</body>
+</html>

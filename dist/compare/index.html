@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模型对比器 - 两款大模型价格与规格逐项对比 | Reflex Hub</title>
+  <meta name="description" content="任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本，共 12 款 66 组组合。">
+  <link rel="canonical" href="https://www.reflex-hub.com/compare/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="模型对比器 - 两款大模型价格与规格逐项对比 | Reflex Hub">
+  <meta property="og:description" content="任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本，共 12 款 66 组组合。">
+  <meta property="og:url" content="https://www.reflex-hub.com/compare/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="../">Reflex Hub</a>
+      <span class="crumb">/ 模型对比</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>模型对比器</h1>
+      <p class="tagline">两款模型，逐项对比，胜出一眼可见</p>
+    </section>
+
+    <p class="lede">
+      选择两款大模型，生成逐项对比：输入/输出/缓存命中价格、分时段定价、上下文窗口、支持模态、特点，
+      以及与 <a href="../cost/">成本计算器</a> 同公式的示例月成本。共 12 款模型、66 组组合。
+    </p>
+
+    <section class="panel">
+      <div class="sel-compare">
+        <select id="selA" aria-label="模型 A"></select>
+        <select id="selB" aria-label="模型 B"></select>
+        <button class="btn btn-primary" id="btnGo" type="button">开始对比</button>
+      </div>
+      <p class="s-hint" id="cmpHint" style="margin-top:10px"></p>
+    </section>
+
+    <noscript>
+      <p class="empty-hint">模型选择器需要启用 JavaScript。你也可以直接浏览 <a href="../models/">模型库</a> 查看各模型价格与参数档案，或在 <a href="../cost/">成本计算器</a> 中估算月成本。</p>
+    </noscript>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>数据来源：<a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 官方定价</a> · <a href="https://cloud.tencent.com/pricing" target="_blank" rel="noopener">腾讯云定价</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-09-18</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
+    <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
+    <p><a href="../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../assets';</script>
+  <script src="../assets/app.js"></script>
+  <script>
+  fetch('../assets/data/models.json').then(function (res) { return res.json(); }).then(function (models) {
+    var selA = document.getElementById('selA');
+    var selB = document.getElementById('selB');
+    models.forEach(function (m) {
+      var label = m.name + '（' + m.vendor + '）';
+      selA.add(new Option(label, m.id));
+      selB.add(new Option(label, m.id));
+    });
+    if (models.length > 1) selB.selectedIndex = 1;
+    var qa = /[?&]a=([a-z0-9\-]+)/i.exec(location.search);
+    if (qa) selA.value = qa[1];
+
+    document.getElementById('btnGo').addEventListener('click', function () {
+      var a = selA.value, b = selB.value;
+      if (a === b) {
+        document.getElementById('cmpHint').textContent = '请选择两款不同的模型';
+        return;
+      }
+      var ids = [a, b].sort();
+      location.href = ids[0] + '/' + ids[1] + '/';
+    });
+  }).catch(function () {
+    document.getElementById('cmpHint').textContent = '模型数据加载失败，请刷新重试';
+  });
+  </script>
+</body>
+</html>

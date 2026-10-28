@@ -1,0 +1,17 @@
+# Cloudflare Pages 自定义响应头
+# 规则按路径前缀匹配，靠前的规则优先
+
+# 数据文件（models/tools/prompts/quiz 的 JSON）：更新频繁，5 分钟短缓存
+/assets/data/*
+  Cache-Control: public, max-age=300
+
+# 静态资源（css/js/图片，无内容指纹）：1 小时
+/assets/*
+  Cache-Control: public, max-age=3600
+
+# HTML 与其余路径：1 小时 + 安全头
+/*
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY

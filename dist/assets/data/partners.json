@@ -1,0 +1,4 @@
+{
+  "description": "联盟合作产品清单（扩展基础，当前无已确认合作项目）。字段：id / name / category / officialUrl / pricingUrl(可选) / affiliateUrl(可选) / markets[](已核实的目标地区) / status(candidate=候选未获批 | active=已确认合作) / verifiedAt(合作状态核验日期)。规则：affiliateUrl 仅在 status=active 且链接真实有效时填写；officialUrl 与 affiliateUrl 必须分开且不得相同；candidate 不得展示联盟链接；禁止写入任何 API 凭证、合同机密或秘密数据。由 scripts/check-affiliates.mjs 强制校验。",
+  "partners": []
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt 库 - 高频场景提示词，一键复制 | Reflex Hub</title>
+  <meta name="description" content="写作、翻译、编程、总结、学习、办公高频场景的中文提示词模板，一键复制即用，把【占位符】换成你的内容即可。">
+  <link rel="canonical" href="https://www.reflex-hub.com/prompts/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="Prompt 库 - 高频场景提示词，一键复制 | Reflex Hub">
+  <meta property="og:description" content="写作、翻译、编程、总结、学习、办公高频场景的中文提示词模板，一键复制即用，把【占位符】换成你的内容即可。">
+  <meta property="og:url" content="https://www.reflex-hub.com/prompts/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="../">Reflex Hub</a>
+      <span class="crumb">/ Prompt库</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Prompt 库</h1>
+      <p class="tagline">高频场景提示词，一键复制即用</p>
+    </section>
+
+    <p class="lede">
+      这里收录写作、翻译、编程、总结、学习、办公等高频场景的中文提示词模板。
+      点「复制」后粘贴到任意 AI 对话工具，把【方括号占位符】换成你的内容即可。
+      好 Prompt 的共同结构：角色 + 任务 + 约束 + 输出格式。
+    </p>
+
+    <div id="promptList"></div>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>数据来源：<a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 官方定价</a> · <a href="https://cloud.tencent.com/pricing" target="_blank" rel="noopener">腾讯云定价</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></p>
+    <p>模型价格最近核验日期：<span class="num">2026-09-18</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
+    <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
+    <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
+    <p><a href="../about/">关于本站</a> · © 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>window.ASSETS_BASE = '../assets';</script>
+  <script src="../assets/app.js"></script>
+  <script>
+  function showToast(text) {
+    var t = document.getElementById('toast');
+    t.textContent = text;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.classList.remove('show'); }, 1600);
+  }
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done); });
+    } else {
+      legacyCopy(text, done);
+    }
+  }
+  function legacyCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { showToast('复制失败，请手动选择文本'); }
+    document.body.removeChild(ta);
+  }
+
+  fetch('../assets/data/prompts.json').then(function (res) { return res.json(); }).then(function (prompts) {
+    var box = document.getElementById('promptList');
+    prompts.forEach(function (p) {
+      var card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML =
+        '<div class="r-head">' +
+          '<span class="r-name">' + p.title + '<span class="r-vendor">' + p.scene + '</span></span>' +
+          '<button class="btn btn-primary btn-s copy-btn" type="button">复制</button>' +
+        '</div>' +
+        '<pre class="prompt-text"></pre>' +
+        '<span class="m-tags">' + (p.tags || []).map(function (t) { return '<span class="tag tag-feat">' + t + '</span>'; }).join('') + '</span>';
+      card.querySelector('.prompt-text').textContent = p.prompt;
+      card.querySelector('.copy-btn').addEventListener('click', function () {
+        copyText(p.prompt, function () {
+          showToast('已复制');
+          window.track('prompt_copy', { id: p.id });
+        });
+      });
+      box.appendChild(card);
+    });
+  }).catch(function () {
+    document.getElementById('promptList').innerHTML = '<p class="empty-hint">Prompt 数据加载失败，请刷新重试</p>';
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "description": "手写页面的内容更新时间元数据（sitemap lastmod 的事实来源之一）。contentUpdatedAt = 该页手写正文最后一次真实内容修改日期，修改页面内容时手动维护，禁止填构建日期。dependsOnModels / dependsOnTools 标记页面嵌入了数据驱动内容，lastmod 取手写日期与所依赖数据 verifiedAt 的较大者。新增手写页面必须在此登记，否则不进入 sitemap。",
+  "pages": [
+    { "path": "/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/cost/", "contentUpdatedAt": "2026-10-28", "dependsOnModels": true },
+    { "path": "/models/", "contentUpdatedAt": "2026-09-18", "dependsOnModels": true },
+    { "path": "/compare/", "contentUpdatedAt": "2026-09-18" },
+    { "path": "/quiz/", "contentUpdatedAt": "2026-09-19" },
+    { "path": "/tools/", "contentUpdatedAt": "2026-09-18", "dependsOnTools": true },
+    { "path": "/prompts/", "contentUpdatedAt": "2026-09-18" },
+    { "path": "/about/", "contentUpdatedAt": "2026-10-28" }
+  ]
+}

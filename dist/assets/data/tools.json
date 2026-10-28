@@ -1,0 +1,189 @@
+[
+  {
+    "id": "own-cost",
+    "name": "成本计算器",
+    "tagline": "12 款大模型 API 月成本比价，错峰与缓存加权",
+    "category": "自研",
+    "free": "免费",
+    "url": "/cost/",
+    "scene": "估算你的模型 API 月度成本，找出最省钱方案",
+    "verifiedAt": "2026-09-18",
+    "own": true
+  },
+  {
+    "id": "own-models",
+    "name": "模型库",
+    "tagline": "12 款主流模型的上下文、模态、价格档案",
+    "category": "自研",
+    "free": "免费",
+    "url": "/models/",
+    "scene": "选型前查参数与价格，来源可核验",
+    "verifiedAt": "2026-09-18",
+    "own": true
+  },
+  {
+    "id": "own-compare",
+    "name": "模型对比器",
+    "tagline": "两款模型 11 个维度逐项对比，66 组组合",
+    "category": "自研",
+    "free": "免费",
+    "url": "/compare/",
+    "scene": "两款候选模型二选一时逐项较量",
+    "verifiedAt": "2026-09-18",
+    "own": true
+  },
+  {
+    "id": "own-quiz",
+    "name": "AI 认知段位测试",
+    "tagline": "12 题从通识到专业，测完生成段位海报",
+    "category": "自研",
+    "free": "免费",
+    "url": "/quiz/",
+    "scene": "自测 AI 认知水平，海报分享裂变",
+    "verifiedAt": "2026-09-18",
+    "own": true
+  },
+  {
+    "id": "own-prompts",
+    "name": "Prompt 库",
+    "tagline": "高频场景中文提示词，一键复制即用",
+    "category": "自研",
+    "free": "免费",
+    "url": "/prompts/",
+    "scene": "写作/翻译/编程/总结等场景直接套用",
+    "verifiedAt": "2026-09-18",
+    "own": true
+  },
+  {
+    "id": "deepseek-chat",
+    "name": "DeepSeek",
+    "tagline": "深度求索官方对话助手，推理能力见长",
+    "category": "对话",
+    "free": "免费",
+    "url": "https://chat.deepseek.com/",
+    "scene": "日常问答、逻辑推理、代码与数学问题求解",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "kimi",
+    "name": "Kimi",
+    "tagline": "月之暗面出品，超长文本处理标杆",
+    "category": "对话",
+    "free": "免费",
+    "url": "https://kimi.com/",
+    "scene": "长文档阅读、论文财报解析、多文件问答",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "doubao",
+    "name": "豆包",
+    "tagline": "字节跳动全能助手，语音与多模态体验好",
+    "category": "对话",
+    "free": "免费",
+    "url": "https://www.doubao.com/",
+    "scene": "日常陪伴式问答、语音交互、图片理解",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "jimeng",
+    "name": "即梦 AI",
+    "tagline": "剪映旗下 AI 创作平台，中文海报出图稳定",
+    "category": "绘图",
+    "free": "freemium",
+    "url": "https://jimeng.jianying.com/",
+    "scene": "海报配图、公众号封面、电商素材",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "midjourney",
+    "name": "Midjourney",
+    "tagline": "艺术感天花板的 AI 绘图工具",
+    "category": "绘图",
+    "free": "付费",
+    "url": "https://www.midjourney.com/",
+    "scene": "概念设计、插画、风格化艺术创作",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "kling",
+    "name": "可灵 AI",
+    "tagline": "快手出品视频生成，人物动作自然",
+    "category": "视频",
+    "free": "freemium",
+    "url": "https://klingai.com/",
+    "scene": "文生视频、图生视频、短视频素材",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "sora",
+    "name": "Sora",
+    "tagline": "OpenAI 视频生成模型，长镜头叙事能力强",
+    "category": "视频",
+    "free": "付费",
+    "url": "https://openai.com/sora/",
+    "scene": "高质量文生视频、创意短片",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "cursor",
+    "name": "Cursor",
+    "tagline": "AI 原生代码编辑器，对话式编程体验标杆",
+    "category": "编程",
+    "free": "freemium",
+    "url": "https://cursor.com/",
+    "scene": "全栈开发、代码重构、跨文件改动",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "github-copilot",
+    "name": "GitHub Copilot",
+    "tagline": "IDE 内代码补全的老牌选手",
+    "category": "编程",
+    "free": "付费",
+    "url": "https://github.com/features/copilot",
+    "scene": "行内补全、单元测试生成、样板代码",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "tongyi-lingma",
+    "name": "通义灵码",
+    "tagline": "阿里云免费 AI 编程助手，中文注释友好",
+    "category": "编程",
+    "free": "免费",
+    "url": "https://lingma.aliyun.com/",
+    "scene": "代码补全、注释生成、中文技术问答",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "wps-ai",
+    "name": "WPS AI",
+    "tagline": "嵌在办公套件里的 AI，文档表格演示全覆盖",
+    "category": "办公",
+    "free": "freemium",
+    "url": "https://ai.wps.cn/",
+    "scene": "公文写作、表格公式、PPT 一键生成",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  },
+  {
+    "id": "iflyrec",
+    "name": "讯飞听见",
+    "tagline": "语音转写老牌工具，会议访谈利器",
+    "category": "办公",
+    "free": "freemium",
+    "url": "https://www.iflyrec.com/",
+    "scene": "录音转文字、会议纪要、字幕生成",
+    "verifiedAt": "2026-09-18",
+    "indexable": false
+  }
+]
