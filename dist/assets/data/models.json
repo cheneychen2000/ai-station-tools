@@ -86,6 +86,8 @@
     "features": ["轻量低价", "仅思考模式"],
     "sourceName": "阿里云百炼模型页",
     "sourceUrl": "https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu",
+    "seoTitle": "GLM-5.3-Flash API 价格、参数与上下文长度 | Reflex Hub",
+    "seoDescription": "查看 GLM-5.3-Flash 的 API 输入与输出价格、上下文长度及支持的模态，了解模型参数、定价依据与最近核验日期，辅助评估模型成本。",
     "verifiedAt": "2026-10-28",
     "priceVerifiedAt": "2026-10-28",
     "specVerifiedAt": "2026-10-28",
