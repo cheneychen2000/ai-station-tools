@@ -413,6 +413,23 @@ function srcLink(m) {
 }
 
 /* ---------- 工具详情页 ---------- */
+/* 可选富内容：tools.json 中 detail 字段（带来源标注的独有小节），仅个别工具页配置；缺省输出空串，其他页零影响 */
+function toolDetailRich(d) {
+  const secs = (d.sections || []).map(s => `    <section class="panel">
+      <h2>${esc(s.h)}</h2>
+      <div style="font-size:14px;line-height:1.9">${esc(s.body).replace(/\n/g, '<br>')}</div>
+    </section>`).join('\n');
+  const srcs = (d.sources || []).map(s => {
+    const u = safeUrl(s.url);
+    return u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(s.label)}</a>（${esc(s.verifiedAt)} 核实）` : esc(s.label);
+  }).join(' · ');
+  return secs + (srcs ? `
+    <section class="panel">
+      <h2>信息来源与核验</h2>
+      <p class="lib-meta">来源：${srcs}。工具功能与定价迭代较快，以官网实际为准。</p>
+    </section>` : '');
+}
+
 function toolDetail(t) {
   const indexable = isToolIndexable(t);
   const u = safeUrl(t.url);
@@ -456,7 +473,7 @@ function toolDetail(t) {
       </div>
       ${related.length ? `<p class="lib-meta">同类工具：${related.map(r => `<a href="../${esc(r.id)}/">${esc(r.name)}</a>`).join(' · ')}</p>` : ''}
     </section>
-
+${t.detail ? toolDetailRich(t.detail) : ''}
     <div class="cta-row">
       ${u ? `<a class="btn btn-primary" href="${esc(u)}" target="_blank" rel="noopener" onclick="window.track('tool_outbound', { id: ${jsStr(t.id)} })">访问官网 →</a>` : ''}
       <a class="btn btn-ghost" href="../">返回工具库</a>

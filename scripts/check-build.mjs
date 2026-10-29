@@ -127,7 +127,7 @@ for (const t of extTools) {
   if (isToolIndexable(t) === hasNoindex) idxBad.push(t.id);
   if (!isToolIndexable(t) && locs.some(u => u.endsWith(`/tools/${t.id}/`))) idxBad.push(t.id + '(误入 sitemap)');
 }
-R.check('B12 工具页 robots 指令与 indexable 及 sitemap 一致', idxBad.length === 0, idxBad.join(', ') || '12 个薄页均 noindex,follow 且不在 sitemap');
+R.check('B12 工具页 robots 指令与 indexable 及 sitemap 一致', idxBad.length === 0, idxBad.join(', ') || '11 个薄页 noindex,follow 且不在 sitemap；豆包试点页可索引且进 sitemap');
 let offerBad = models.filter(m => readFileSync(join(DIST, 'models', m.id, 'index.html'), 'utf8').includes('"offers"')).map(m => m.id);
 R.check('B13 模型详情页不再把 API 单价表示为软件购买 Offer', offerBad.length === 0, offerBad.join(', ') || '全部移除');
 let toolOfferBad = [];

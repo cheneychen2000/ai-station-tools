@@ -47,7 +47,7 @@ const md = `# 工具详情页索引审核报告
 ## 审核规则
 
 - 自研工具（own:true，5 个）：不生成独立详情页，其功能模块页（/cost/、/models/、/compare/、/quiz/、/prompts/）具备真实可用功能与方法说明，正常索引。
-- 第三方工具详情页（12 个）：当前内容仅为 标语 + 分类 + 适用场景 + 收费模式 + 官网链接 + 核验日期，属目录级信息，无独立评测价值 → 逐项审核结论均为 \`indexable: false\`（已显式写入 tools.json），页面输出 \`noindex,follow\` 并从 sitemap 移除。
+- 第三方工具详情页（12 个）：其中 11 个当前内容仅为 标语 + 分类 + 适用场景 + 收费模式 + 官网链接 + 核验日期，属目录级信息，无独立评测价值 → 审核结论为 \`indexable: false\`（已显式写入 tools.json）；豆包页已于 2026-10-29 补充带来源标注的独有内容（功能/场景/费用/同类差异/限制），作为单页试点 \`indexable: true\`，页面输出 \`noindex,follow\` 并从 sitemap 移除。
 - 不删除 URL、不隐藏入口：页面仍可通过 /tools/ 工具库正常访问，canonical 保持自引用（不指向无关页面）。
 - 恢复索引条件：为该工具补充真实、经核验的独立内容（如 summary / bestFor / notFor / pros / limitations / pricingUrl / editorialReviewedAt 等）后，将 tools.json 中该项 indexable 置为 true 并重跑 build + 全部检查。禁止凭空编造优缺点、实测结果或评价。
 

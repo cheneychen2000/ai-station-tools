@@ -96,9 +96,11 @@ R.check('B12 sitemap 全部为 https://www.reflex-hub.com 且 robots Sitemap 行
 /* 13. 第一阶段成果回归：索引规则 + 静态内容 + noindex 一致性 */
 const toolsDirs = readdirSync(join(DIST, 'tools')).filter(d => statSync(join(DIST, 'tools', d)).isDirectory());
 const noindexed = toolsDirs.filter(d => read(`tools/${d}/index.html`).includes('noindex,follow'));
-R.check(`B13a 12 个第三方工具薄页仍 noindex,follow 且不在 sitemap`,
-  toolsDirs.length === 12 && noindexed.length === 12 &&
-  noindexed.every(d => !locs.includes(`${SITE}/tools/${d}/`)));
+/* 试点后：11 个未充实页保持 noindex 且不进 sitemap；豆包页已补独有内容并单独开放索引 */
+R.check(`B13a 工具页索引策略：11 个薄页仍 noindex,follow 且不在 sitemap；豆包页（已补 detail）可索引且在 sitemap`,
+  toolsDirs.length === 12 && noindexed.length === 11 &&
+  noindexed.every(d => !locs.includes(`${SITE}/tools/${d}/`)) &&
+  !noindexed.includes('doubao') && locs.includes(`${SITE}/tools/doubao/`));
 const HANDWRITTEN = ['index.html', 'cost/index.html', 'models/index.html', 'compare/index.html',
   'quiz/index.html', 'tools/index.html', 'prompts/index.html', 'about/index.html'];
 R.check('B13b 静态注入标记区完好（模型卡片/工具分组/成本表/8 个手写页 FOOTER 标记）',
