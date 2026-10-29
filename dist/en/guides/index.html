@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM API Cost &amp; Model Selection Guides | Reflex Hub</title>
+  <meta name="description" content="Guides to LLM API cost calculation and model selection: the cost formula with a worked example, same-usage pricing comparison across Chinese and international models, and monthly cost scenarios for chatbots, RAG and coding agents. All data from official vendor list prices, reproducible step by step.">
+  <link rel="canonical" href="https://www.reflex-hub.com/en/guides/">
+  <!-- HREFLANG_START -->
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/">
+      <!-- HREFLANG_END -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="LLM API Cost &amp; Model Selection Guides | Reflex Hub">
+  <meta property="og:description" content="Cost calculation, pricing comparison and scenario cost guides built on one verifiable data source.">
+  <meta property="og:url" content="https://www.reflex-hub.com/en/guides/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "LLM API Cost & Model Selection Guides",
+    "url": "https://www.reflex-hub.com/en/guides/",
+    "inLanguage": "en",
+    "description": "Guides to LLM API cost calculation, pricing comparison and scenario-based cost estimation."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.reflex-hub.com/en/" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://www.reflex-hub.com/en/guides/" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../en/"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ Guides</span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="../../en/">Home</a></li>
+          <li><a href="../../en/cost/">Cost Calculator</a></li>
+          <li><a href="../../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/guides/">中文</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>LLM API cost &amp; model selection guides</h1>
+      <p class="tagline">Calculate with confidence · compare fairly · estimate accurately</p>
+    </section>
+
+    <p class="lede">
+      All published guides share one verifiable data source (models.json) and one calculation basis —
+      from "know how to calculate" to "know how to compare" to "know how to estimate": formulas and a worked example
+      in the cost guide, whole-market price differences at fixed assumptions in the pricing comparison, and
+      business-scenario parameters in the cost-scenarios guide.
+    </p>
+
+    <h2 class="group-title">API cost calculation</h2>
+    <nav class="module-grid" aria-label="API cost calculation">
+      <a class="module-card active" href="llm-api-cost/">
+        <h3>How to calculate LLM API costs</h3>
+        <p>Input/output tokens, cache read-write and hit prices, context-length tiers, peak/off-peak handling, price units and multi-currency conventions, monthly usage assumptions with a reproducible worked example, and common mistakes around unknown prices and cross-vendor comparisons.</p>
+        <span class="go">Read the guide →</span>
+      </a>
+    </nav>
+
+    <h2 class="group-title">Model pricing &amp; comparison</h2>
+    <nav class="module-grid" aria-label="Model pricing and comparison">
+      <a class="module-card active" href="llm-api-pricing-comparison/">
+        <h3>LLM API pricing comparison</h3>
+        <p>Estimated monthly costs for 17 mainstream models under identical usage: official list prices per 1M tokens in the original currency, cache prices, context windows, a CNY-converted ranking, and how to read the table for model selection.</p>
+        <span class="go">Read the guide →</span>
+      </a>
+    </nav>
+
+    <h2 class="group-title">Scenario cost cases</h2>
+    <nav class="module-grid" aria-label="Scenario cost cases">
+      <a class="module-card active" href="llm-api-cost-examples/">
+        <h3>Monthly cost scenarios</h3>
+        <p>Monthly costs for three scenarios — chatbot/customer service, RAG knowledge-base Q&amp;A and coding agents — with explicitly labeled assumptions, per-model estimates, cache-hit-rate sensitivity and swap-in-your-own-parameters recalculation.</p>
+        <span class="go">Read the guide →</span>
+      </a>
+    </nav>
+
+    <h2 class="group-title">AI automation workflows</h2>
+    <nav class="module-grid" aria-label="AI automation workflows">
+      <a class="module-card active" href="make-llm-workflow/">
+        <h3>Build an LLM automation workflow with Make</h3>
+        <p>A five-part architecture for calling model APIs from a visual iPaaS (trigger → modules → HTTP call), concept-level steps and failure handling, plus a per-1,000-runs cost table computed from official list prices and retry-amplification analysis (documentation research, not hands-on testing).</p>
+        <span class="go">Read the guide →</span>
+      </a>
+      <a class="module-card active" href="workflow-automation-choose/">
+        <h3>Make, n8n or a custom API: choosing a workflow platform</h3>
+        <p>A six-dimension decision framework across deployment, data residency, cost structure, operations and lock-in; unverified vendor pricing is labeled as such, and no product is declared the winner.</p>
+        <span class="go">Read the guide →</span>
+      </a>
+    </nav>
+
+    <section class="panel">
+      <h2>Companion tools and conventions</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · <a href="../cost/">Cost calculator</a>: enter your real usage and compare any selection of models side by side;<br>
+          · <a href="../models/">Model library</a>: a pricing profile per model with official sources; <a href="../compare/">Model comparison</a>: two models line by line;<br>
+          · Data conventions (original currencies, tiers, reference rates, verification dates) are documented in the <a href="../pricing-methodology/">pricing methodology</a>;<br>
+          · All guides are also available <a href="../../guides/">in Chinese</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../../en/">Home</a> · <a href="../../en/cost/">Cost Calculator</a> · <a href="../../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../../">Home</a> · <a href="../../cost/">Cost Calculator</a> · <a href="../../models/">Model Library</a> · <a href="../../guides/">Guides</a> · <a href="../../about/">About</a> · <a href="../../pricing-methodology/">Pricing Methodology</a> · <a href="../../privacy/">Privacy Policy</a> · <a href="../../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../assets';</script>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>

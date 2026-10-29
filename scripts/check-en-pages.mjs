@@ -16,16 +16,33 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { DIST, SITE } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
-import { loadData } from './lib/manifest.mjs';
+import { loadData, comparePairs } from './lib/manifest.mjs';
+import { buildRouteMap, validateRouteMap } from './lib/locales.mjs';
 import { rateFor, monthly } from './lib/pricing.mjs';
 
 const R = createReporter('check-en-pages');
-const { models } = loadData();
+const { models, tools, pagesMeta, compares } = loadData();
 const read = rel => readFileSync(join(DIST, rel), 'utf8');
 
 const EN_PAGES = {
   'en/index.html': { url: '/en/', cn: '/', title: null },
   'en/cost/index.html': { url: '/en/cost/', cn: '/cost/', title: null },
+  'en/models/index.html': { url: '/en/models/', cn: '/models/', title: null },
+  'en/compare/index.html': { url: '/en/compare/', cn: '/compare/', title: null },
+  'en/tools/index.html': { url: '/en/tools/', cn: '/tools/', title: null },
+  'en/prompts/index.html': { url: '/en/prompts/', cn: '/prompts/', title: null },
+  'en/quiz/index.html': { url: '/en/quiz/', cn: '/quiz/', title: null },
+  'en/about/index.html': { url: '/en/about/', cn: '/about/', title: null },
+  'en/guides/index.html': { url: '/en/guides/', cn: '/guides/', title: null },
+  'en/guides/llm-api-cost/index.html': { url: '/en/guides/llm-api-cost/', cn: '/guides/llm-api-cost/', title: null },
+  'en/guides/llm-api-pricing-comparison/index.html': { url: '/en/guides/llm-api-pricing-comparison/', cn: '/guides/llm-api-pricing-comparison/', title: null },
+  'en/guides/llm-api-cost-examples/index.html': { url: '/en/guides/llm-api-cost-examples/', cn: '/guides/llm-api-cost-examples/', title: null },
+  'en/guides/make-llm-workflow/index.html': { url: '/en/guides/make-llm-workflow/', cn: '/guides/make-llm-workflow/', title: null },
+  'en/guides/workflow-automation-choose/index.html': { url: '/en/guides/workflow-automation-choose/', cn: '/guides/workflow-automation-choose/', title: null },
+  'en/pricing-methodology/index.html': { url: '/en/pricing-methodology/', cn: '/pricing-methodology/', title: null },
+  'en/privacy/index.html': { url: '/en/privacy/', cn: '/privacy/', title: null },
+  'en/affiliate-disclosure/index.html': { url: '/en/affiliate-disclosure/', cn: '/affiliate-disclosure/', title: null },
+  'en/terms/index.html': { url: '/en/terms/', cn: '/terms/', title: null },
   'en/models/glm-53-flash/index.html': { url: '/en/models/glm-53-flash/', cn: '/models/glm-53-flash/', title: null }
 };
 
@@ -46,8 +63,8 @@ for (const [rel, info] of Object.entries(EN_PAGES)) {
   if (titleSeen.has(title)) metaBad.push(`${rel}（标题与另一英文页重复）`);
   titleSeen.add(title);
 }
-R.check('E1 三个英文页存在、lang=en、title/description/H1 齐全且唯一', missing.length === 0 && langBad.length === 0 && metaBad.length === 0,
-  [...missing, ...langBad, ...metaBad].join(' | ') || '3 页全部合规');
+R.check('E1 四个英文页存在、lang=en、title/description/H1 齐全且唯一', missing.length === 0 && langBad.length === 0 && metaBad.length === 0,
+  [...missing, ...langBad, ...metaBad].join(' | ') || '4 页全部合规');
 
 /* E2 canonical 自引用 + og:url 一致 */
 let canonBad = [];
@@ -72,7 +89,7 @@ for (const [rel, info] of Object.entries(EN_PAGES)) {
   const back = (cnTxt.match(new RegExp(`<link rel="alternate" hreflang="en" href="([^"]+)"`)) || [])[1];
   if (back !== SITE + info.url) altBad.push(`${cnRel}（未回指英文页）`);
 }
-/* 全站扫描：除 3 个中文对应页外不得出现 hreflang="en" */
+/* 全站扫描：hreflang="en" 只允许出现在路由映射中真实存在英文对应的中文页（含全部生成页） */
 function walk(dir) {
   let out = [];
   for (const name of readdirSync(dir)) {
@@ -82,13 +99,15 @@ function walk(dir) {
   }
   return out;
 }
-const cnCounterparts = new Set(Object.values(EN_PAGES).map(i => i.cn.replace(/^\//, '') + 'index.html'));
+const routeMap = validateRouteMap(buildRouteMap(pagesMeta, models, comparePairs(models, compares.extraPairs || []), tools));
+const enAllowedUrls = new Set(routeMap.filter(e => e.routes.en).map(e => e.routes['zh-CN']));
+const urlOfRel = rel => '/' + rel.replace(/index\.html$/, '');
 let strayAlt = [];
 for (const f of walk(DIST)) {
   const rel = relative(DIST, f).replace(/\\/g, '/');
   if (rel.startsWith('en/')) continue;
-  if (cnCounterparts.has(rel)) continue;
-  if (read(rel).includes('hreflang="en"')) strayAlt.push(rel);
+  if (!read(rel).includes('hreflang="en"')) continue;
+  if (!enAllowedUrls.has(urlOfRel(rel))) strayAlt.push(rel);
 }
 R.check('E3 hreflang 双向精确（en↔zh-CN 三对），白名单外零 en 映射', altBad.length === 0 && strayAlt.length === 0,
   [...altBad, ...strayAlt].join(' | ') || '3 对双向、零 stray');
@@ -109,18 +128,19 @@ for (const info of Object.values(EN_PAGES)) {
   const n = locs.filter(u => u === SITE + info.url).length;
   if (n !== 1) smBad.push(`${info.url}（出现 ${n} 次）`);
 }
-R.check('E4c sitemap 恰含 3 条英文规范 URL（各一次）', smBad.length === 0, smBad.join(' | ') || '3 条齐全');
+R.check(`E4c sitemap 恰含 ${Object.keys(EN_PAGES).length} 条英文规范 URL（各一次）`, smBad.length === 0, smBad.join(' | ') || '全部齐全');
 
 /* E5 JSON-LD */
 let ldBad = [];
 for (const [rel, info] of Object.entries(EN_PAGES)) {
   const t = read(rel);
   const blocks = [...t.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
-  if (!blocks.length) { ldBad.push(`${rel}（无 JSON-LD）`); continue; }
+  if (!blocks.length) continue; /* 无 JSON-LD 与中文对应页策略一致，不失败 */
   for (const m of blocks) {
     let o;
     try { o = JSON.parse(m[1]); } catch (e) { ldBad.push(`${rel}（JSON-LD 解析失败）`); continue; }
     if (/"@type"\s*:\s*"(AggregateRating|Review)"/.test(m[1])) ldBad.push(`${rel}（虚构评分/评论）`);
+    /* 无 JSON-LD 不视为失败：与中文对应页策略一致（中文对比器/工具目录/指南正文亦无 JSON-LD） */
     for (const ld of Array.isArray(o) ? o : [o]) {
       if (ld.url && !String(ld.url).startsWith(SITE)) ldBad.push(`${rel}（url 域名异常）`);
       if (ld['@type'] === 'BreadcrumbList') {

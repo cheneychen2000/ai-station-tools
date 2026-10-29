@@ -8,7 +8,7 @@ function walk(dir) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) out = out.concat(walk(p));
-    else if (name.endsWith('.html') || name === 'app.js') out.push(p);
+    else if (name.endsWith('.html') || name.endsWith('.js')) out.push(p);
   }
   return out;
 }

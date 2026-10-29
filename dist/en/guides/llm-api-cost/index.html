@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Calculate LLM API Costs | Reflex Hub</title>
+  <meta name="description" content="The principles behind LLM API pricing: input/output tokens, cache hit pricing, context-length tiers, peak/off-peak rates, price units and multi-currency conventions, monthly usage assumptions and a reproducible worked example — so you can verify any vendor's price list yourself.">
+  <link rel="canonical" href="https://www.reflex-hub.com/en/guides/llm-api-cost/">
+  <!-- HREFLANG_START -->
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/llm-api-cost/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/llm-api-cost/">
+      <!-- HREFLANG_END -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="How to Calculate LLM API Costs | Reflex Hub">
+  <meta property="og:description" content="Input/output tokens, cache pricing, tiers, peak/off-peak rates and a reproducible worked example.">
+  <meta property="og:url" content="https://www.reflex-hub.com/en/guides/llm-api-cost/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../../en/"><img class="brand-logo" src="../../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ <a href="../../" style="color:inherit">Guides</a> / Cost calculation</span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="../../../en/">Home</a></li>
+          <li><a href="../../../en/cost/">Cost Calculator</a></li>
+          <li><a href="../../../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/guides/llm-api-cost/">中文</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>How to calculate LLM API costs</h1>
+      <p class="tagline">Input tokens · output tokens · cache · monthly usage</p>
+    </section>
+
+    <p class="lede">
+      The <a href="../../cost/">cost calculator</a> gives you the answer directly; this guide explains the principles,
+      steps and common mistakes behind it, so you can recompute any vendor's price list yourself. All worked examples
+      use Reflex Hub's single data source (models.json) with official sources and verification dates you can check
+      step by step. The complete rules for how we compile and present pricing data are in the
+      <a href="../../pricing-methodology/">pricing methodology</a>.
+    </p>
+
+    <section class="panel">
+      <h2>1. What determines API cost</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>Mainstream LLM APIs bill by <strong>token usage</strong>. A monthly bill decomposes into four terms:</p>
+        <p>
+          · <strong>Call count</strong>: how many requests you make per day;<br>
+          · <strong>Input tokens</strong>: the content sent per request (system prompt, conversation history and the user's input all count);<br>
+          · <strong>Output tokens</strong>: the content the model generates per request;<br>
+          · <strong>Unit prices</strong>: input and output are billed separately per 1M tokens at different rates; some vendors add a cache-hit price and peak/off-peak rates.
+        </p>
+        <p><strong>Scope</strong>: this article covers pay-as-you-go chat/reasoning APIs billed by tokens. Subscription bundles, per-call billing (some image/video endpoints) and reserved capacity follow their own billing documents.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Price units and multi-currency handling</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>Prices are quoted <strong>per 1M tokens</strong>, consistent with official vendor pricing pages. A token is the smallest unit of text a model processes: roughly 1–2 tokens per Chinese character and about 1 token per English word, depending on each vendor's tokenizer. Mind the conversion: vendors quote "price per 1M tokens", while a single request is usually far below a million — divide by 1,000,000 first.</p>
+        <p><strong>Original currencies are preserved</strong>: Chinese vendors (DeepSeek, GLM, Kimi, Qwen, Hunyuan, MiniMax, MiMo, Step) list prices in CNY; OpenAI / Anthropic / Google models are listed in USD. For comparison and estimation, USD prices are converted to CNY at a <strong>reference rate</strong> (the CFETS central parity rate, with the rate date shown) — indicative only. This site never disguises a $ list price as ¥ and never compares raw numbers across currencies.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>3. The formula</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>Compute input and output <strong>separately, then add</strong>:</p>
+        <p>
+          · Input cost = calls × input tokens per call ÷ 1,000,000 × input price<br>
+          · Output cost = calls × output tokens per call ÷ 1,000,000 × output price<br>
+          · Total cost = input cost + output cost
+        </p>
+        <p>The input price may not be a single value: the portion that hits context cache is billed at the lower <strong>cache-hit price</strong>, so:</p>
+        <p>· Effective input price = hit rate × cache-hit price + (1 − hit rate) × cache-miss price</p>
+        <p>For time-based priced models (e.g. DeepSeek), first determine whether the request lands in a peak or off-peak window — the unit prices differ. Models without a published cache price have no cache-hit price to apply and must be billed at the miss price — unknown is not zero.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>4. Context-length tiers</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>Some models bill by <strong>per-call input length</strong>: MiniMax M3, for example, charges the lower tier for inputs ≤512K (input ¥2.1 / output ¥8.4 per 1M tokens) and jumps to the higher tier above 512K (¥4.2 / ¥16.8); Claude Haiku 5.5 splits at a 100K prompt length into $0.1 / $0.5 tiers. Pick the tier from your per-call input length first, then apply the formula.</p>
+        <p><strong>Unpublished tiers are never back-filled</strong>: the &gt;272K long-context tier rates for GPT-6 Luna and GPT-6.1 Sol are not published on the official pricing pages — estimates in that range must honestly return "cannot estimate"; borrowing the lower tier's price would produce a falsely low number. This site's calculator and comparison pages refuse to estimate unpublished tiers.</p>
+        <p>In common businesses where a single input stays below the lower-tier ceiling (most chat, RAG and agent workloads are far below 100K–512K), tiers do not affect the result; only whole-document injection needs a tier-boundary check first.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>5. A reproducible worked example</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>The table below walks through every step with a real model whose data is complete (including a published cache price). All values come from this site's single data source models.json; the model page carries the official source and verification date:</p>
+      </div>
+      <!-- GUIDE_EXAMPLE_START -->
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>Model & source</th><td><a href="../../models/glm-53/">GLM-5.3</a> (Alibaba Cloud Model Studio · Zhipu (direct)), list prices: input ¥8 / output ¥28 / cache hit ¥2 per 1M tokens; <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">official source</a>, verified 2026-10-28</td></tr>
+            <tr><th>Step 1: effective input price</th><td class="num">30% × ¥2 + 70% × ¥8 = 6.2 CNY/1M tokens</td></tr>
+            <tr><th>Step 2: input cost</th><td class="num">100 calls/day × 30 days × (2000 ÷ 1,000,000) × 6.2 = ¥37.20</td></tr>
+            <tr><th>Step 3: output cost</th><td class="num">100 calls/day × 30 days × (800 ÷ 1,000,000) × ¥28 = ¥67.20</td></tr>
+            <tr><th>Step 4: total</th><td class="num"><strong>¥104.40 / month</strong> (list-price estimate, not an actual invoice)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- GUIDE_EXAMPLE_END -->
+      <p class="s-hint">To verify: substitute the table's values into the section-3 formula by hand, or open the <a href="../../cost/">cost calculator</a>, select the same model and use the same parameters (100 calls/day · 2,000 input · 800 output · 30% hit rate) to compare results.</p>
+    </section>
+
+    <section class="panel">
+      <h2>6. Cache read-write and peak/off-peak prices</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>Cache-hit price</strong>: when a request shares a prefix with previous requests, vendors allow it to hit the context cache, and the hit portion is billed at a cache price well below the standard input price. Keeping a stable system prompt and document prefix raises the hit rate. Only models with a published cache price get this discount; this site bills unpublished models at the miss price and never assumes a cache discount.</p>
+        <p><strong>Cache write fees</strong> are an easily overlooked charge: some vendors bill cache writes separately (e.g. GPT-6 Luna's 30-minute tier at $0.125/1M tokens, Anthropic's 5-minute tier from $0.125). Write fees couple with retention duration and usage assumptions, so example monthly costs on this site exclude them; each model profile notes them separately.</p>
+        <p><strong>Peak/off-peak pricing</strong>: take DeepSeek as an example — peak hours (weekdays 9:00–12:00 and 14:00–18:00, Beijing time) bill at standard rates, while all other times (nights, lunch hours, weekends and public holidays) bill at about half. Scheduling deferrable batch jobs into off-peak windows is a deterministic cost reduction. This site's calculator and comparison pages compute example monthly costs at the off-peak basis by default and say so on the page.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>7. From per-call cost to monthly estimates</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>Monthly estimate = daily calls × 30 days × per-call cost. Three assumptions need your real business numbers:</p>
+        <p>
+          · <strong>Call count</strong>: use average daily requests from logs, not peaks;<br>
+          · <strong>Input per call</strong>: count the system prompt, conversation history and the current input together — input grows with turns in multi-turn chats;<br>
+          · <strong>Output per call</strong>: long-form generation can produce far more output than input, and output is usually priced higher.
+        </p>
+        <p>Example monthly costs on this site's comparison pages fix 100 calls/day, 2,000 input / 800 output tokens per call, off-peak rates and a 30% cache hit rate. They exist for horizontal comparison only — they are not your actual bill.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>8. Common mistakes</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Mistake 1: input and output cost the same</strong>. Output is usually 2–4× the input price; pricing by input alone severely underestimates;<br>
+          · <strong>Mistake 2: treating unknown prices as zero</strong>. An unpublished cache price does not mean caching is free — pricing it at zero fabricates a low cost;<br>
+          · <strong>Mistake 3: comparing raw numbers across vendors</strong>. Tier boundaries and discount strategies differ; normalize first — list prices, same tier, same usage assumptions;<br>
+          · <strong>Mistake 4: ignoring the output share</strong>. Summarization and writing workloads are often output-dominated — raise the output weight in your estimate;<br>
+          · <strong>Mistake 5: treating an estimate as an invoice</strong>. Free tiers, resource packs and tiered pricing can all push the real bill below the list-price estimate — or above it once free quotas run out. Estimates are for budgeting and comparison only.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>9. Data sources and verification</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          Reflex Hub maintains model prices and specs in a single data source, models.json; every record carries an official source link and a "last verified" date (verifiedAt), and the footer aggregates all sources. <strong>Price-verification time ≠ page-content update time</strong>: when a price is re-verified without changes, the page and sitemap dates stay unchanged (full semantics in the <a href="../../pricing-methodology/">pricing methodology</a>). We re-check items individually, but two limitations remain: values the vendor has not published (e.g. some context windows) stay marked undecided rather than invented; and prices change as vendors adjust them — when reusing an example from this article, confirm the current price on the corresponding official page.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>10. Next steps</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · Plug in your real usage and estimate monthly costs per model in the <a href="../../cost/">cost calculator</a>;<br>
+          · Browse per-model pricing and spec profiles in the <a href="../../models/">model library</a> (a USD-priced example: the <a href="../../models/gpt-6-luna/">GPT-6 Luna profile</a>);<br>
+          · Torn between two candidates? Compare them line by line with <a href="../../compare/">model comparison</a>, e.g. <a href="../../compare/deepseek-v41-flash/glm-53-flash/">DeepSeek V4.1 Flash vs GLM-5.3-Flash</a>;<br>
+          · For whole-market price differences at fixed assumptions, read the <a href="../llm-api-pricing-comparison/">pricing comparison guide</a>;<br>
+          · For business-scenario estimation (chatbot / RAG / coding agent), read the <a href="../llm-api-cost-examples/">cost scenarios guide</a>;<br>
+          · All guides: <a href="../">guide directory</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../../../en/">Home</a> · <a href="../../../en/cost/">Cost Calculator</a> · <a href="../../../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../../../">Home</a> · <a href="../../../cost/">Cost Calculator</a> · <a href="../../../models/">Model Library</a> · <a href="../../../guides/">Guides</a> · <a href="../../../about/">About</a> · <a href="../../../pricing-methodology/">Pricing Methodology</a> · <a href="../../../privacy/">Privacy Policy</a> · <a href="../../../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../../assets';</script>
+  <script src="../../../assets/app.js"></script>
+</body>
+</html>

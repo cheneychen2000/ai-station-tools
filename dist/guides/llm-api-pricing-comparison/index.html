@@ -6,6 +6,10 @@
   <title>大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub</title>
   <meta name="description" content="固定同一用量假设（日均 100 次、输入 2000 / 输出 800 Token、错峰低谷价、缓存命中率 30%），对收录的国内外主流模型计算估算月成本并统一折算人民币排序，保留美元模型官方原币价格，标注来源与核验日期。">
   <link rel="canonical" href="https://www.reflex-hub.com/guides/llm-api-pricing-comparison/">
+  <!-- HREFLANG_START -->
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/llm-api-pricing-comparison/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/llm-api-pricing-comparison/">
+      <!-- HREFLANG_END -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub">
@@ -57,6 +61,7 @@
           <li><a href="../../guides/" class="active" aria-current="page">开发指南</a></li>
           <li><a href="../../tools/">AI 工具目录</a></li>
           <li><a href="../../prompts/">Prompt 资源</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/en/guides/llm-api-pricing-comparison/">English</a></li>
         </ul>
       </nav>
     </div>
@@ -109,9 +114,9 @@
           <tr><th><a href="../../models/qwen37-plus/">Qwen3.7-Plus</a></th><td>阿里云百炼（≤256K档，原价）</td><td class="num">¥2</td><td class="num">¥8</td><td class="num">未公开</td><td class="num">1000K</td><td class="num">¥31.20</td><td class="num">2026-09-18</td></tr>
           <tr><th><a href="../../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th><td>Google</td><td class="num">$0.25</td><td class="num">$1.5</td><td class="num">$0.025</td><td class="num">1024K</td><td class="num">约 ¥31.54<br><span class="lib-meta">原价 $4.69</span></td><td class="num">2026-10-28</td></tr>
           <tr><th><a href="../../models/minimax-m3/">MiniMax M3</a></th><td>MiniMax 稀宇科技</td><td class="num">输入 ≤512K ¥2.1<br>输入 &gt;512K ¥4.2</td><td class="num">输入 ≤512K ¥8.4<br>输入 &gt;512K ¥16.8</td><td class="num">未公开</td><td class="num">1024K</td><td class="num">¥32.76</td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/hunyuan-turbos-vision/">混元 TurboS Vision</a></th><td>腾讯云</td><td class="num">¥3</td><td class="num">¥9</td><td class="num">未公开</td><td class="num">128K</td><td class="num">¥39.60</td><td class="num">2026-09-18</td></tr>
+          <tr><th><a href="../../models/hunyuan-turbos-vision/">Hunyuan TurboS Vision</a></th><td>腾讯云</td><td class="num">¥3</td><td class="num">¥9</td><td class="num">未公开</td><td class="num">128K</td><td class="num">¥39.60</td><td class="num">2026-09-18</td></tr>
           <tr><th><a href="../../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th><td>腾讯云原厂直供</td><td class="num">高峰 ¥9<br>低谷 ¥4.5</td><td class="num">高峰 ¥27<br>低谷 ¥13.5</td><td class="num">高峰 ¥0.3<br>低谷 ¥0.15</td><td class="num">1000K</td><td class="num">¥51.57</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/mimo-v25-pro/">小米 MiMo V2.5 Pro</a></th><td>阿里云百炼·小米（≤256K档）</td><td class="num">¥7</td><td class="num">¥21</td><td class="num">未公开</td><td class="num">1000K</td><td class="num">¥92.40</td><td class="num">2026-09-18</td></tr>
+          <tr><th><a href="../../models/mimo-v25-pro/">Xiaomi MiMo V2.5 Pro</a></th><td>阿里云百炼·小米（≤256K档）</td><td class="num">¥7</td><td class="num">¥21</td><td class="num">未公开</td><td class="num">1000K</td><td class="num">¥92.40</td><td class="num">2026-09-18</td></tr>
           <tr><th><a href="../../models/glm-53/">GLM-5.3</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥8</td><td class="num">¥28</td><td class="num">¥2</td><td class="num">1024K</td><td class="num">¥104.40</td><td class="num">2026-10-28</td></tr>
           <tr><th><a href="../../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th><td>OpenAI</td><td class="num">输入 ≤272K $2<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">输入 ≤272K $10<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">$0.1<br>未公开</td><td class="num">1050K</td><td class="num">约 ¥218.87<br><span class="lib-meta">原价 $32.58</span></td><td class="num">2026-10-28</td></tr>
           <tr><th><a href="../../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th><td>Anthropic</td><td class="num">$2</td><td class="num">$10</td><td class="num">$0.1</td><td class="num">1024K</td><td class="num">约 ¥218.87<br><span class="lib-meta">原价 $32.58</span></td><td class="num">2026-10-28</td></tr>

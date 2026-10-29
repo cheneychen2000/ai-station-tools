@@ -16,6 +16,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DIST } from './paths.mjs';
+import { EN_MODELS } from './locales.mjs';
 
 export function loadJson(rel) {
   return JSON.parse(readFileSync(join(DIST, rel), 'utf8'));
@@ -84,15 +85,30 @@ export function buildManifest({ models, tools, pagesMeta, compares = {} }) {
     /* 英文模型页等单模型依赖页：lastmod 跟随该模型内容变更日（dependsOnModel 为模型 id） */
     if (p.dependsOnModel && byId[p.dependsOnModel]) d = maxDate([d, modelContentDate(byId[p.dependsOnModel])]);
     push(p.path, d);
+    /* 英文版本：与中文同规则取 lastmod（仅当 pages.json 登记了真实存在的 en 路由） */
+    if (p.en) {
+      let de = p.enContentUpdatedAt || null;
+      if (p.dependsOnModels) de = maxDate([de, modelsContent]);
+      if (p.dependsOnTools) de = maxDate([de, toolsVerified]);
+      push(p.en, de);
+    }
     if (p.path === '/models/') {
       for (const m of models) push(`/models/${m.id}/`, modelContentDate(m));
+      if (p.en) for (const id of EN_MODELS) push(`/en/models/${id}/`, modelContentDate(byId[id]));
     }
     if (p.path === '/compare/') {
-      for (const [a, b] of comparePairs(models, compares.extraPairs || [])) push(`/compare/${a}/${b}/`, maxDate([modelContentDate(byId[a]), modelContentDate(byId[b])]));
+      for (const [a, b] of comparePairs(models, compares.extraPairs || [])) {
+        const d = maxDate([modelContentDate(byId[a]), modelContentDate(byId[b])]);
+        push(`/compare/${a}/${b}/`, d);
+        if (p.en) push(`/en/compare/${a}/${b}/`, d);
+      }
     }
     if (p.path === '/tools/') {
       for (const t of extTools) {
-        if (isToolIndexable(t)) push(`/tools/${t.id}/`, t.contentUpdatedAt || t.verifiedAt || null);
+        if (isToolIndexable(t)) {
+          push(`/tools/${t.id}/`, t.contentUpdatedAt || t.verifiedAt || null);
+          if (p.en) push(`/en/tools/${t.id}/`, t.contentUpdatedAt || t.verifiedAt || null);
+        }
       }
     }
   }

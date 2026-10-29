@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Literacy Rank Test - 12 Questions Across Six Dimensions | Reflex Hub</title>
+  <meta name="description" content="A 12-question AI literacy test across six dimensions: concepts, pricing, capability limits, industry landscape, practical skills and safety. Instant right/wrong feedback with an explanation per question, a nine-rank grading scale and a shareable result poster. Free, no sign-up.">
+  <link rel="canonical" href="https://www.reflex-hub.com/en/quiz/">
+  <!-- HREFLANG_START -->
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/quiz/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/quiz/">
+      <!-- HREFLANG_END -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="AI Literacy Rank Test - 12 Questions Across Six Dimensions | Reflex Hub">
+  <meta property="og:description" content="12 questions, six dimensions, instant explanations, nine ranks and a shareable poster.">
+  <meta property="og:url" content="https://www.reflex-hub.com/en/quiz/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AI Literacy Rank Test",
+    "url": "https://www.reflex-hub.com/en/quiz/",
+    "inLanguage": "en",
+    "applicationCategory": "EntertainmentApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+    "description": "A 12-question AI literacy test across concepts, pricing, capability limits, industry landscape, practical skills and safety, with instant explanations, nine ranks and a shareable poster."
+  }
+  </script>
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../en/"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ Rank Test</span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="../../en/">Home</a></li>
+          <li><a href="../../en/cost/">Cost Calculator</a></li>
+          <li><a href="../../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/quiz/">中文</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>AI literacy rank test</h1>
+      <p class="tagline">12 questions · six dimensions · instant explanations</p>
+    </section>
+
+    <p class="lede">
+      This 12-question test covers six dimensions: concepts, pricing, capability limits, industry landscape, practical
+      skills and safety. Every answer gets immediate right/wrong feedback with a one-line explanation (testing as
+      learning), the score maps to nine ranks (from Outsider to Pro 9-dan), and the result page shows a six-dimension
+      radar plus pointers for what to study next. For fun only.
+    </p>
+
+    <section class="panel" id="viewIntro">
+      <h2>How it works</h2>
+      <p style="font-size:14px;color:var(--muted)">
+        · 12 single-choice questions (including 2 true/false), one tap each, no going back<br>
+        · Instant feedback and explanation after each question — wrong answers are the best time to learn<br>
+        · Two questions per dimension: concepts / pricing / limits / industry / practice / safety<br>
+        · Generate a rank poster at the end and challenge your friends
+      </p>
+      <div class="quiz-actions">
+        <button class="btn btn-primary" id="btnStart" disabled>Loading questions…</button>
+      </div>
+    </section>
+
+    <section class="panel" id="viewQuiz" style="display:none">
+      <div class="quiz-progress-text" id="qProg">Question 1 / 12</div>
+      <div class="quiz-progress"><i id="qBar"></i></div>
+      <p class="quiz-q" id="qText"></p>
+      <div id="qOpts"></div>
+      <div class="quiz-fb" id="qFeedback" style="display:none"></div>
+    </section>
+
+    <section class="panel" id="viewResult" style="display:none">
+      <div style="text-align:center">
+        <div class="tier-name" id="rTier"></div>
+        <p class="tier-comment" id="rComment"></p>
+        <p class="num" id="rScore" style="font-size:20px;margin-top:10px"></p>
+        <p id="rPercent" style="font-size:13px;color:var(--muted);margin-top:4px"></p>
+      </div>
+      <div class="radar-wrap"><canvas id="rRadar"></canvas></div>
+      <p class="s-hint radar-note">Two questions per dimension; for fun only</p>
+      <div class="quiz-actions">
+        <a class="btn btn-primary" id="rWeak" href="../">Study the weak spot →</a>
+        <button class="btn btn-primary" id="btnPoster">Generate rank poster</button>
+        <button class="btn btn-ghost" id="btnCopy">Copy result text</button>
+        <button class="btn btn-ghost" id="btnRestart">Retake</button>
+      </div>
+    </section>
+
+    <section class="panel" id="viewPoster" style="display:none">
+      <img class="poster-img" id="posterImg" alt="AI literacy rank test poster">
+      <p class="s-hint" style="text-align:center;margin-top:10px">Long-press to save the image, then share it</p>
+      <div class="quiz-actions">
+        <button class="btn btn-ghost" id="btnBack">Back to result</button>
+      </div>
+    </section>
+
+    <p class="s-hint" style="text-align:center;margin:4px 0 8px">Question bank V1.0 · facts aligned with the Chinese bank, verified 2026-09-19</p>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../../en/">Home</a> · <a href="../../en/cost/">Cost Calculator</a> · <a href="../../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../../">Home</a> · <a href="../../cost/">Cost Calculator</a> · <a href="../../models/">Model Library</a> · <a href="../../guides/">Guides</a> · <a href="../../about/">About</a> · <a href="../../pricing-methodology/">Pricing Methodology</a> · <a href="../../privacy/">Privacy Policy</a> · <a href="../../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../assets';</script>
+  <script>
+  /* 英文配置注入：与中文共用 assets/quiz.js（同一实现），题库/段位/文案为英文 */
+  window.QUIZ_CFG = {
+    posterUrl: 'https://www.reflex-hub.com/en/quiz/?utm_source=poster',
+    bankUrl: '../../assets/data/quiz-en.json'
+  };
+  </script>
+  <script src="../../assets/app.js"></script>
+  <script src="../../assets/qr.js"></script>
+  <script src="../../assets/quiz-en-cfg.js"></script>
+  <script>
+  /* 英文 dims/tiers/weakLinks/UI 由 i18n.mjs QUIZ_EN 经构建序列化，避免第二份配置 */
+  window.QUIZ_CFG.dims = window.QUIZ_EN_CFG.dims;
+  window.QUIZ_CFG.tiers = window.QUIZ_EN_CFG.tiers;
+  window.QUIZ_CFG.weakLinks = window.QUIZ_EN_CFG.weakLinks;
+  window.QUIZ_CFG.ui = window.QUIZ_EN_UI;
+  </script>
+  <script src="../../assets/quiz.js"></script>
+</body>
+</html>

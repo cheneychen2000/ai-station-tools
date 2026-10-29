@@ -46,12 +46,12 @@ function expectedActive(rel) {
   if (rel === 'en/index.html') return 'en-home';
   if (rel.startsWith('en/cost/')) return 'en-cost';
   if (rel.startsWith('en/models/')) return 'en-model';
-  return null; /* quiz / about / 404：无当前栏目 */
+  return null; /* 英文导航仅 Home/Cost/Model Library 三项，其余页与中文 quiz 页同策略不设 active */
 }
 
-const NAV_LABELS = ['成本计算器', '模型库', '模型对比', '开发指南', 'AI 工具目录', 'Prompt 资源'];
-/* 英文站（MVP）导航：仅链接真实存在的英文页，末项为对应中文页语言切换 */
-const EN_NAV_LABELS = ['Home', 'Cost Calculator', 'GLM-5.3-Flash', '中文'];
+const NAV_LABELS = ['成本计算器', '模型库', '模型对比', '开发指南', 'AI 工具目录', 'Prompt 资源', 'English'];
+/* 英文站导航：仅链接真实存在的英文页，末项为语言切换器（目标由路由映射计算） */
+const EN_NAV_LABELS = ['Home', 'Cost Calculator', 'Model Library', '中文'];
 let navBad = [], linkBad = [], activeBad = [], skipBad = [], footerBad = [];
 
 for (const file of pages) {
@@ -68,7 +68,7 @@ for (const file of pages) {
   const navAria = isEn ? 'Main navigation' : '主导航';
   const navBlock = (txt.match(new RegExp(`<nav class="site-nav" aria-label="${navAria}">[\\s\\S]*?<\\/nav>`)) || [])[0];
   if (!navBlock) { navBad.push(`${rel}（缺主导航）`); continue; }
-  const items = [...navBlock.matchAll(/<a href="([^"]+)"([^>]*)>([^<]+)<\/a>/g)];
+  const items = [...navBlock.matchAll(/<a\s[^>]*href="([^"]+)"([^>]*)>([^<]+)<\/a>/g)];
   const expectLabels = isEn ? EN_NAV_LABELS : NAV_LABELS;
   if (items.map(m => m[3]).join('|') !== expectLabels.join('|')) navBad.push(`${rel}（导航项顺序/文案不符）`);
 
@@ -85,7 +85,7 @@ for (const file of pages) {
   const currents = items.filter(m => m[2].includes('aria-current="page"'));
   const activeKey = expect && expect !== 'home' && expect !== 'en-home' ? expect : null;
   if (activeKey) {
-    const labelIdx = { cost: 0, models: 1, compare: 2, guides: 3, tools: 4, prompts: 5, 'en-cost': 1, 'en-model': 2 }[activeKey];
+    const labelIdx = { cost: 0, models: 1, compare: 2, guides: 3, tools: 4, prompts: 5, 'en-cost': 1, 'en-model': 2, 'en-compare': 2, 'en-guides': 3, 'en-tools': 4, 'en-prompts': 5 }[activeKey];
     const target = (isEn ? EN_NAV_LABELS : NAV_LABELS)[labelIdx];
     if (currents.length !== 1 || currents[0][3] !== target || !currents[0][2].includes('class="active"')) {
       activeBad.push(`${rel}（期望 ${target} 唯一 aria-current+active）`);
@@ -256,11 +256,11 @@ for (const tp of TRUST_PAGES) {
   if (body.replace(/<[^>]+>/g, '').replace(/\s+/g, '').length < 400) trustBad.push(`${rel}（正文过短）`);
 }
 R.check(`N11 ${TRUST_PAGES.length} 个信任页面元数据/导航/面包屑/sitemap/正文齐全`, trustBad.length === 0, trustBad.join(' | ') || '全部合规');
-R.check('N11b 全站页脚含站点信息组（4 个新页面内链入口；英文页为"中文站"组）',
+R.check('N11b 全站页脚含站点信息组（4 个新页面内链入口；英文页为"Chinese site"组）',
   pages.every(f => {
     if (f.endsWith('404.html')) return true;
     const t = readFileSync(f, 'utf8');
-    return t.includes('站点信息：') || t.includes('中文站：');
+    return t.includes('站点信息：') || t.includes('Chinese site:');
   }));
 
 /* N12 指南页（定价比较/场景案例）：存在、正文非空（含构建注入表）、内链、canonical、可索引、面包屑、sitemap */

@@ -5,12 +5,24 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/cost/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/cost/</loc>
     <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/models/</loc>
     <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/models/deepseek-v41-flash/</loc>
@@ -81,11 +93,87 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/models/deepseek-v41-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/deepseek-v4-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/glm-53/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/qwen35-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/qwen37-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/mimo-v25-pro/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/claude-haiku-5-5/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/claude-sonnet-5-5/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/models/gemini-3-1-flash-lite/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/claude-sonnet-5-5/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/claude-sonnet-5-5/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -93,7 +181,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/deepseek-v4-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/deepseek-v41-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/deepseek-v41-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -101,7 +197,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/gemini-3-1-flash-lite/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/glm-53/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/glm-53/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -109,7 +213,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/gpt-6-1-sol/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -117,7 +229,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/hunyuan-turbos-vision/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -125,7 +245,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/mimo-v25-pro/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -133,7 +261,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/qwen35-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -141,7 +277,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-haiku-5-5/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -149,7 +293,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-haiku-5-5/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/deepseek-v4-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/deepseek-v4-pro/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -157,7 +309,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/deepseek-v41-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/gemini-3-1-flash-lite/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/gemini-3-1-flash-lite/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -165,7 +325,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/glm-53/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/glm-53-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -173,7 +341,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/gpt-6-luna/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -181,7 +357,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/kimi-k3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -189,7 +373,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/minimax-m3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -197,7 +389,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/qwen37-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -205,7 +405,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/claude-sonnet-5-5/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/claude-sonnet-5-5/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -213,7 +421,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/deepseek-v41-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/gemini-3-1-flash-lite/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/gemini-3-1-flash-lite/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -221,7 +437,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/glm-53/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/glm-53-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -229,7 +453,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/gpt-6-luna/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -237,7 +469,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/kimi-k3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -245,7 +485,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/minimax-m3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -253,7 +501,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/qwen37-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -261,7 +517,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v4-pro/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v4-pro/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -269,7 +533,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/gemini-3-1-flash-lite/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v41-flash/glm-53/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/glm-53/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -277,7 +549,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v41-flash/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/gpt-6-1-sol/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -285,7 +565,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v41-flash/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/hunyuan-turbos-vision/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -293,7 +581,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v41-flash/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/mimo-v25-pro/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -301,7 +597,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v41-flash/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/qwen35-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -309,7 +613,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/deepseek-v41-flash/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -317,7 +629,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/deepseek-v41-flash/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/glm-53/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/glm-53/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -325,7 +645,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/gpt-6-1-sol/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -333,7 +661,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/hunyuan-turbos-vision/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -341,7 +677,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/mimo-v25-pro/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -349,7 +693,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/qwen35-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -357,7 +709,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gemini-3-1-flash-lite/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -365,7 +725,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gemini-3-1-flash-lite/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53/glm-53-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/glm-53-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -373,7 +741,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/gpt-6-luna/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -381,7 +757,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/kimi-k3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -389,7 +773,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/minimax-m3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -397,7 +789,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/qwen37-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -405,7 +805,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -413,7 +821,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/gpt-6-1-sol/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53-flash/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/gpt-6-luna/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -421,7 +837,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53-flash/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/kimi-k3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -429,7 +853,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53-flash/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/minimax-m3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -437,7 +869,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53-flash/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/qwen37-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -445,7 +885,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/glm-53-flash/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/glm-53-flash/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -453,7 +901,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/gpt-6-luna/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-1-sol/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/hunyuan-turbos-vision/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -461,7 +917,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-1-sol/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/mimo-v25-pro/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -469,7 +933,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-1-sol/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/qwen35-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -477,7 +949,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-1-sol/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -485,7 +965,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-1-sol/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-luna/hunyuan-turbos-vision/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/hunyuan-turbos-vision/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -493,7 +981,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-luna/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/mimo-v25-pro/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -501,7 +997,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-luna/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/qwen35-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -509,7 +1013,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/gpt-6-luna/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -517,7 +1029,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/gpt-6-luna/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/hunyuan-turbos-vision/kimi-k3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/kimi-k3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -525,7 +1045,15 @@
     <lastmod>2026-09-18</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/mimo-v25-pro/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/hunyuan-turbos-vision/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/minimax-m3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -533,7 +1061,15 @@
     <lastmod>2026-09-18</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/qwen35-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/hunyuan-turbos-vision/qwen37-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/qwen37-plus/</loc>
     <lastmod>2026-09-18</lastmod>
   </url>
   <url>
@@ -541,7 +1077,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/hunyuan-turbos-vision/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/hunyuan-turbos-vision/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -549,7 +1093,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/kimi-k3/mimo-v25-pro/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/kimi-k3/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/kimi-k3/minimax-m3/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -557,7 +1109,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/kimi-k3/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/kimi-k3/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/kimi-k3/qwen37-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -565,7 +1125,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/kimi-k3/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/kimi-k3/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/kimi-k3/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -573,7 +1141,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/mimo-v25-pro/minimax-m3/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/mimo-v25-pro/qwen35-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/mimo-v25-pro/qwen35-plus/</loc>
     <lastmod>2026-09-18</lastmod>
   </url>
   <url>
@@ -581,7 +1157,15 @@
     <lastmod>2026-09-18</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/mimo-v25-pro/qwen37-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/mimo-v25-pro/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/mimo-v25-pro/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -589,7 +1173,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/mimo-v25-pro/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/minimax-m3/qwen35-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/minimax-m3/qwen35-plus/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -597,7 +1189,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/minimax-m3/qwen37-plus/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/minimax-m3/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/minimax-m3/qwen38-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -605,7 +1205,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/minimax-m3/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/qwen35-plus/qwen37-plus/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/qwen35-plus/qwen37-plus/</loc>
     <lastmod>2026-09-18</lastmod>
   </url>
   <url>
@@ -613,7 +1221,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/qwen35-plus/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/qwen35-plus/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/qwen35-plus/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -621,7 +1237,15 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/qwen37-plus/qwen38-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/compare/qwen37-plus/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/compare/qwen37-plus/step-37-flash/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
@@ -629,11 +1253,23 @@
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/compare/qwen38-flash/step-37-flash/</loc>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/quiz/</loc>
     <lastmod>2026-09-19</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/quiz/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/tools/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/tools/</loc>
     <lastmod>2026-10-29</lastmod>
   </url>
   <url>
@@ -641,63 +1277,103 @@
     <lastmod>2026-10-29</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/tools/doubao/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/prompts/</loc>
     <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/prompts/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/about/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/about/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/guides/</loc>
     <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/guides/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/guides/llm-api-cost/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/guides/llm-api-cost/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/guides/llm-api-pricing-comparison/</loc>
     <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/guides/llm-api-pricing-comparison/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/guides/llm-api-cost-examples/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/guides/llm-api-cost-examples/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/guides/make-llm-workflow/</loc>
     <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/guides/make-llm-workflow/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/guides/workflow-automation-choose/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/guides/workflow-automation-choose/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/pricing-methodology/</loc>
     <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/pricing-methodology/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/privacy/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
+    <loc>https://www.reflex-hub.com/en/privacy/</loc>
+    <lastmod>2026-10-29</lastmod>
+  </url>
+  <url>
     <loc>https://www.reflex-hub.com/affiliate-disclosure/</loc>
     <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://www.reflex-hub.com/en/affiliate-disclosure/</loc>
+    <lastmod>2026-10-29</lastmod>
   </url>
   <url>
     <loc>https://www.reflex-hub.com/terms/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
-    <loc>https://www.reflex-hub.com/en/</loc>
+    <loc>https://www.reflex-hub.com/en/terms/</loc>
     <lastmod>2026-10-29</lastmod>
-  </url>
-  <url>
-    <loc>https://www.reflex-hub.com/en/cost/</loc>
-    <lastmod>2026-10-29</lastmod>
-  </url>
-  <url>
-    <loc>https://www.reflex-hub.com/en/models/glm-53-flash/</loc>
-    <lastmod>2026-10-28</lastmod>
   </url>
 </urlset>

@@ -31,18 +31,20 @@ export const FOOTER_INFO = [
 ];
 
 /**
- * 统一 header：跳到正文链接 + 品牌链接（始终回首页）+ 可选面包屑 + 主导航。
+ * 统一 header：跳到正文链接 + 品牌链接（始终回首页）+ 可选面包屑 + 主导航 + 语言切换器。
  * @param base 相对根路径前缀（'' / '../' / '../../'），404 传 '/' 使用根绝对路径
  * @param active 当前栏目 key（NAV_ITEMS.key 或 'home'），命中项输出 active 类与 aria-current="page"
  * @param crumb 面包屑 HTML（已转义/受信任的模板片段），无则省略
+ * @param switchHref 语言切换目标（由 scripts/lib/locales.mjs switchTarget 计算，真实存在的页面 URL）
  */
-export function navHeaderHtml(base, active = null, crumb = '') {
+export function navHeaderHtml(base, active = null, crumb = '', switchHref = null) {
   const brandHref = base === '/' ? '/' : (base || './');
   const homeCur = active === 'home' ? ' aria-current="page"' : '';
   const items = NAV_ITEMS.map(it => {
     const cur = active === it.key ? ' class="active" aria-current="page"' : '';
     return `          <li><a href="${base}${it.path}"${cur}>${esc(it.label)}</a></li>`;
-  }).join('\n');
+  });
+  if (switchHref) items.push(`          <li class="lang-switch-item"><a class="lang-switch" href="${esc(switchHref)}">English</a></li>`);
   return `<a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
@@ -50,7 +52,7 @@ export function navHeaderHtml(base, active = null, crumb = '') {
       <span class="crumb">${crumb}</span>` : ''}
       <nav class="site-nav" aria-label="主导航">
         <ul>
-${items}
+${items.join('\n')}
         </ul>
       </nav>
     </div>
@@ -58,30 +60,33 @@ ${items}
 }
 
 /**
- * 英文站主导航（MVP）：只链接真实存在的英文页，末项为对应中文站语言切换。
+ * 英文站主导航：只链接真实存在的英文页，末项为语言切换器（switchHref 由路由映射计算）。
  * 与 dist/en/ 手写页内联导航同结构（顺序/文案由 check-nav N1 的 EN_NAV_LABELS 强制一致）。
  * @param base 相对根路径前缀（'../' × depth）
  * @param active 'home' | 'cost' | 'model'
+ * @param switchHref 中文切换目标（switchTarget 计算）
  */
-export function navHeaderHtmlEn(base, active = null, crumb = '') {
+export function navHeaderHtmlEn(base, active = null, crumb = '', switchHref = null) {
   const items = [
     { key: 'home', label: 'Home', path: `${base}en/` },
     { key: 'cost', label: 'Cost Calculator', path: `${base}en/cost/` },
-    { key: 'model', label: 'GLM-5.3-Flash', path: `${base}en/models/glm-53-flash/` },
-    { key: 'zh', label: '中文', path: `${base}` }
+    { key: 'model', label: 'Model Library', path: `${base}en/models/` }
   ];
   const lis = items.map(it => {
-    const cur = active === it.key ? ' class="active" aria-current="page"' : '';
+    const cur = active === it.key && it.key !== 'home' ? ' class="active" aria-current="page"' : '';
     return `          <li><a href="${it.path}"${cur}>${esc(it.label)}</a></li>`;
-  }).join('\n');
+  });
+  if (switchHref) lis.push(`          <li class="lang-switch-item"><a class="lang-switch" href="${esc(switchHref)}">中文</a></li>`);
+  const homeCur = active === 'home' ? ' aria-current="page"' : '';
+  const brandHref = base === '../' ? './' : `${base}en/`;
   return `<a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <div class="wrap topbar-row">
-      <a class="brand" href="${base}en/"><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
+      <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
       <span class="crumb">${crumb}</span>` : ''}
       <nav class="site-nav" aria-label="Main navigation">
         <ul>
-${lis}
+${lis.join('\n')}
         </ul>
       </nav>
     </div>

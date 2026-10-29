@@ -1,0 +1,154 @@
+[
+ {
+  "dim": "concept",
+  "hard": false,
+  "q": "In LLM chat, what does the \"context window\" refer to?",
+  "options": [
+   "The monitoring range of a camera",
+   "The amount of conversation the model can \"remember\" and process at once",
+   "The size of a phone screen",
+   "How many books were used in training"
+  ],
+  "answer": 1,
+  "explain": "The window is the maximum number of tokens the model can process in one pass; earlier content beyond the window is either truncated or patched by external memory — which is why it \"forgets\" in long conversations."
+ },
+ {
+  "dim": "concept",
+  "hard": true,
+  "q": "When AI confidently invents facts that don't exist, the industry calls it \"hallucination\". What is the main cause?",
+  "options": [
+   "Random errors programmers left in on purpose",
+   "Network packet loss",
+   "A model is essentially \"predicting the next word\" — it generates the text that most looks like an answer instead of looking anything up",
+   "The user's question is too short"
+  ],
+  "answer": 2,
+  "explain": "A large model is a probability generator, not a database: it optimizes for \"sounds right\", not \"is true\". Asking it for sources on important facts is the only self-defense."
+ },
+ {
+  "dim": "price",
+  "hard": false,
+  "q": "In 2026, roughly what does it cost to generate 1 million output tokens (about a full novel) with a mainstream Chinese LLM API?",
+  "options": [
+   "A few CNY to around one hundred",
+   "Over ten thousand CNY",
+   "Completely free, unlimited",
+   "Per-call billing at 1M tokens each"
+  ],
+  "answer": 0,
+  "explain": "Flagship output prices cluster around 10–100 CNY per million tokens (GLM-5.3 is 28, Kimi K3 is 100), and lightweight models go as low as ~3 — \"APIs are expensive\" is outdated."
+ },
+ {
+  "dim": "price",
+  "hard": true,
+  "q": "True or false: in the 2026 Chinese API market, the same model can cost about half as much for batch jobs at night versus peak daytime hours.",
+  "options": [
+   "True: vendors like DeepSeek use peak/off-peak pricing, off-peak being about half of peak",
+   "False: APIs cost the same around the clock"
+  ],
+  "answer": 0,
+  "explain": "DeepSeek defines peak (weekdays 9:00–12:00, 14:00–18:00) and off-peak windows with a 2× gap; moving batch work off-peak plus using cache is the fastest cost cut — estimate it at reflex-hub.com/en/cost."
+ },
+ {
+  "dim": "boundary",
+  "hard": false,
+  "q": "Which of these is least reliable for a 2026 large model?",
+  "options": [
+   "Translating a paragraph of Chinese into English",
+   "Writing a polite complaint email",
+   "Multi-digit multiplication and division with a guaranteed zero error rate",
+   "Summarizing the central idea of a paper"
+  ],
+  "answer": 2,
+  "explain": "Language is its strength; pure arithmetic can produce plausible-looking wrong answers — use a calculator or code for that, and let AI call the tools."
+ },
+ {
+  "dim": "boundary",
+  "hard": true,
+  "q": "True or false: the more reference material you give AI, the more accurate its answer necessarily becomes.",
+  "options": [
+   "True: feed it enough and the answer is naturally right",
+   "False: too much material drowns the point"
+  ],
+  "answer": 1,
+  "explain": "Overstuffing buries the key points — models attend least to the middle of long context (\"lost in the middle\"), and irrelevant material skews the answer; precise beats plentiful."
+ },
+ {
+  "dim": "industry",
+  "hard": false,
+  "q": "Which Chinese large model, among the highest daily token volumes in 2026, is also deeply integrated into car cockpits?",
+  "options": [
+   "ERNIE Bot (Baidu)",
+   "Doubao (ByteDance)",
+   "Siri (Apple)",
+   "Tmall Genie"
+  ],
+  "answer": 1,
+  "explain": "Doubao surpassed 180 trillion daily tokens by June, and on Sep 17 its cockpit assistant launched, running in 7+ million vehicles."
+ },
+ {
+  "dim": "industry",
+  "hard": true,
+  "q": "In 2026, which best describes how Chinese AI companies source training/inference compute?",
+  "options": [
+   "All NVIDIA, no alternative",
+   "Already 100% domestic chips",
+   "Mainly CPU training",
+   "A mix of NVIDIA and domestic chips (Ascend, Cambricon, etc.), with the domestic share rising"
+  ],
+  "answer": 3,
+  "explain": "Under export controls, \"mixed + self-developed\" is the norm — Ascend 960 is official and ByteDance and others push self-designed chips, but the NVIDIA installed base is still the mainstay; \"all on one side\" is never the full story."
+ },
+ {
+  "dim": "practice",
+  "hard": false,
+  "q": "To get AI to draft your weekly report, which approach yields the most usable output?",
+  "options": [
+   "Just say \"write my weekly report\"",
+   "List the 3 things you did as raw facts and attach your company's report format for it to organize",
+   "Let it imagine what you did this week",
+   "Run 5 AIs in parallel and vote"
+  ],
+  "answer": 1,
+  "explain": "AI has writing skill but not your facts — you supply the facts and the format, it supplies the structure. A one-line handoff question only earns correct nonsense."
+ },
+ {
+  "dim": "practice",
+  "hard": true,
+  "q": "For \"the latest\" information (today's news, current prices), the most reliable approach is?",
+  "options": [
+   "Ask directly — it knows everything",
+   "A pricier model will definitely know",
+   "Use a web-search / RAG mode and ask for sources",
+   "Repeat the question 10 times for weight"
+  ],
+  "answer": 2,
+  "explain": "Model knowledge has a training cutoff; \"new\" information must come from retrieval. Treat an unsourced \"latest\" answer as fiction by default."
+ },
+ {
+  "dim": "safety",
+  "hard": false,
+  "q": "You get a voice call from your \"daughter\" asking to borrow money for an emergency, and the voice sounds exactly right. What is the first step?",
+  "options": [
+   "Wire the money first — family matters",
+   "Chat about family trivia to confirm on the call",
+   "Forward the recording to friends for help",
+   "Hang up, call back on the number you have saved or verify via video / a shared codeword"
+  ],
+  "answer": 3,
+  "explain": "AI voice cloning works from 3 seconds of sample — \"sounds like her\" is no longer proof of identity; hanging up and calling back on a number you saved is the only reliable verification."
+ },
+ {
+  "dim": "safety",
+  "hard": true,
+  "q": "What is the biggest risk of pasting your company's unreleased contract into a public AI assistant?",
+  "options": [
+   "Slow answers",
+   "Sensitive information may be retained or used for training, causing a leak",
+   "AI will sign contracts for the company",
+   "No risk — it's all encrypted"
+  ],
+  "answer": 1,
+  "explain": "Public AI services have widely differing data policies; pasting unredacted contract or customer data may take it out of your control. Use private deployment or no-retention contracted services for sensitive work, or redact first."
+ }
+]

@@ -641,3 +641,18 @@ footer p { margin: 4px 0; }
   .field-grid { grid-template-columns: repeat(3, 1fr); }
   .result-card .r-cost { font-size: 26px; }
 }
+
+/* 语言切换器（导航末项，真实链接，目标由构建期路由映射计算） */
+.lang-switch-item a { color: var(--muted); }
+.lang-switch-item a:hover { color: var(--primary); }
+
+/* 语言推荐条（app.js 非侵入式提示、可关闭、仅底部小条，不遮挡正文、不自动重定向） */
+.lang-hint {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 40;
+  display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px);
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--card); color: var(--text); box-shadow: 0 4px 16px rgba(27, 36, 55, 0.12);
+  font-size: 13px;
+}
+.lang-hint a { white-space: nowrap; font-weight: 600; }
+.lang-hint-close { border: 0; background: transparent; cursor: pointer; font-size: 16px; line-height: 1; padding: 4px; color: var(--muted); }

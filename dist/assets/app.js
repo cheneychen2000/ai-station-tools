@@ -51,3 +51,52 @@ window.CF_ANALYTICS_TOKEN = window.CF_ANALYTICS_TOKEN || '';
     })
     .catch(function () { /* 静默：广告配置不可用时零副作用 */ });
 })();
+
+/* 语言推荐（非强制、可关闭）：优先级=本次显式点击 > 已保存偏好 > 浏览器语言 > 默认中文。
+   切换链接由构建期路由映射计算，只在目标语言页面真实存在时才出现；绝不自动重定向。
+   localStorage 仅在用户点击语言切换时写入；读取失败/不可用一律静默降级，不影响页面功能。 */
+(function langHint() {
+  var switchLink = document.querySelector('a.lang-switch');
+  if (!switchLink) return;
+  var current = document.documentElement.lang || 'zh-CN';
+  /* 显式选择 = 点击切换链接：记录目标语言偏好（写失败不影响跳转） */
+  function bindChoice(link) {
+    link.addEventListener('click', function () {
+      try { localStorage.setItem('rh_lang_pref', current === 'en' ? 'zh-CN' : 'en'); } catch (e) { /* 静默 */ }
+    });
+  }
+  bindChoice(switchLink);
+  var pref = null, dismissed = false;
+  try { pref = localStorage.getItem('rh_lang_pref'); } catch (e) { /* 不可用 */ }
+  try { dismissed = sessionStorage.getItem('rh_lang_hint_off') === '1'; } catch (e) { /* 不可用 */ }
+  if (dismissed) return;
+  var browser = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+  /* 当前中文页：保存过英文偏好、或无偏好且浏览器为英语 → 推荐英文；其余（含中文/其他语言浏览器）默认中文不打扰 */
+  var showToEn = current !== 'en' && (pref === 'en' || (!pref && /^en/i.test(browser)));
+  /* 当前英文页：仅当保存过中文偏好才推荐回中文 */
+  var showToZh = current === 'en' && pref === 'zh-CN';
+  if (!showToEn && !showToZh) return;
+  var bar = document.createElement('div');
+  bar.className = 'lang-hint';
+  bar.setAttribute('role', 'note');
+  var text = document.createElement('span');
+  text.textContent = showToEn ? 'This page is also available in English.' : '本页面提供中文版本。';
+  var go = document.createElement('a');
+  go.className = 'lang-switch';
+  go.href = switchLink.getAttribute('href');
+  go.textContent = showToEn ? 'English →' : '中文 →';
+  bindChoice(go);
+  var close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'lang-hint-close';
+  close.setAttribute('aria-label', showToEn ? 'Dismiss' : '关闭');
+  close.textContent = '×';
+  close.addEventListener('click', function () {
+    bar.remove();
+    try { sessionStorage.setItem('rh_lang_hint_off', '1'); } catch (e) { /* 静默 */ }
+  });
+  bar.appendChild(text);
+  bar.appendChild(go);
+  bar.appendChild(close);
+  document.body.appendChild(bar);
+})();

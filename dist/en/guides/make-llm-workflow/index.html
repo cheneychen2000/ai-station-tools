@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build an LLM Automation Workflow with Make | Reflex Hub</title>
+  <meta name="description" content="A generic five-part architecture for calling LLM APIs from a visual iPaaS like Make (trigger → data prep → HTTP call → validation → follow-up actions), concept-level steps, failure handling, and a per-1,000-runs API cost table computed from official list prices. Documentation research, no hands-on testing.">
+  <link rel="canonical" href="https://www.reflex-hub.com/en/guides/make-llm-workflow/">
+  <!-- HREFLANG_START -->
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/make-llm-workflow/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/make-llm-workflow/">
+      <!-- HREFLANG_END -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="Build an LLM Automation Workflow with Make | Reflex Hub">
+  <meta property="og:description" content="Architecture, concept-level steps and per-1,000-runs API costs for LLM workflows on Make.">
+  <meta property="og:url" content="https://www.reflex-hub.com/en/guides/make-llm-workflow/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../../en/"><img class="brand-logo" src="../../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ <a href="../../" style="color:inherit">Guides</a> / Make workflows</span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="../../../en/">Home</a></li>
+          <li><a href="../../../en/cost/">Cost Calculator</a></li>
+          <li><a href="../../../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/guides/make-llm-workflow/">中文</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>Build an LLM automation workflow with Make</h1>
+      <p class="tagline">Architecture · concept-level steps · cost per 1,000 runs</p>
+    </section>
+
+    <p class="lede">
+      <strong>The problem</strong>: repetitive weekly text tasks (summarizing form feedback, tagging new articles,
+      drafting replies) deserve automation, but "how much will the API cost per month afterwards" is often overlooked.
+      <strong>What this article is</strong>: a generic architecture and concept-level steps for calling LLM APIs from a
+      Make-style visual iPaaS, plus a clear per-run cost computed from this site's verified model prices.
+      This article is <strong>documentation research</strong> (interface details follow Make's official documentation);
+      no hands-on interface testing was performed.
+    </p>
+
+    <section class="panel">
+      <h2>1. Workflow architecture (five parts)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          1. <strong>Trigger</strong>: a schedule (cron) or an event (new email, new form row, webhook) starts one execution;<br>
+          2. <strong>Data preparation</strong>: fetch the content to process and trim it to the length the model needs — this step directly determines input-token cost;<br>
+          3. <strong>Call the LLM API</strong>: send a request to the model endpoint through the platform's HTTP module (Bearer key authentication, JSON body); Make offers a REST-style open API and a custom-app mechanism, and most administrative endpoints require a paid subscription (per official documentation);<br>
+          4. <strong>Parse and validate</strong>: check the response is usable (timeouts, rate limits, empty responses) and decide retry or fallback;<br>
+          5. <strong>Follow-up actions</strong>: write back to a sheet, send a notification, update a ticket.
+        </p>
+        <p>Cost control lives in steps 2 and 4: longer inputs and more retries mean higher bills. Unit and cache prices per model are in the table below.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Concept-level steps (not a click-by-click tutorial)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          1. Create a new Scenario on the platform and configure the trigger's schedule;<br>
+          2. Add a data-fetching module (read the form / email / file) and trim fields with length truncation;<br>
+          3. Add an HTTP module: POST to the model endpoint, authentication in the headers, body = {model, input, parameters};<br>
+          4. Configure error handling: bounded retries with backoff for 429/5xx, and defaults for empty responses;<br>
+          5. Trial with a small volume first, record the actual input/output tokens per execution, then estimate the monthly bill with the cost table below;<br>
+          6. Set platform-side alerts (consecutive failures) so a broken flow fails loudly instead of silently burning quota.
+        </p>
+        <p class="s-hint">Buttons, module names and billing details change with platform versions; this article deliberately stays at the concept level. Follow Make's official documentation and your actual console.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>3. What each run costs: the API cost table</h2>
+      <p style="font-size:14px;line-height:1.9">
+        Assume each workflow run makes one model call (2,000 input / 800 output tokens, 30% cache hit rate, off-peak
+        rates). The table below shows the <strong>LLM API cost per 1,000 runs</strong>, computed from official list prices
+        by this site's build script:
+      </p>
+      <!-- WF_COST_START -->
+      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>Model</th><th>Vendor / channel</th><th>List price (per 1M tokens)</th><th>Per 1,000 runs (CNY-converted)</th><th>Verified</th></tr>
+          </thead>
+          <tbody>
+          <tr><th><a href="../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th><td>DeepSeek</td><td class="num">Input ¥2 / Output ¥8 / Cache ¥0.04</td><td class="num">¥4.61</td><td class="num">2026-09-18</td></tr>
+          <tr><th><a href="../../models/glm-53-flash/">GLM-5.3-Flash</a></th><td>Alibaba Cloud Model Studio · Zhipu (direct)</td><td class="num">Input ¥0.8 / Output ¥2.8 / Cache ¥0.23</td><td class="num">¥3.50</td><td class="num">2026-10-28</td></tr>
+          <tr><th><a href="../../models/gpt-6-luna/">GPT-6 Luna</a></th><td>OpenAI</td><td class="num">Input $0.1 / Output $0.5 / Cache $0.01</td><td class="num">≈ ¥3.67<br><span class="lib-meta">$0.55</span></td><td class="num">2026-10-28</td></tr>
+          <tr><th><a href="../../models/kimi-k3/">Kimi K3</a></th><td>Alibaba Cloud Model Studio</td><td class="num">Input ¥20 / Output ¥100 / Cache ¥2</td><td class="num">¥109.20</td><td class="num">2026-10-28</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">Basis: each run = 1 model call (2,000 input / 800 output tokens · 30% cache hit rate · off-peak rates); USD models converted at 1 USD = 6.718 CNY, CFETS central parity rate 2026-10-23, indicative only. Monthly cost for N runs/day = table value × N ÷ 1,000. Models without a published cache price are billed at the standard input price.</p>
+      <!-- WF_COST_END -->
+      <p class="s-hint">Replace the per-call input/output tokens with the real values from your trial and recompute in the <a href="../../cost/">cost calculator</a>; note this is the API-side cost only — platform-side charges by operation count are covered in the next section.</p>
+    </section>
+
+    <section class="panel">
+      <h2>4. Platform-side cost and retry amplification (run the numbers twice)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Two bills</strong>: total cost = platform operation fees + LLM API fees. The former depends on the
+          platform plan and modules consumed per execution — <strong>current Make and n8n pricing has not been verified
+          by this site</strong>; check each vendor's official site. This article cites no unverified price numbers;<br>
+          · <strong>Retry amplification</strong>: if each task retries 0.5 times on average, real API consumption ×1.5;
+          under heavy rate limiting it is worse. Write retry caps, backoff and "fail to manual review" into the flow
+          before shopping for a cheaper model;<br>
+          · <strong>Input trimming</strong>: cutting a 20,000-token source to 2,000 tokens at step 2 cuts input cost by
+          an order of magnitude — the most certain optimization in automation scenarios.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>5. When not to choose Make</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          If data must not leave your intranet, choose a self-hostable option such as n8n — a fair-code licensed tool
+          with Docker self-hosting support (see the <a href="https://docs.n8n.io/" target="_blank" rel="noopener">n8n documentation</a>);
+          if the flow is highly customized and needs code-level control, build a custom API; at very high execution
+          volumes with an ops team, self-hosting is usually cheapest — but rate limiting, retries and monitoring become
+          your own job. The comparison framework across the three options is in
+          <a href="../workflow-automation-choose/">Make, n8n or a custom API</a> — <strong>neither article contains any
+          promotional links</strong>.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>6. Affiliate status and data sources</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · Commercial relationship: Make's official affiliate program is in <strong>candidate evaluation</strong> on this
+          site — not applied for, not approved — and this article <strong>contains no promotional links</strong>. If it is
+          ever approved, the CTA will appear only near this section with the commission relationship disclosed
+          (rel="sponsored nofollow noopener"), and recommendations will not change because of the partnership;<br>
+          · Data sources: model prices in the cost table come from this site's single source models.json (official list
+          prices, each with a source link and verification date — 2026-10-28 basis for this page); USD models are
+          converted at the reference rate (CFETS central parity), indicative only;<br>
+          · Unverified items: Make's per-scenario/operation billing figures and n8n pricing are not verified and are
+          labeled as such instead of guessed;<br>
+          · This article is documentation research with no hands-on conclusions; price-verification time ≠ page-content update time.
+        </p>
+      </div>
+      <!-- AFFILIATE:make:BEGIN -->
+      <!-- AFFILIATE:make:END -->
+    </section>
+
+    <section class="panel">
+      <h2>7. Next steps</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · Recompute with your real token usage: <a href="../../cost/">cost calculator</a>;<br>
+          · Full pricing profiles: <a href="../../models/">model library</a>; two candidates via <a href="../../compare/">model comparison</a>;<br>
+          · Choosing a platform: <a href="../workflow-automation-choose/">Make, n8n or a custom API</a>;<br>
+          · Back to the <a href="../">guide directory</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../../../en/">Home</a> · <a href="../../../en/cost/">Cost Calculator</a> · <a href="../../../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../../../">Home</a> · <a href="../../../cost/">Cost Calculator</a> · <a href="../../../models/">Model Library</a> · <a href="../../../guides/">Guides</a> · <a href="../../../about/">About</a> · <a href="../../../pricing-methodology/">Pricing Methodology</a> · <a href="../../../privacy/">Privacy Policy</a> · <a href="../../../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../../assets';</script>
+  <script src="../../../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Comparison - Two LLMs, Prices and Specs Side by Side | Reflex Hub</title>
+  <meta name="description" content="Pick any two mainstream LLMs and compare input/output/cache prices, time-based pricing, context windows, supported modalities and a fixed-assumption monthly cost, line by line. Every pairwise combination of the catalog has its own comparison page; cross-currency figures are converted at the reference rate and labeled.">
+  <link rel="canonical" href="https://www.reflex-hub.com/en/compare/">
+  <!-- HREFLANG_START -->
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/compare/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/compare/">
+      <!-- HREFLANG_END -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reflex Hub">
+  <meta property="og:title" content="Model Comparison - Two LLMs, Prices and Specs Side by Side | Reflex Hub">
+  <meta property="og:description" content="Compare any two models line by line: prices, cache, time-based pricing, context, modalities and example monthly cost.">
+  <meta property="og:url" content="https://www.reflex-hub.com/en/compare/">
+  <meta property="og:image" content="https://www.reflex-hub.com/assets/og-cover.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+  <!-- NAV_START -->
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="../../en/"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <span class="crumb">/ Model Comparison</span>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="../../en/">Home</a></li>
+          <li><a href="../../en/cost/">Cost Calculator</a></li>
+          <li><a href="../../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/compare/">中文</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+      <!-- NAV_END -->
+
+  <main class="wrap" id="main">
+    <section class="hero">
+      <h1>Model comparison</h1>
+      <p class="tagline">Two models, line by line — the winner is visible at a glance</p>
+    </section>
+
+    <p class="lede">
+      Select two LLMs to generate a line-by-line comparison: input/output/cache-hit prices, time-based pricing, context
+      windows, supported modalities and features, plus an example monthly cost using the exact formula of the
+      <a href="../cost/">cost calculator</a>. For a whole-market comparison at identical usage and how to read it, see the
+      <a href="../guides/llm-api-pricing-comparison/">pricing comparison guide</a>.
+    </p>
+
+    <section class="panel">
+      <div class="sel-compare">
+        <select id="selA" aria-label="Model A"></select>
+        <select id="selB" aria-label="Model B"></select>
+        <button class="btn btn-primary" id="btnGo" type="button">Compare</button>
+      </div>
+      <p class="s-hint" id="cmpHint" style="margin-top:10px"></p>
+    </section>
+
+    <section class="panel">
+      <h2>What each comparison fixes</h2>
+      <p style="font-size:14px;line-height:1.8">
+        Every pair compares: input price, output price, cache-hit price, time-based pricing rules, context window and
+        supported modalities, plus an example monthly cost identical to the
+        <a href="../cost/">cost calculator</a> (100 calls/day · 2,000 input / 800 output tokens per call · off-peak rates ·
+        30% cache hit rate). Prices are official published list prices (CNY or USD per 1M tokens; USD models are
+        converted to CNY at the reference rate for comparison — indicative only); models without a published cache price
+        use the miss price. The example monthly cost is an estimate at that fixed usage only — it is not a ranking of
+        capability, output quality or overall value, and does not constitute purchase advice.
+        Method and common mistakes: <a href="../guides/llm-api-cost/">How to calculate LLM API costs</a>.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Frequently compared pairs</h2>
+      <p style="font-size:14px;line-height:2">
+        · Budget lightweight tier: <a href="deepseek-v41-flash/glm-53-flash/">DeepSeek V4.1 Flash vs GLM-5.3-Flash</a>　<a href="deepseek-v41-flash/qwen38-flash/">DeepSeek V4.1 Flash vs Qwen3.8-Flash</a><br>
+        · Flagship reasoning: <a href="deepseek-v4-pro/glm-53/">DeepSeek V4 Pro vs GLM-5.3</a>　<a href="glm-53/kimi-k3/">GLM-5.3 vs Kimi K3</a><br>
+        · Long context: <a href="deepseek-v41-flash/kimi-k3/">DeepSeek V4.1 Flash vs Kimi K3</a>　<a href="kimi-k3/qwen38-flash/">Kimi K3 vs Qwen3.8-Flash</a><br>
+        · Same family, different tier: <a href="qwen35-plus/qwen37-plus/">Qwen3.5-Plus vs Qwen3.7-Plus</a>
+      </p>
+      <p style="font-size:14px;line-height:2;margin-top:10px">
+        · OpenAI, head to head: <a href="gpt-6-1-sol/gpt-6-luna/">GPT-6 Luna vs GPT-6.1 Sol</a><br>
+        · Anthropic, head to head: <a href="claude-haiku-5-5/claude-sonnet-5-5/">Claude Haiku 5.5 vs Claude Sonnet 5.5</a><br>
+        · Cross-vendor lightweight: <a href="glm-53-flash/gpt-6-luna/">GLM-5.3-Flash vs GPT-6 Luna</a>　<a href="claude-haiku-5-5/glm-53-flash/">Claude Haiku 5.5 vs GLM-5.3-Flash</a>　<a href="gemini-3-1-flash-lite/qwen38-flash/">Gemini 3.1 Flash-Lite vs Qwen3.8-Flash</a><br>
+        · Cross-vendor workhorse: <a href="deepseek-v4-pro/gpt-6-1-sol/">DeepSeek V4 Pro vs GPT-6.1 Sol</a>　<a href="claude-sonnet-5-5/deepseek-v4-pro/">Claude Sonnet 5.5 vs DeepSeek V4 Pro</a>
+      </p>
+      <!-- CMP_STATS_START -->
+<p class="s-hint">All 136 pairs (every combination of 17 models) are reachable from the selector above; each comparison page has a fixed-basis summary and links to both model profiles.</p>
+      <!-- CMP_STATS_END -->
+    </section>
+
+    <noscript>
+      <p class="empty-hint">The model selector requires JavaScript. You can also browse the <a href="../models/">model library</a> for per-model pricing and spec profiles, or estimate monthly costs in the <a href="../cost/">cost calculator</a>.</p>
+    </noscript>
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../../en/">Home</a> · <a href="../../en/cost/">Cost Calculator</a> · <a href="../../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../../">Home</a> · <a href="../../cost/">Cost Calculator</a> · <a href="../../models/">Model Library</a> · <a href="../../guides/">Guides</a> · <a href="../../about/">About</a> · <a href="../../pricing-methodology/">Pricing Methodology</a> · <a href="../../privacy/">Privacy Policy</a> · <a href="../../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
+    </div>
+  </footer>
+
+  <script>window.ASSETS_BASE = '../../assets';</script>
+  <script src="../../assets/app.js"></script>
+  <script src="../../assets/labels-en.js"></script>
+  <script>
+  Promise.all([
+    fetch('../../assets/data/models.json').then(function (res) { return res.json(); }),
+    fetch('../../assets/data/compare-pairs.json').then(function (res) { return res.json(); })
+  ]).then(function (res) {
+    var models = res[0];
+    var L = window.EnLabels || { vendor: {} };
+    var pairSet = {};
+    (res[1].pairs || []).forEach(function (p) { pairSet[p[0] + '/' + p[1]] = true; });
+    var selA = document.getElementById('selA');
+    var selB = document.getElementById('selB');
+    models.forEach(function (m) {
+      var label = m.name + ' (' + (L.vendor[m.vendor] || m.vendor) + ')';
+      selA.add(new Option(label, m.id));
+      selB.add(new Option(label, m.id));
+    });
+    if (models.length > 1) selB.selectedIndex = 1;
+    var qa = /[?&]a=([a-z0-9\-]+)/i.exec(location.search);
+    if (qa) selA.value = qa[1];
+
+    document.getElementById('btnGo').addEventListener('click', function () {
+      var a = selA.value, b = selB.value;
+      if (a === b) {
+        document.getElementById('cmpHint').textContent = 'Please choose two different models';
+        return;
+      }
+      var ids = [a, b].sort();
+      if (!pairSet[ids[0] + '/' + ids[1]]) {
+        document.getElementById('cmpHint').textContent = 'This pair has no comparison page yet (' + Object.keys(pairSet).length + ' pairs exist). Try the shortcuts above or the model library.';
+        return;
+      }
+      location.href = ids[0] + '/' + ids[1] + '/';
+    });
+  }).catch(function () {
+    document.getElementById('cmpHint').textContent = 'Failed to load model data — please refresh';
+  });
+  </script>
+</body>
+</html>

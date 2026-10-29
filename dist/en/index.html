@@ -6,8 +6,10 @@
   <title>Reflex Hub — Compare AI Model API Pricing and Estimate Token Costs</title>
   <meta name="description" content="Free tools to compare LLM API pricing and estimate monthly token costs. Official vendor price sources, verification dates, cache-hit weighting and off-peak rates. No sign-up.">
   <link rel="canonical" href="https://www.reflex-hub.com/en/">
-  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/">
+  <!-- HREFLANG_START -->
   <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/">
+      <!-- HREFLANG_END -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="Reflex Hub — Compare AI Model API Pricing and Estimate Token Costs">
@@ -40,20 +42,22 @@
   </script>
 </head>
 <body>
+  <!-- NAV_START -->
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <div class="wrap topbar-row">
       <a class="brand" href="./" aria-current="page"><img class="brand-logo" src="../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
       <nav class="site-nav" aria-label="Main navigation">
         <ul>
-          <li><a href="./">Home</a></li>
-          <li><a href="cost/">Cost Calculator</a></li>
-          <li><a href="models/glm-53-flash/">GLM-5.3-Flash</a></li>
-          <li><a href="../">中文</a></li>
+          <li><a href="../en/">Home</a></li>
+          <li><a href="../en/cost/">Cost Calculator</a></li>
+          <li><a href="../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/">中文</a></li>
         </ul>
       </nav>
     </div>
   </header>
+      <!-- NAV_END -->
 
   <main class="wrap" id="main">
     <section class="hero">
@@ -81,17 +85,17 @@
         <p>Official list pricing, 1M-token context window, supported modalities, source link and verification date</p>
         <span class="go">View profile →</span>
       </a>
-      <a class="module-card active" href="../models/">
+      <a class="module-card active" href="models/">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"/><line x1="5" y1="7" x2="19" y2="7"/><path d="M5 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><path d="M19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><line x1="8" y1="21" x2="16" y2="21"/></svg></div>
-        <h3>Full Model Library <span class="tag">中文</span></h3>
-        <p>17 model profiles with prices, specifications and verified sources — on the Chinese version of this site</p>
-        <span class="go">浏览模型库 →</span>
+        <h3>Full Model Library</h3>
+        <p>17 model profiles with prices, specifications and verified sources, searchable and sortable</p>
+        <span class="go">Browse model library →</span>
       </a>
-      <a class="module-card active" href="../compare/">
+      <a class="module-card active" href="compare/">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-        <h3>Model Comparison <span class="tag">中文</span></h3>
-        <p>Side-by-side price and spec comparison for any two models, with fixed-assumption cost estimates</p>
-        <span class="go">开始对比 →</span>
+        <h3>Model Comparison</h3>
+        <p>Side-by-side price and spec comparison for any two of 17 models, with fixed-assumption cost estimates</p>
+        <span class="go">Start comparing →</span>
       </a>
     </nav>
 
@@ -108,16 +112,18 @@
 
   <footer>
     <div class="wrap" id="site-footer">
-      <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
-      <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
-      <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
-      <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
-      <nav class="footer-nav" aria-label="Footer navigation">
-        <p>Core tools: <a href="./">Home</a> · <a href="cost/">Cost Calculator</a> · <a href="models/glm-53-flash/">GLM-5.3-Flash</a></p>
-        <p>中文站：<a href="../">首页</a> · <a href="../cost/">成本计算器</a> · <a href="../models/">模型库</a> · <a href="../guides/">开发指南</a> · <a href="../about/">关于本站</a> · <a href="../pricing-methodology/">定价方法论</a> · <a href="../privacy/">隐私政策</a> · <a href="../terms/">使用条款</a></p>
-        <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
-      </nav>
-      <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../en/">Home</a> · <a href="../en/cost/">Cost Calculator</a> · <a href="../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../">Home</a> · <a href="../cost/">Cost Calculator</a> · <a href="../models/">Model Library</a> · <a href="../guides/">Guides</a> · <a href="../about/">About</a> · <a href="../pricing-methodology/">Pricing Methodology</a> · <a href="../privacy/">Privacy Policy</a> · <a href="../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
     </div>
   </footer>
 

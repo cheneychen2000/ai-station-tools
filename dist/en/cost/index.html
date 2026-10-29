@@ -6,8 +6,10 @@
   <title>AI Model API Cost Calculator — Estimate Monthly Token Costs | Reflex Hub</title>
   <meta name="description" content="Estimate monthly LLM API costs from official list prices. Enter daily calls and token usage, weight by cache hit rate and off-peak rates, and compare DeepSeek, GLM, Kimi, Qwen, GPT, Claude and Gemini side by side.">
   <link rel="canonical" href="https://www.reflex-hub.com/en/cost/">
-  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
+  <!-- HREFLANG_START -->
   <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/cost/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
+      <!-- HREFLANG_END -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="AI Model API Cost Calculator — Estimate Monthly Token Costs | Reflex Hub">
@@ -66,21 +68,23 @@
   </script>
 </head>
 <body>
+  <!-- NAV_START -->
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <div class="wrap topbar-row">
-      <a class="brand" href="../"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
+      <a class="brand" href="../../en/"><img class="brand-logo" src="../../assets/logo.png" alt="Reflex Hub" width="160" height="39"></a>
       <span class="crumb">/ Cost Calculator</span>
       <nav class="site-nav" aria-label="Main navigation">
         <ul>
-          <li><a href="../">Home</a></li>
-          <li><a href="./" class="active" aria-current="page">Cost Calculator</a></li>
-          <li><a href="../models/glm-53-flash/">GLM-5.3-Flash</a></li>
-          <li><a href="../../cost/">中文</a></li>
+          <li><a href="../../en/">Home</a></li>
+          <li><a href="../../en/cost/" class="active" aria-current="page">Cost Calculator</a></li>
+          <li><a href="../../en/models/">Model Library</a></li>
+          <li class="lang-switch-item"><a class="lang-switch" href="/cost/">中文</a></li>
         </ul>
       </nav>
     </div>
   </header>
+      <!-- NAV_END -->
 
   <main class="wrap" id="main">
     <section class="hero">
@@ -149,27 +153,27 @@
             <tr><th>Model</th><th>Vendor / channel</th><th>Input price<br>(list price / 1M tokens)</th><th>Output price<br>(list price / 1M tokens)</th><th>Cache-hit price</th><th>Est. monthly cost (CNY)</th><th>Verified</th><th>Official price source</th></tr>
           </thead>
           <tbody>
-          <tr><th><a href="../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th><td>DeepSeek</td><td class="num">Peak ¥2<br>Off-peak ¥1</td><td class="num">Peak ¥8<br>Off-peak ¥4</td><td class="num">Peak ¥0.04<br>Off-peak ¥0.02</td><td class="num">¥13.84</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a></td></tr>
-          <tr><th><a href="../../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th><td>腾讯云原厂直供</td><td class="num">Peak ¥9<br>Off-peak ¥4.5</td><td class="num">Peak ¥27<br>Off-peak ¥13.5</td><td class="num">Peak ¥0.3<br>Off-peak ¥0.15</td><td class="num">¥51.57</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a></td></tr>
-          <tr><th><a href="../../models/glm-53/">GLM-5.3</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥8</td><td class="num">¥28</td><td class="num">¥2</td><td class="num">¥104.40</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../../models/glm-53-flash/">GLM-5.3-Flash</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥0.8</td><td class="num">¥2.8</td><td class="num">¥0.23</td><td class="num">¥10.49</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../../models/kimi-k3/">Kimi K3</a></th><td>阿里云百炼</td><td class="num">¥20</td><td class="num">¥100</td><td class="num">¥2</td><td class="num">¥327.60</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../../models/qwen35-plus/">Qwen3.5-Plus</a></th><td>阿里云百炼（≤128K档）</td><td class="num">¥0.8</td><td class="num">¥4.8</td><td class="num">Not published</td><td class="num">¥16.32</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th><a href="../../models/qwen37-plus/">Qwen3.7-Plus</a></th><td>阿里云百炼（≤256K档，原价）</td><td class="num">¥2</td><td class="num">¥8</td><td class="num">Not published</td><td class="num">¥31.20</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th><a href="../../models/qwen38-flash/">Qwen3.8-Flash</a></th><td>阿里云百炼</td><td class="num">¥0.8</td><td class="num">¥2.7</td><td class="num">¥0.1</td><td class="num">¥10.02</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../../models/hunyuan-turbos-vision/">混元 TurboS Vision</a></th><td>腾讯云</td><td class="num">¥3</td><td class="num">¥9</td><td class="num">Not published</td><td class="num">¥39.60</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></td></tr>
-          <tr><th><a href="../../models/minimax-m3/">MiniMax M3</a></th><td>MiniMax 稀宇科技</td><td class="num">Input ≤512K ¥2.1<br>Input &gt;512K ¥4.2</td><td class="num">Input ≤512K ¥8.4<br>Input &gt;512K ¥16.8</td><td class="num">Not published</td><td class="num">¥32.76</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a></td></tr>
-          <tr><th><a href="../../models/mimo-v25-pro/">小米 MiMo V2.5 Pro</a></th><td>阿里云百炼·小米（≤256K档）</td><td class="num">¥7</td><td class="num">¥21</td><td class="num">Not published</td><td class="num">¥92.40</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th><a href="../../models/step-37-flash/">Step 3.7 Flash</a></th><td>阿里云百炼·阶跃星辰</td><td class="num">¥1.35</td><td class="num">¥8.1</td><td class="num">¥0.27</td><td class="num">¥25.60</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../../models/gpt-6-luna/">GPT-6 Luna</a></th><td>OpenAI</td><td class="num">Input ≤272K $0.1<br>Input &gt;272K (long context) not published</td><td class="num">Input ≤272K $0.5<br>Input &gt;272K (long context) not published</td><td class="num">$0.01</td><td class="num">≈ ¥11.00</td><td class="num">2026-10-28</td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td></tr>
-          <tr><th><a href="../../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th><td>OpenAI</td><td class="num">Input ≤272K $2<br>Input &gt;272K (long context) not published</td><td class="num">Input ≤272K $10<br>Input &gt;272K (long context) not published</td><td class="num">$0.1</td><td class="num">≈ ¥218.87</td><td class="num">2026-10-28</td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td></tr>
-          <tr><th><a href="../../models/claude-haiku-5-5/">Claude Haiku 5.5</a></th><td>Anthropic</td><td class="num">Prompt ≤100K $0.1<br>Prompt &gt;100K $0.5</td><td class="num">Prompt ≤100K $0.5<br>Prompt &gt;100K $2.5</td><td class="num">$0.01</td><td class="num">≈ ¥11.00</td><td class="num">2026-10-28</td><td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a></td></tr>
-          <tr><th><a href="../../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th><td>Anthropic</td><td class="num">$2</td><td class="num">$10</td><td class="num">$0.1</td><td class="num">≈ ¥218.87</td><td class="num">2026-10-28</td><td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a></td></tr>
-          <tr><th><a href="../../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th><td>Google</td><td class="num">$0.25</td><td class="num">$1.5</td><td class="num">$0.025</td><td class="num">≈ ¥31.54</td><td class="num">2026-10-28</td><td><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></td></tr>
+          <tr><th><a href="../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th><td>DeepSeek</td><td class="num">Peak ¥2<br>Off-peak ¥1</td><td class="num">Peak ¥8<br>Off-peak ¥4</td><td class="num">Peak ¥0.04<br>Off-peak ¥0.02</td><td class="num">¥13.84</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a></td></tr>
+          <tr><th><a href="../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th><td>Tencent Cloud (official direct)</td><td class="num">Peak ¥9<br>Off-peak ¥4.5</td><td class="num">Peak ¥27<br>Off-peak ¥13.5</td><td class="num">Peak ¥0.3<br>Off-peak ¥0.15</td><td class="num">¥51.57</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a></td></tr>
+          <tr><th><a href="../models/glm-53/">GLM-5.3</a></th><td>Alibaba Cloud Model Studio · Zhipu (direct)</td><td class="num">¥8</td><td class="num">¥28</td><td class="num">¥2</td><td class="num">¥104.40</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a></td></tr>
+          <tr><th><a href="../models/glm-53-flash/">GLM-5.3-Flash</a></th><td>Alibaba Cloud Model Studio · Zhipu (direct)</td><td class="num">¥0.8</td><td class="num">¥2.8</td><td class="num">¥0.23</td><td class="num">¥10.49</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a></td></tr>
+          <tr><th><a href="../models/kimi-k3/">Kimi K3</a></th><td>Alibaba Cloud Model Studio</td><td class="num">¥20</td><td class="num">¥100</td><td class="num">¥2</td><td class="num">¥327.60</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a></td></tr>
+          <tr><th><a href="../models/qwen35-plus/">Qwen3.5-Plus</a></th><td>Alibaba Cloud Model Studio (≤128K tier)</td><td class="num">¥0.8</td><td class="num">¥4.8</td><td class="num">Not published</td><td class="num">¥16.32</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a></td></tr>
+          <tr><th><a href="../models/qwen37-plus/">Qwen3.7-Plus</a></th><td>Alibaba Cloud Model Studio (≤256K tier, list price)</td><td class="num">¥2</td><td class="num">¥8</td><td class="num">Not published</td><td class="num">¥31.20</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a></td></tr>
+          <tr><th><a href="../models/qwen38-flash/">Qwen3.8-Flash</a></th><td>Alibaba Cloud Model Studio</td><td class="num">¥0.8</td><td class="num">¥2.7</td><td class="num">¥0.1</td><td class="num">¥10.02</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a></td></tr>
+          <tr><th><a href="../models/hunyuan-turbos-vision/">Hunyuan TurboS Vision</a></th><td>Tencent Cloud</td><td class="num">¥3</td><td class="num">¥9</td><td class="num">Not published</td><td class="num">¥39.60</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a></td></tr>
+          <tr><th><a href="../models/minimax-m3/">MiniMax M3</a></th><td>MiniMax</td><td class="num">Input ≤512K ¥2.1<br>Input &gt;512K ¥4.2</td><td class="num">Input ≤512K ¥8.4<br>Input &gt;512K ¥16.8</td><td class="num">Not published</td><td class="num">¥32.76</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a></td></tr>
+          <tr><th><a href="../models/mimo-v25-pro/">Xiaomi MiMo V2.5 Pro</a></th><td>Alibaba Cloud Model Studio · Xiaomi (≤256K tier)</td><td class="num">¥7</td><td class="num">¥21</td><td class="num">Not published</td><td class="num">¥92.40</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a></td></tr>
+          <tr><th><a href="../models/step-37-flash/">Step 3.7 Flash</a></th><td>Alibaba Cloud Model Studio · StepFun</td><td class="num">¥1.35</td><td class="num">¥8.1</td><td class="num">¥0.27</td><td class="num">¥25.60</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a></td></tr>
+          <tr><th><a href="../models/gpt-6-luna/">GPT-6 Luna</a></th><td>OpenAI</td><td class="num">Input ≤272K $0.1<br>Input &gt;272K (long context) not published</td><td class="num">Input ≤272K $0.5<br>Input &gt;272K (long context) not published</td><td class="num">$0.01</td><td class="num">≈ ¥11.00</td><td class="num">2026-10-28</td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a></td></tr>
+          <tr><th><a href="../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th><td>OpenAI</td><td class="num">Input ≤272K $2<br>Input &gt;272K (long context) not published</td><td class="num">Input ≤272K $10<br>Input &gt;272K (long context) not published</td><td class="num">$0.1</td><td class="num">≈ ¥218.87</td><td class="num">2026-10-28</td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a></td></tr>
+          <tr><th><a href="../models/claude-haiku-5-5/">Claude Haiku 5.5</a></th><td>Anthropic</td><td class="num">Prompt ≤100K $0.1<br>Prompt &gt;100K $0.5</td><td class="num">Prompt ≤100K $0.5<br>Prompt &gt;100K $2.5</td><td class="num">$0.01</td><td class="num">≈ ¥11.00</td><td class="num">2026-10-28</td><td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a></td></tr>
+          <tr><th><a href="../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th><td>Anthropic</td><td class="num">$2</td><td class="num">$10</td><td class="num">$0.1</td><td class="num">≈ ¥218.87</td><td class="num">2026-10-28</td><td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a></td></tr>
+          <tr><th><a href="../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th><td>Google</td><td class="num">$0.25</td><td class="num">$1.5</td><td class="num">$0.025</td><td class="num">≈ ¥31.54</td><td class="num">2026-10-28</td><td><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="s-hint" style="margin-top:8px">Models without a published cache price are estimated at the standard input price (no cache discount assumed); time-based priced models use the off-peak rate (matching the "Off-peak" toggle above); tiered models are priced at the tier an example input of 2,000 tokens falls into. The estimate column uses exactly the same formula, default parameters and reference rate as the interactive calculator below. USD is the official billing currency for those models; estimated monthly costs are converted to CNY at the CFETS central parity rate (1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23）), indicative only. For a two-model, line-by-line comparison use the <a href="../../compare/">model comparison</a> (Chinese).</p>
+      <p class="s-hint" style="margin-top:8px">Models without a published cache price are estimated at the standard input price (no cache discount assumed); time-based priced models use the off-peak rate (matching the "Off-peak" toggle above); tiered models are priced at the tier an example input of 2,000 tokens falls into. The estimate column uses exactly the same formula, default parameters and reference rate as the interactive calculator below. USD is the official billing currency for those models; estimated monthly costs are converted to CNY (1 USD = 6.718 CNY, CFETS central parity rate 2026-10-23), indicative only. For a two-model, line-by-line comparison use the <a href="../compare/">model comparison</a>.</p>
       <!-- COST_TABLE_END -->
     </section>
 
@@ -187,7 +191,7 @@
       <div class="table-scroll">
         <table class="spec">
           <tbody>
-            <tr><th>Example model</th><td><a href="../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a> (DeepSeek, off-peak rate, verified 2026-09-18, <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">official source</a>)</td></tr>
+            <tr><th>Example model</th><td><a href="../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a> (DeepSeek, off-peak rate, verified 2026-09-18, <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">official source</a>)</td></tr>
             <tr><th>Effective input price</th><td class="num">Effective input price = 30% × ¥0.02 (cache hit) + 70% × ¥1 (standard) = 0.71 CNY/1M tokens.</td></tr>
             <tr><th>Input cost</th><td class="num">100 × 30 × (2000 ÷ 1,000,000) × 0.71 = ¥4.24</td></tr>
             <tr><th>Output cost</th><td class="num">100 × 30 × (800 ÷ 1,000,000) × ¥4 = ¥9.60</td></tr>
@@ -216,16 +220,18 @@
 
   <footer>
     <div class="wrap" id="site-footer">
-      <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
-      <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
-      <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
-      <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
-      <nav class="footer-nav" aria-label="Footer navigation">
-        <p>Core tools: <a href="../">Home</a> · <a href="./">Cost Calculator</a> · <a href="../models/glm-53-flash/">GLM-5.3-Flash</a></p>
-        <p>中文站：<a href="../../">首页</a> · <a href="../../cost/">成本计算器</a> · <a href="../../models/">模型库</a> · <a href="../../guides/">开发指南</a> · <a href="../../about/">关于本站</a> · <a href="../../pricing-methodology/">定价方法论</a> · <a href="../../privacy/">隐私政策</a> · <a href="../../terms/">使用条款</a></p>
-        <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
-      </nav>
-      <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_START -->
+    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+    <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="../../en/">Home</a> · <a href="../../en/cost/">Cost Calculator</a> · <a href="../../en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href="../../">Home</a> · <a href="../../cost/">Cost Calculator</a> · <a href="../../models/">Model Library</a> · <a href="../../guides/">Guides</a> · <a href="../../about/">About</a> · <a href="../../pricing-methodology/">Pricing Methodology</a> · <a href="../../privacy/">Privacy Policy</a> · <a href="../../terms/">Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
+      <!-- FOOTER_END -->
     </div>
   </footer>
 
@@ -234,6 +240,7 @@
   </script>
   <script src="../../assets/app.js"></script>
   <script src="../../assets/cost-core.js"></script>
+  <script src="../../assets/labels-en.js"></script>
   <script>
   (function () {
     var DEFAULT_SELECTED = ['deepseek-v41-flash', 'glm-53-flash', 'qwen35-plus', 'kimi-k3'];
@@ -261,40 +268,14 @@
       return (m.currency === 'USD') ? '≈ ' + fmtCny(c) + ' (converted at the ' + FX.rateDate + ' central parity rate, indicative only)' : fmtCny(c);
     }
 
-    /* models.json 中的中文数据字段 → 英文展示文案（仅界面翻译，不改数据） */
-    var EN_VENDOR = {
-      'DeepSeek': 'DeepSeek',
-      '腾讯云原厂直供': 'Tencent Cloud (official direct)',
-      '阿里云百炼·智谱直供': 'Alibaba Cloud Model Studio · Zhipu (direct)',
-      '阿里云百炼': 'Alibaba Cloud Model Studio',
-      '阿里云百炼（≤128K档）': 'Alibaba Cloud Model Studio (≤128K tier)',
-      '阿里云百炼（≤256K档，原价）': 'Alibaba Cloud Model Studio (≤256K tier, list price)',
-      '腾讯云': 'Tencent Cloud',
-      'MiniMax 稀宇科技': 'MiniMax',
-      '阿里云百炼·小米（≤256K档）': 'Alibaba Cloud Model Studio · Xiaomi (≤256K tier)',
-      '阿里云百炼·阶跃星辰': 'Alibaba Cloud Model Studio · StepFun',
-      'OpenAI': 'OpenAI',
-      'Anthropic': 'Anthropic',
-      'Google': 'Google'
-    };
-    var EN_MODALITY = { '文本': 'Text', '图像理解': 'Image understanding', '音频': 'Audio', '视频理解': 'Video understanding' };
-    var EN_FEATURE = {
-      '低谷半价': 'Half price off-peak', '批量跑批首选': 'Best for batch jobs', '推理快': 'Fast reasoning',
-      '旗舰推理': 'Flagship reasoning', 'Agent强': 'Strong agent skills', '工具调用强': 'Strong tool calling',
-      '轻量低价': 'Lightweight, low cost', '仅思考模式': 'Thinking-only mode', '超长上下文': 'Ultra-long context',
-      '长文档解析': 'Long-document parsing', '均衡通用': 'Balanced general use', '开源生态': 'Open-source ecosystem',
-      '限时8折': 'Limited-time 20% off', '均衡主力': 'Balanced workhorse', '最新轻量': 'Latest lightweight',
-      '1M长上下文': '1M-token context', '多模态': 'Multimodal', '腾讯生态': 'Tencent ecosystem',
-      '最新旗舰': 'Latest flagship', '双模式': 'Dual mode', '小米开源': 'Xiaomi open-source',
-      '推理型': 'Reasoning model', '低价轻量': 'Low-cost, lightweight', '阶跃出品': 'By StepFun',
-      '大批量低价': 'Low cost at scale', '高效轻量': 'Efficient, lightweight', '复杂编码': 'Complex coding',
-      '智能体任务': 'Agentic tasks', '子任务代理': 'Subtask agent', '智能体编码': 'Agentic coding',
-      '海量轻任务': 'High-volume light tasks', '翻译数据处理': 'Translation & data processing'
-    };
+    /* 展示字典：assets/labels-en.js（由 scripts/lib/i18n.mjs 构建生成，单一翻译来源，禁止页面内维护第二份） */
+    var L = window.EnLabels || { vendor: {}, modality: {}, feature: {}, tierDesc: [] };
+    var EN_VENDOR = L.vendor, EN_MODALITY = L.modality, EN_FEATURE = L.feature;
     function en(s, dict) { return dict[s] || s; }
     function enVendor(m) { return EN_VENDOR[m.vendor] || m.vendor; }
     function enTierDesc(s) {
-      return s.replace(/输入/g, 'Input').replace(/输出/g, 'Output').replace(/提示/g, 'Prompt').replace(/（长上下文）/g, ' (long context)');
+      for (var i = 0; i < L.tierDesc.length; i++) s = s.split(L.tierDesc[i][0]).join(L.tierDesc[i][1]);
+      return s;
     }
 
     /* ---------- state persistence ---------- */
@@ -449,7 +430,7 @@
           : fmtCur(r.total, r.model) + '<span style="font-size:13px;font-weight:400;color:var(--muted)">/month</span>';
         html += '<div class="result-card' + (best ? ' best' : '') + '">' +
           '<div class="r-head">' +
-            '<span class="r-name"><a class="r-name-link" href="../../models/' + r.model.id + '/" title="View ' + r.model.name + ' profile (Chinese)">' + r.model.name + '</a>' +
+            '<span class="r-name"><a class="r-name-link" href="../models/' + r.model.id + '/" title="View ' + r.model.name + ' profile">' + r.model.name + '</a>' +
               '<span class="r-vendor">' + enVendor(r.model) + '</span>' +
               (best ? '<span class="badge-best">' + (minCount > 1 ? 'Tied for lowest' : 'Lowest cost for this usage') + '</span>' : '') +
               tagsHtml(r.model) +

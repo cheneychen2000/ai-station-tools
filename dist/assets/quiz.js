@@ -1,7 +1,10 @@
-/* AI 认知段位测试 V1 · 二元对错 + 即时解析 + 六维雷达 + 九段制（纯 CSR，零外部请求） */
+/* AI 认知段位测试 V1 · 二元对错 + 即时解析 + 六维雷达 + 九段制（纯 CSR，零外部请求）
+   语言与题库由页面注入 window.QUIZ_CFG（中英共用本文件；缺省 = 中文，中文页零改动） */
 (function () {
-  var POSTER_URL = 'https://www.reflex-hub.com/quiz/?utm_source=poster';
-  var DIMS = [
+  var CFG = window.QUIZ_CFG || {};
+  var POSTER_URL = CFG.posterUrl || 'https://www.reflex-hub.com/quiz/?utm_source=poster';
+  var BANK_URL = CFG.bankUrl || '../assets/data/quiz.json';
+  var DIMS = CFG.dims || [
     { key: 'concept', label: '概念' },
     { key: 'price', label: '价格' },
     { key: 'boundary', label: '边界' },
@@ -9,7 +12,7 @@
     { key: 'practice', label: '实操' },
     { key: 'safety', label: '安全' }
   ];
-  var TIERS = [
+  var TIERS = CFG.tiers || [
     { min: 12, name: '职业九段', comment: '十二题全对——出题人看了都点头。' },
     { min: 11, name: '职业三段', comment: '这题库已经不太够你玩的了。' },
     { min: 10, name: '职业初段', comment: '认知超过九成读者，可以教同事了。' },
@@ -20,13 +23,24 @@
     { min: 2, name: '业余初段', comment: '会用 AI 搜东西了，第一步已经迈出。' },
     { min: 0, name: '门外汉', comment: 'AI 门外的风有点大，进来坐坐。' }
   ];
-  var WEAK_LINKS = {
+  var WEAK_LINKS = CFG.weakLinks || {
     price: { href: '../cost/', text: '去成本计算器补补课 →' },
     industry: { href: '../models/', text: '去模型库补补课 →' },
     practice: { href: '../prompts/', text: '去 Prompt 库补补课 →' },
     concept: { href: '../about/', text: '阅读数据与方法说明 →' },
     boundary: { href: '../about/', text: '阅读数据与方法说明 →' },
     safety: { href: '../about/', text: '阅读数据与方法说明 →' }
+  };
+  var UI = CFG.ui || {
+    progress: function (i, n) { return '第 ' + i + ' / ' + n + ' 题'; },
+    correct: '回答正确', wrong: '回答错误', next: '下一题', result: '查看结果',
+    score: function (s, n) { return '答对 ' + s + ' / ' + n + ' 题'; },
+    percentile: function (p) { return '超过 ' + p + '% 的读者（基于预置统计模型估算）'; },
+    copyDone: '已复制，去粘贴吧', copyBtn: '复制战绩文案', copyFail: '复制失败，请长按截图',
+    posterTitle: 'AI 认知段位测试', posterSub: '12 题 · 六维认知 · 每题即时解析',
+    posterScan: '扫码测测你的段位', posterNote: '本测试仅供娱乐',
+    share: function (tier, p) { return '我的 AI 认知是「' + tier + '」，超过 ' + p + '% 的读者，不服来战 → reflex-hub.com/quiz'; },
+    start: '开始测试', loadFail: '题目加载失败，请刷新重试'
   };
 
   function tierOf(score) {
@@ -79,7 +93,7 @@
   function renderQuestion() {
     locked = false;
     var q = questions[idx];
-    $('qProg').textContent = '第 ' + (idx + 1) + ' / ' + questions.length + ' 题';
+    $('qProg').textContent = UI.progress(idx + 1, questions.length);
     $('qBar').style.width = (idx / questions.length * 100) + '%';
     $('qText').textContent = q.q;
     var box = $('qOpts');
@@ -116,10 +130,10 @@
     var fb = $('qFeedback');
     fb.className = 'quiz-fb ' + (correct ? 'ok' : 'no');
     fb.innerHTML =
-      '<p class="fb-title">' + (correct ? '回答正确' : '回答错误') + '</p>' +
+      '<p class="fb-title">' + (correct ? UI.correct : UI.wrong) + '</p>' +
       '<p>' + q.explain + '</p>' +
       '<button class="btn btn-primary" type="button" id="btnNext">' +
-      (idx + 1 < questions.length ? '下一题' : '查看结果') + '</button>';
+      (idx + 1 < questions.length ? UI.next : UI.result) + '</button>';
     fb.style.display = '';
     $('btnNext').addEventListener('click', function () {
       idx++;
@@ -209,8 +223,8 @@
     var pct = percentile(score);
     $('rTier').textContent = tier.name;
     $('rComment').textContent = tier.comment;
-    $('rScore').textContent = '答对 ' + score + ' / ' + questions.length + ' 题';
-    $('rPercent').textContent = '超过 ' + pct + '% 的读者（基于预置统计模型估算）';
+    $('rScore').textContent = UI.score(score, questions.length);
+    $('rPercent').textContent = UI.percentile(pct);
     drawRadar($('rRadar'));
     /* 最弱维度（并列时按维度顺序取先）只挂 1 个补课链接 */
     var weak = DIMS[0];
@@ -225,14 +239,13 @@
   }
 
   function shareText() {
-    return '我的 AI 认知是「' + tierOf(score).name + '」，超过 ' + percentile(score) +
-      '% 的读者，不服来战 → reflex-hub.com/quiz';
+    return UI.share(tierOf(score).name, percentile(score));
   }
   function copyShare(btn) {
     var text = shareText();
     function done() {
-      btn.textContent = '已复制，去粘贴吧';
-      setTimeout(function () { btn.textContent = '复制战绩文案'; }, 1600);
+      btn.textContent = UI.copyDone;
+      setTimeout(function () { btn.textContent = UI.copyBtn; }, 1600);
     }
     function legacy() {
       var ta = document.createElement('textarea');
@@ -241,7 +254,7 @@
       ta.style.opacity = '0';
       document.body.appendChild(ta);
       ta.select();
-      try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = '复制失败，请长按截图'; }
+      try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = UI.copyFail; }
       document.body.removeChild(ta);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -311,10 +324,10 @@
     c.fillText('Reflex Hub', 375, 86);
     c.fillStyle = 'rgba(255,255,255,0.9)';
     c.font = '26px ' + FONT;
-    c.fillText('AI 认知段位测试', 375, 132);
+    c.fillText(UI.posterTitle, 375, 132);
     c.fillStyle = 'rgba(255,255,255,0.65)';
     c.font = '18px ' + FONT;
-    c.fillText('12 题 · 六维认知 · 每题即时解析', 375, 168);
+    c.fillText(UI.posterSub, 375, 168);
 
     roundRect(c, 45, 240, 660, 1010, 20);
     c.fillStyle = '#FFFFFF';
@@ -326,7 +339,7 @@
     c.fillText(tier.name, 375, 470);
     c.fillStyle = '#1B2437';
     c.font = 'bold 32px ' + FONT;
-    c.fillText('答对 ' + score + ' / ' + questions.length + ' 题', 375, 528);
+    c.fillText(UI.score(score, questions.length), 375, 528);
     c.fillStyle = '#5C6575';
     c.font = '24px ' + FONT;
     c.fillText('超过 ' + percentile(score) + '% 的读者', 375, 576);
@@ -354,7 +367,7 @@
 
     c.fillStyle = '#1B2437';
     c.font = '22px ' + FONT;
-    c.fillText('扫码测测你的段位', 375, 1012);
+    c.fillText(UI.posterScan, 375, 1012);
     /* 六维得分两行小结（卡片底 1250） */
     c.fillStyle = '#5C6575';
     c.font = '20px ' + FONT;
@@ -366,16 +379,16 @@
     c.fillText(line2.join(' · '), 375, 1120);
     c.fillStyle = '#98A1AF';
     c.font = '18px ' + FONT;
-    c.fillText('本测试仅供娱乐', 375, 1300);
+    c.fillText(UI.posterNote, 375, 1300);
     return cv.toDataURL('image/png');
   }
 
   /* ---------- 启动 ---------- */
-  fetch('../assets/data/quiz.json').then(function (res) { return res.json(); }).then(function (data) {
+  fetch(BANK_URL).then(function (res) { return res.json(); }).then(function (data) {
     bank = data;
     var btn = $('btnStart');
     btn.disabled = false;
-    btn.textContent = '开始测试';
+    btn.textContent = UI.start;
     btn.addEventListener('click', start);
     $('btnRestart').addEventListener('click', start);
     $('btnPoster').addEventListener('click', function () {
@@ -388,6 +401,6 @@
     $('btnBack').addEventListener('click', function () { show('viewResult'); });
   }).catch(function () {
     var btn = $('btnStart');
-    btn.textContent = '题目加载失败，请刷新重试';
+    btn.textContent = UI.loadFail;
   });
 })();
