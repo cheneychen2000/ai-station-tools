@@ -40,8 +40,11 @@ let deadLinks = [], missingNav = [];
 for (const rel of pages) {
   const t = read(rel);
   if (rel !== '404.html') {
-    if (!t.includes('<nav class="site-nav" aria-label="主导航">')) missingNav.push(rel);
-    if (!t.includes('<nav class="footer-nav" aria-label="页脚导航">')) missingNav.push(rel + '（页脚）');
+    const isEn = rel.startsWith('en/');
+    const navAria = isEn ? '<nav class="site-nav" aria-label="Main navigation">' : '<nav class="site-nav" aria-label="主导航">';
+    const footAria = isEn ? '<nav class="footer-nav" aria-label="Footer navigation">' : '<nav class="footer-nav" aria-label="页脚导航">';
+    if (!t.includes(navAria)) missingNav.push(rel);
+    if (!t.includes(footAria)) missingNav.push(rel + '（页脚）');
   }
   const body = t.replace(/<script[\s\S]*?<\/script>/g, '');
   const dir = rel.includes('/') ? rel.slice(0, rel.lastIndexOf('/')) : '';

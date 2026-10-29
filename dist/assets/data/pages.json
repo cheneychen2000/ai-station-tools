@@ -1,5 +1,5 @@
 {
-  "description": "手写页面的内容更新时间元数据（sitemap lastmod 的事实来源之一）。contentUpdatedAt = 该页手写正文最后一次真实内容修改日期，修改页面内容时手动维护，禁止填构建日期。dependsOnModels / dependsOnTools 标记页面嵌入了数据驱动内容，lastmod 取手写日期与所依赖数据 verifiedAt 的较大者。新增手写页面必须在此登记，否则不进入 sitemap。",
+  "description": "手写页面的内容更新时间元数据（sitemap lastmod 的事实来源之一）。contentUpdatedAt = 该页手写正文最后一次真实内容修改日期，修改页面内容时手动维护，禁止填构建日期。dependsOnModels / dependsOnTools 标记页面嵌入了数据驱动内容，lastmod 取手写日期与所依赖数据 verifiedAt 的较大者；dependsOnModel（单模型 id）用于英文模型页等单模型依赖页，lastmod 跟随该模型内容变更日。新增手写页面必须在此登记，否则不进入 sitemap。",
   "pages": [
     { "path": "/", "contentUpdatedAt": "2026-10-28" },
     { "path": "/cost/", "contentUpdatedAt": "2026-10-29", "dependsOnModels": true },
@@ -18,6 +18,9 @@
     { "path": "/pricing-methodology/", "contentUpdatedAt": "2026-10-28" },
     { "path": "/privacy/", "contentUpdatedAt": "2026-10-28" },
     { "path": "/affiliate-disclosure/", "contentUpdatedAt": "2026-10-28" },
-    { "path": "/terms/", "contentUpdatedAt": "2026-10-28" }
+    { "path": "/terms/", "contentUpdatedAt": "2026-10-28" },
+    { "path": "/en/", "contentUpdatedAt": "2026-10-29" },
+    { "path": "/en/cost/", "contentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "path": "/en/models/glm-53-flash/", "contentUpdatedAt": "2026-10-28", "dependsOnModel": "glm-53-flash" }
   ]
 }

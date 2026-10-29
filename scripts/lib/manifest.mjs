@@ -81,6 +81,8 @@ export function buildManifest({ models, tools, pagesMeta, compares = {} }) {
     let d = p.contentUpdatedAt || null;
     if (p.dependsOnModels) d = maxDate([d, modelsContent]);
     if (p.dependsOnTools) d = maxDate([d, toolsVerified]);
+    /* 英文模型页等单模型依赖页：lastmod 跟随该模型内容变更日（dependsOnModel 为模型 id） */
+    if (p.dependsOnModel && byId[p.dependsOnModel]) d = maxDate([d, modelContentDate(byId[p.dependsOnModel])]);
     push(p.path, d);
     if (p.path === '/models/') {
       for (const m of models) push(`/models/${m.id}/`, modelContentDate(m));

@@ -10,7 +10,7 @@ import { DIST, SITE, BRAND } from './lib/paths.mjs';
 import { SAMPLE_PARAMS as P, monthly, monthlyFull, monthlyBase, money, price, verdict, modelCurrency, fxEntry, toBase } from './lib/pricing.mjs';
 import { esc, safeUrl, jsStr, jsonld } from './lib/escape.mjs';
 import { loadData, maxDate, comparePairs, isToolIndexable, buildManifest } from './lib/manifest.mjs';
-import { navHeaderHtml, footerNavHtml } from './lib/nav.mjs';
+import { navHeaderHtml, navHeaderHtmlEn, footerNavHtml } from './lib/nav.mjs';
 import { replacePlacementMarkers } from './lib/placement.mjs';
 
 const { models, tools, pagesMeta, fx, compares } = loadData();
@@ -23,6 +23,9 @@ const fxNote = cur => {
 /* 是/否图标（内联 SVG，替代 ✅/❌ emoji，跨设备渲染一致） */
 const ICON_YES = '<svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#0E8A5F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON_NO = '<svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round"/></svg>';
+
+/* 拥有英文对应页的模型白名单（MVP 仅一款）：白名单外的模型不生成英文页、不加 hreflang */
+const EN_MODELS = ['glm-53-flash'];
 
 /* ---------- 全站静态页脚（合规文字必须存在于原始 HTML，不得依赖 JS fetch） ---------- */
 function footerHtml(base) {
@@ -44,6 +47,30 @@ function footerHtml(base) {
     <p>© 2026 ${BRAND} · 免费 · 免注册 · 打开即用</p>`;
 }
 
+/* ---------- 英文站静态页脚：合规文字英文等价，"中文站"组保留中文信任页入口（含开发指南，N12b 覆盖） ---------- */
+function footerHtmlEn(base) {
+  const verified = maxDate(models.map(m => m.verifiedAt));
+  const seen = new Set();
+  const links = [];
+  for (const m of models) {
+    const u = safeUrl(m.sourceUrl);
+    if (u && !seen.has(u)) {
+      seen.add(u);
+      links.push(`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(m.sourceName)}</a>`);
+    }
+  }
+  return `<p>Price sources: ${links.join(' · ')}</p>
+    <p>Most recent model price verification: <span class="num">${esc(verified)}</span> (each page shows its own verification date)</p>
+    <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+    <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href="${base}en/">Home</a> · <a href="${base}en/cost/">Cost Calculator</a> · <a href="${base}en/models/glm-53-flash/">GLM-5.3-Flash</a></p>
+      <p>中文站：<a href="${base}">首页</a> · <a href="${base}cost/">成本计算器</a> · <a href="${base}models/">模型库</a> · <a href="${base}guides/">开发指南</a> · <a href="${base}about/">关于本站</a> · <a href="${base}pricing-methodology/">定价方法论</a> · <a href="${base}privacy/">隐私政策</a> · <a href="${base}terms/">使用条款</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    <p>© 2026 ${BRAND} · Free · No sign-up · Runs entirely in your browser</p>`;
+}
+
 /* ---------- 共享模板 ---------- */
 function tagsHtml(m) {
   const mods = (m.modalities || []).map(x => `<span class="tag tag-mod">${esc(x)}</span>`).join('');
@@ -51,20 +78,21 @@ function tagsHtml(m) {
   return mods || feats ? `<span class="m-tags">${mods}${feats}</span>` : '';
 }
 
-function page({ depth, title, desc, canonicalPath, robots = null, jsonld: lds = [], crumb, main, inlineScript = '', active = null }) {
+function page({ depth, title, desc, canonicalPath, robots = null, jsonld: lds = [], crumb, main, inlineScript = '', active = null, lang = 'zh-CN', alternates = [], en = false }) {
   const base = '../'.repeat(depth);
   const ld = lds
     .map(o => `  <script type="application/ld+json">\n${jsonld(o).split('\n').map(l => '  ' + l).join('\n')}\n  </script>`)
     .join('\n');
+  const alt = alternates.map(a => `  <link rel="alternate" hreflang="${esc(a.lang)}" href="${esc(a.url)}">`).join('\n');
   return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${esc(lang)}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}">
 ${robots ? `  <meta name="robots" content="${esc(robots)}">\n` : ''}  <link rel="canonical" href="${SITE}${canonicalPath}">
-  <meta property="og:type" content="website">
+${alt ? alt + '\n' : ''}  <meta property="og:type" content="website">
   <meta property="og:site_name" content="${esc(BRAND)}">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(desc)}">
@@ -79,7 +107,7 @@ ${robots ? `  <meta name="robots" content="${esc(robots)}">\n` : ''}  <link rel=
 ${ld}
 </head>
 <body>
-  ${navHeaderHtml(base, active, crumb)}
+  ${en ? navHeaderHtmlEn(base, active, crumb) : navHeaderHtml(base, active, crumb)}
 
   <main class="wrap" id="main">
 ${main}
@@ -87,7 +115,7 @@ ${main}
 
   <footer>
     <div class="wrap" id="site-footer">
-    ${footerHtml(base)}
+    ${en ? footerHtmlEn(base) : footerHtml(base)}
     </div>
   </footer>
 
@@ -246,6 +274,11 @@ ${priceTable(m)}
 
   return page({
     depth: 2,
+    /* 英文对应页仅 GLM-5.3-Flash 一款（EN_MODELS 白名单）：双向 hreflang，未建英文页的模型不输出 */
+    alternates: EN_MODELS.includes(m.id) ? [
+      { lang: 'zh-CN', url: `${SITE}/models/${m.id}/` },
+      { lang: 'en', url: `${SITE}/en/models/${m.id}/` }
+    ] : [],
     /* 可选单页 SEO 覆盖：models.json 中 seoTitle/seoDescription 仅对个别页面生效，缺省回退统一模板 */
     title: (typeof m.seoTitle === 'string' && m.seoTitle.trim()) ? m.seoTitle : `${m.name} 价格与参数档案 - ${m.vendor} | ${BRAND}`,
     desc: (typeof m.seoDescription === 'string' && m.seoDescription.trim()) ? m.seoDescription : `${m.name}（${m.vendor}）API 价格（${modelCurrency(m) === 'USD' ? '美元' : '人民币'}）：输入 ${price(m.priceIn, modelCurrency(m))}/输出 ${price(m.priceOut, modelCurrency(m))} 每百万Token，上下文 ${m.context}K，支持${modText}。数据核验于 ${m.verifiedAt}。`,
@@ -258,6 +291,181 @@ ${priceTable(m)}
     main,
     active: 'models',
     inlineScript: `  <script>window.track('model_view', { id: ${jsStr(m.id)} });</script>`
+  });
+}
+
+/* ---------- 英文模型详情页（EN_MODELS 白名单；数据字段与中文页同源 models.json，正文人工英文撰写） ---------- */
+const EN_META = {
+  'glm-53-flash': {
+    vendorEn: 'Alibaba Cloud Model Studio (Bailian) · Zhipu (direct)',
+    vendorZhNote: '阿里云百炼·智谱直供',
+    positioning: 'GLM-5.3-Flash is the lightweight, low-cost tier of Zhipu\'s GLM-5.3 family, served on Alibaba Cloud Model Studio (Bailian). It is a multimodal understanding model with a 1M-token context window, priced per 1M tokens in CNY.',
+    useNote: 'Editor\'s note: with a 1M-token context and per-million-token CNY pricing, it is a candidate worth testing for high-volume text workloads with occasional image or video input. Evaluate output quality on your own data before committing; this page makes no quality or performance ranking claims.'
+  }
+};
+
+function enPriceRows(m) {
+  const cur = modelCurrency(m);
+  const rows = [];
+  if (m.priceTiers) {
+    rows.push(['Input (cache miss)', m.priceTiers.map(t => `${esc(enTierDescEn(t.desc))} ${t.unverified ? 'rate not published' : price(t.priceIn, cur)}`).join('　')]);
+    rows.push(['Output', m.priceTiers.map(t => `${esc(enTierDescEn(t.desc))} ${t.unverified ? 'rate not published' : price(t.priceOut, cur)}`).join('　')]);
+    rows.push(['Cache hit', m.priceTiers.every(t => t.priceCacheHit == null) ? 'Not published' : m.priceTiers.map(t => price(t.priceCacheHit, cur)).join('　')]);
+    rows.push(['Tiered pricing', `${ICON_YES} Billed by input length; the cost calculator selects the tier automatically`]);
+  } else if (m.peakOffpeak) {
+    const p = m.peakOffpeak;
+    rows.push(['Input (cache miss)', `Peak ${price(p.peakIn, cur)} / off-peak ${price(p.offIn, cur)}`]);
+    rows.push(['Output', `Peak ${price(p.peakOut, cur)} / off-peak ${price(p.offOut, cur)}`]);
+    rows.push(['Cache hit', `Peak ${price(p.peakCache, cur)} / off-peak ${price(p.offCache, cur)}`]);
+    rows.push(['Time-based pricing', `${ICON_YES} Peak window: ${esc(p.peakWindow)}; all other times use the off-peak rate (about half of peak)`]);
+  } else {
+    rows.push(['Input (cache miss)', price(m.priceIn, cur)]);
+    rows.push(['Output', price(m.priceOut, cur)]);
+    rows.push(['Cache hit', m.priceCacheHit == null ? 'Not published' : price(m.priceCacheHit, cur)]);
+    rows.push(['Time-based pricing', `${ICON_NO} Single price around the clock`]);
+  }
+  return rows;
+}
+
+/* 英文页模型字段翻译（仅界面文案；数据源仍为中文字段串，与详情页同源不做第二份数据） */
+function enTierDescEn(s) {
+  return s.replace(/输入/g, 'Input').replace(/输出/g, 'Output').replace(/提示/g, 'Prompt').replace(/（长上下文）/g, ' (long context)');
+}
+const EN_MODALITY_MAP = { '文本': 'Text', '图像理解': 'Image understanding', '音频': 'Audio', '视频理解': 'Video understanding' };
+const EN_FEATURE_MAP = {
+  '轻量低价': 'Lightweight, low cost', '仅思考模式': 'Thinking-only mode', '超长上下文': 'Ultra-long context',
+  '长文档解析': 'Long-document parsing', '均衡通用': 'Balanced general use', '开源生态': 'Open-source ecosystem',
+  '旗舰推理': 'Flagship reasoning', '工具调用强': 'Strong tool calling', '低谷半价': 'Half price off-peak',
+  '批量跑批首选': 'Best for batch jobs', '推理快': 'Fast reasoning', 'Agent强': 'Strong agent skills',
+  '限时8折': 'Limited-time 20% off', '均衡主力': 'Balanced workhorse', '最新轻量': 'Latest lightweight',
+  '1M长上下文': '1M-token context', '多模态': 'Multimodal', '腾讯生态': 'Tencent ecosystem',
+  '最新旗舰': 'Latest flagship', '双模式': 'Dual mode', '小米开源': 'Xiaomi open-source', '推理型': 'Reasoning model',
+  '低价轻量': 'Low-cost, lightweight', '阶跃出品': 'By StepFun', '大批量低价': 'Low cost at scale',
+  '高效轻量': 'Efficient, lightweight', '复杂编码': 'Complex coding', '智能体任务': 'Agentic tasks',
+  '子任务代理': 'Subtask agent', '智能体编码': 'Agentic coding', '海量轻任务': 'High-volume light tasks',
+  '翻译数据处理': 'Translation & data processing'
+};
+
+function tagsHtmlEn(m) {
+  const mods = (m.modalities || []).map(x => `<span class="tag tag-mod">${esc(EN_MODALITY_MAP[x] || x)}</span>`).join('');
+  const feats = (m.features || []).map(x => `<span class="tag tag-feat">${esc(EN_FEATURE_MAP[x] || x)}</span>`).join('');
+  return mods || feats ? `<span class="m-tags">${mods}${feats}</span>` : '';
+}
+
+function modelDetailEn(m) {
+  const meta = EN_META[m.id];
+  if (!meta) throw new Error(`EN_META missing for ${m.id}`);
+  const cur = modelCurrency(m);
+  const curName = cur === 'USD' ? 'USD' : 'CNY';
+  const modText = (m.modalities || []).map(x => EN_MODALITY_MAP[x] || x).join(', ');
+  const featText = (m.features || []).map(x => EN_FEATURE_MAP[x] || x).join(', ');
+  const src = safeUrl(m.sourceUrl);
+  const srcCell = src
+    ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(m.sourceName)}</a>`
+    : esc(m.sourceName);
+  const effIn = m.priceCacheHit == null ? m.priceIn : P.hit * m.priceCacheHit + (1 - P.hit) * m.priceIn;
+  const inCost = P.calls * 30 * (P.inTok / 1e6) * effIn;
+  const outCost = P.calls * 30 * (P.outTok / 1e6) * m.priceOut;
+  const total = Math.round((inCost + outCost) * 100) / 100;
+  const title = `${m.name} API Pricing, Context Window and Specs | ${BRAND}`;
+  const desc = `${m.name} (${meta.vendorEn}) API pricing: input ${price(m.priceIn, cur)}, output ${price(m.priceOut, cur)} per 1M tokens (${curName}), ${m.context}K context, modalities: ${modText}. Official source linked, verified ${m.verifiedAt}.`;
+
+  const main = `    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">${esc(m.name)}</h1>
+      <p class="tagline">${esc(meta.vendorEn)} · ${esc(featText)}</p>
+      ${tagsHtmlEn(m)}
+    </section>
+
+    <p class="lede">${esc(meta.positioning)}</p>
+
+    <section class="panel">
+      <h2>API pricing (official list price, ${curName} per 1M tokens)</h2>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+${enPriceRows(m).map(r => `          <tr><th>${r[0]}</th><td class="num">${r[1]}</td></tr>`).join('\n')}
+            <tr><th>Billing currency</th><td class="num">${cur === 'USD' ? 'USD (US dollars)' : 'CNY (Chinese yuan)'} — the vendor\'s original billing currency, not converted</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Specifications</h2>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>Context window</th><td class="num">${m.context}K tokens</td></tr>
+            <tr><th>Modalities</th><td>${esc(modText)}</td></tr>
+            <tr><th>Noted features</th><td>${esc(featText)}</td></tr>
+            <tr><th>Vendor / channel</th><td>${esc(meta.vendorEn)} (${esc(meta.vendorZhNote)})</td></tr>
+            <tr><th>Price source</th><td>${srcCell}</td></tr>
+            <tr><th>Verified</th><td class="num">${esc(m.verifiedAt)}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Site calculation: estimated monthly cost at default usage</h2>
+      <p class="s-hint">Site calculation, not a vendor quote. Assumptions: ${P.calls} calls/day · ${P.inTok} input / ${P.outTok} output tokens per call · 30-day month · ${Math.round(P.hit * 100)}% cache hit rate${m.peakOffpeak ? ' · off-peak rates' : ''}. Same formula as the <a href="../../cost/">cost calculator</a>.</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>Effective input price</th><td class="num">${m.priceCacheHit == null ? `No published cache price; input billed at ${price(m.priceIn, cur)}` : `${Math.round(P.hit * 100)}% × ${price(m.priceCacheHit, cur)} (cache hit) + ${Math.round((1 - P.hit) * 100)}% × ${price(m.priceIn, cur)} (standard) = ${round2(effIn)} ${cur === 'USD' ? 'USD' : 'CNY'}/1M tokens`}</td></tr>
+            <tr><th>Input cost</th><td class="num">${P.calls} × 30 × (${P.inTok} ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost), cur)}</td></tr>
+            <tr><th>Output cost</th><td class="num">${P.calls} × 30 × (${P.outTok} ÷ 1,000,000) × ${price(m.priceOut, cur)} = ${money(round2(outCost), cur)}</td></tr>
+            <tr><th>Estimated monthly cost</th><td class="num"><strong>${money(total, cur)}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Notes and limitations</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>· Prices are official published list prices per 1M tokens in the original billing currency (here CNY). Limited-time promotions, resource packs and subscription discounts are not included; the vendor's console prevails.</p>
+        <p>· "Verified" is the date this page's figures were last checked against the official source linked above. Pricing changes over time — confirm on the source page before making decisions.</p>
+        <p>· The monthly cost above is this site's own calculation under fixed usage assumptions. It is not a vendor quote and does not constitute purchase advice.</p>
+        <p>· This page records no benchmark results and claims no leadership on any task. ${esc(meta.useNote)}</p>
+      </div>
+    </section>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="../../cost/?models=${esc(m.id)}">Estimate it in the cost calculator →</a>
+      <a class="btn btn-ghost" href="../../cost/">Cost calculator</a>
+      <a class="btn btn-ghost" href="../../">English home</a>
+    </div>`;
+
+  return page({
+    depth: 3,
+    lang: 'en',
+    en: true,
+    active: 'model',
+    alternates: [
+      { lang: 'en', url: `${SITE}/en/models/${m.id}/` },
+      { lang: 'zh-CN', url: `${SITE}/models/${m.id}/` }
+    ],
+    title,
+    desc,
+    canonicalPath: `/en/models/${m.id}/`,
+    jsonld: [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: m.name,
+        applicationCategory: 'DeveloperApplication',
+        operatingSystem: 'API',
+        inLanguage: 'en',
+        description: desc,
+        url: `${SITE}/en/models/${m.id}/`,
+        sameAs: src || undefined
+      },
+      breadcrumb([{ name: 'English Home', path: '/en/' }, { name: m.name, path: `/en/models/${m.id}/` }])
+    ],
+    crumb: `/ <a href="../../" style="color:inherit">English Home</a> / ${esc(m.name)}`,
+    main,
+    inlineScript: `  <script>window.track('model_view', { id: ${jsStr(m.id)}, lang: 'en' });</script>`
   });
 }
 
@@ -512,6 +720,60 @@ function costExampleHtml() {
             <tr><th>输入成本</th><td class="num">${P.calls} 次 × 30 天 × (${P.inTok} ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost))}</td></tr>
             <tr><th>输出成本</th><td class="num">${P.calls} 次 × 30 天 × (${P.outTok} ÷ 1,000,000) × ${price(b.o)} = ${money(round2(outCost))}</td></tr>
             <tr><th>估算月成本</th><td class="num"><strong>${money(round2(inCost + outCost))}</strong>（示例仅为固定假设下的估算，不构成采购建议）</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+}
+
+/* 英文成本参考表：与 costTableHtml 同一公式与同一 models.json 数据源，仅表头/说明为英文（/en/cost/ 注入） */
+function costTableHtmlEn() {
+  const rows = models.map(m => {
+    const cur = modelCurrency(m);
+    const src = safeUrl(m.sourceUrl);
+    const inCell = m.priceTiers ? m.priceTiers.map(t => `${esc(enTierDescEn(t.desc))} ${t.unverified ? 'not published' : price(t.priceIn, cur)}`).join('<br>') : m.peakOffpeak ? `Peak ${price(m.peakOffpeak.peakIn, cur)}<br>Off-peak ${price(m.peakOffpeak.offIn, cur)}` : price(m.priceIn, cur);
+    const outCell = m.priceTiers ? m.priceTiers.map(t => `${esc(enTierDescEn(t.desc))} ${t.unverified ? 'not published' : price(t.priceOut, cur)}`).join('<br>') : m.peakOffpeak ? `Peak ${price(m.peakOffpeak.peakOut, cur)}<br>Off-peak ${price(m.peakOffpeak.offOut, cur)}` : price(m.priceOut, cur);
+    const cacheRaw = m.peakOffpeak ? m.peakOffpeak.offCache : m.priceCacheHit;
+    const cacheCell = cacheRaw == null ? 'Not published' : (m.peakOffpeak ? `Peak ${price(m.peakOffpeak.peakCache, cur)}<br>Off-peak ${price(m.peakOffpeak.offCache, cur)}` : price(m.priceCacheHit, cur));
+    const estCny = monthlyBase(m, fx);
+    const estCell = estCny == null ? 'Cannot estimate (tier rate not published)' : (cur === 'USD' ? `≈ ${money(estCny)}` : money(estCny));
+    return `          <tr><th><a href="../../models/${esc(m.id)}/">${esc(m.name)}</a></th><td>${esc(m.vendor)}</td><td class="num">${inCell}</td><td class="num">${outCell}</td><td class="num">${cacheCell}</td><td class="num">${estCell}</td><td class="num">${esc(m.verifiedAt)}</td><td>${src ? `<a href="${esc(src)}" target="_blank" rel="noopener">${esc(m.sourceName)}</a>` : esc(m.sourceName)}</td></tr>`;
+  }).join('\n');
+  const usdNote = models.some(m => modelCurrency(m) === 'USD')
+    ? `USD is the official billing currency for those models; estimated monthly costs are converted to CNY at the CFETS central parity rate (${esc(fxNote('USD') || 'reference rate unverified')}), indicative only.`
+    : '';
+  return `      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>Model</th><th>Vendor / channel</th><th>Input price<br>(list price / 1M tokens)</th><th>Output price<br>(list price / 1M tokens)</th><th>Cache-hit price</th><th>Est. monthly cost (CNY)</th><th>Verified</th><th>Official price source</th></tr>
+          </thead>
+          <tbody>
+${rows}
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint" style="margin-top:8px">Models without a published cache price are estimated at the standard input price (no cache discount assumed); time-based priced models use the off-peak rate (matching the "Off-peak" toggle above); tiered models are priced at the tier an example input of 2,000 tokens falls into. The estimate column uses exactly the same formula, default parameters and reference rate as the interactive calculator below. ${usdNote} For a two-model, line-by-line comparison use the <a href="../../compare/">model comparison</a> (Chinese).</p>`;
+}
+
+/* 英文算例：与 costExampleHtml 同一公式、同一示例模型（/en/cost/ 注入） */
+function costExampleHtmlEn() {
+  const m = models.find(x => x.peakOffpeak) || models[0];
+  const b = m.peakOffpeak
+    ? { i: m.peakOffpeak.offIn, c: m.peakOffpeak.offCache, o: m.peakOffpeak.offOut, label: 'off-peak rate' }
+    : { i: m.priceIn, c: m.priceCacheHit, o: m.priceOut, label: 'standard rate' };
+  const effIn = b.c == null ? b.i : P.hit * b.c + (1 - P.hit) * b.i;
+  const inCost = P.calls * 30 * (P.inTok / 1e6) * effIn;
+  const outCost = P.calls * 30 * (P.outTok / 1e6) * b.o;
+  const cacheLine = b.c == null
+    ? `This model has no published cache price; input is billed at ${price(b.i)}.`
+    : `Effective input price = 30% × ${price(b.c)} (cache hit) + 70% × ${price(b.i)} (standard) = ${round2(effIn)} CNY/1M tokens.`;
+  return `      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>Example model</th><td><a href="../../models/${esc(m.id)}/">${esc(m.name)}</a> (${esc(m.vendor)}, ${b.label}, verified ${esc(m.verifiedAt)}, <a href="${esc(safeUrl(m.sourceUrl) || '#')}" target="_blank" rel="noopener">official source</a>)</td></tr>
+            <tr><th>Effective input price</th><td class="num">${cacheLine}</td></tr>
+            <tr><th>Input cost</th><td class="num">${P.calls} × 30 × (${P.inTok} ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost))}</td></tr>
+            <tr><th>Output cost</th><td class="num">${P.calls} × 30 × (${P.outTok} ÷ 1,000,000) × ${price(b.o)} = ${money(round2(outCost))}</td></tr>
+            <tr><th>Estimated monthly cost</th><td class="num"><strong>${money(round2(inCost + outCost))}</strong> (a fixed-assumption estimate, not purchase advice)</td></tr>
           </tbody>
         </table>
       </div>`;
@@ -783,11 +1045,20 @@ const pairs = comparePairs(models, compares.extraPairs || []);
 pruneStale(join(DIST, 'models'), new Set(models.map(m => m.id)));
 pruneStale(join(DIST, 'tools'), new Set(tools.filter(t => !t.own).map(t => t.id)));
 pruneStale(join(DIST, 'compare'), new Set(pairs.map(([a]) => a)));
+pruneStale(join(DIST, 'en/models'), new Set(EN_MODELS));
 
 let count = 0;
 for (const m of models) {
   writePage(`models/${m.id}/index.html`, modelDetail(m));
   count++;
+}
+/* 英文模型页（EN_MODELS 白名单，MVP 仅 GLM-5.3-Flash） */
+for (const id of EN_MODELS) {
+  const m = models.find(x => x.id === id);
+  if (m) {
+    writePage(`en/models/${m.id}/index.html`, modelDetailEn(m));
+    count++;
+  }
 }
 for (const t of tools) {
   if (t.own) continue; /* 自研工具的"详情页"就是模块本身，不生成薄页 */
@@ -811,6 +1082,9 @@ injectRegion('models/index.html', '<!-- MODEL_CARDS_START -->', '<!-- MODEL_CARD
 injectRegion('tools/index.html', '<!-- TOOL_GROUPS_START -->', '<!-- TOOL_GROUPS_END -->', toolGroupsHtml(pairs.length));
 injectRegion('cost/index.html', '<!-- COST_TABLE_START -->', '<!-- COST_TABLE_END -->', costTableHtml());
 injectRegion('cost/index.html', '<!-- COST_EXAMPLE_START -->', '<!-- COST_EXAMPLE_END -->', costExampleHtml());
+/* 英文计算器静态内容（同一公式与数据源，英文表头/说明） */
+injectRegion('en/cost/index.html', '<!-- COST_TABLE_START -->', '<!-- COST_TABLE_END -->', costTableHtmlEn());
+injectRegion('en/cost/index.html', '<!-- COST_EXAMPLE_START -->', '<!-- COST_EXAMPLE_END -->', costExampleHtmlEn());
 injectRegion('guides/llm-api-cost/index.html', '<!-- GUIDE_EXAMPLE_START -->', '<!-- GUIDE_EXAMPLE_END -->', guideExampleHtml());
 injectRegion('guides/llm-api-pricing-comparison/index.html', '<!-- PCOMP_TABLE_START -->', '<!-- PCOMP_TABLE_END -->', pcompTableHtml());
 injectRegion('guides/llm-api-cost-examples/index.html', '<!-- CEX_SCENARIOS_START -->', '<!-- CEX_SCENARIOS_END -->', cexScenariosHtml());
@@ -897,4 +1171,4 @@ ${entries.map(e => e.lastmod
 `;
 writeFileSync(join(DIST, 'sitemap.xml'), xml, 'utf8');
 
-console.log(`build ok: ${models.length} model + ${pairs.length} compare + ${tools.filter(t => !t.own).length} tool = ${count} pages, sitemap ${entries.length} urls（lastmod 取数据/内容真实更新日期，与构建日期无关）`);
+console.log(`build ok: ${models.length} model + ${pairs.length} compare + ${tools.filter(t => !t.own).length} tool + ${EN_MODELS.length} en-model = ${count} pages, sitemap ${entries.length} urls（lastmod 取数据/内容真实更新日期，与构建日期无关）`);

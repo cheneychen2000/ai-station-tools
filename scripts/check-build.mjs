@@ -115,7 +115,9 @@ R.check('B10d 列表页不再含 fetch 渲染卡片脚本',
 let footerBad = [];
 for (const rel of walk(DIST).filter(f => f.endsWith('.html') && f !== '404.html')) {
   const txt = readFileSync(join(DIST, rel), 'utf8');
-  if (!txt.includes('不构成任何采购建议') || !txt.includes('关于本站')) footerBad.push(rel);
+  /* 英文页合规文字为英文等价文案（免责声明 + 关于本站入口：英文页脚"中文站"组含中文信任页链接） */
+  const disclaimer = rel.startsWith('en/') ? 'not constitute any purchase advice' : '不构成任何采购建议';
+  if (!txt.includes(disclaimer) || !txt.includes('关于本站')) footerBad.push(rel);
 }
 R.check('B11 全站页脚静态合规文字齐全', footerBad.length === 0, footerBad.join(', ') || '全部页面含免责声明与关于本站链接');
 

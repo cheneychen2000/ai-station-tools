@@ -57,6 +57,37 @@ ${items}
   </header>`;
 }
 
+/**
+ * 英文站主导航（MVP）：只链接真实存在的英文页，末项为对应中文站语言切换。
+ * 与 dist/en/ 手写页内联导航同结构（顺序/文案由 check-nav N1 的 EN_NAV_LABELS 强制一致）。
+ * @param base 相对根路径前缀（'../' × depth）
+ * @param active 'home' | 'cost' | 'model'
+ */
+export function navHeaderHtmlEn(base, active = null, crumb = '') {
+  const items = [
+    { key: 'home', label: 'Home', path: `${base}en/` },
+    { key: 'cost', label: 'Cost Calculator', path: `${base}en/cost/` },
+    { key: 'model', label: 'GLM-5.3-Flash', path: `${base}en/models/glm-53-flash/` },
+    { key: 'zh', label: '中文', path: `${base}` }
+  ];
+  const lis = items.map(it => {
+    const cur = active === it.key ? ' class="active" aria-current="page"' : '';
+    return `          <li><a href="${it.path}"${cur}>${esc(it.label)}</a></li>`;
+  }).join('\n');
+  return `<a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="${base}en/"><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
+      <span class="crumb">${crumb}</span>` : ''}
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+${lis}
+        </ul>
+      </nav>
+    </div>
+  </header>`;
+}
+
 /** 页脚站内导航区：核心工具 + 关于本站 + GitHub 反馈（只指向已存在的页面） */
 export function footerNavHtml(base) {
   const core = [...NAV_ITEMS, ...FOOTER_EXTRA]

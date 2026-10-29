@@ -6,6 +6,8 @@
   <title>AI 大模型 API 成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub</title>
   <meta name="description" content="输入日均调用量与 Token 用量，一键估算 DeepSeek、GLM、Kimi、Qwen、GPT、Claude、Gemini 等国内外大模型 API 的每月成本，支持错峰低谷价与缓存命中率加权，数据定期核验。">
   <link rel="canonical" href="https://www.reflex-hub.com/cost/">
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/cost/">
+  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="AI大模型API成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub">
@@ -236,10 +238,12 @@
     window.ASSETS_BASE = '../assets';
   </script>
   <script src="../assets/app.js"></script>
+  <script src="../assets/cost-core.js"></script>
   <script>
   (function () {
     var DEFAULT_SELECTED = ['deepseek-v41-flash', 'glm-53-flash', 'qwen35-plus', 'kimi-k3'];
     var STORE_KEY = 'aih_cost_state_v1';
+    var Calc = window.CostCore; /* 公式唯一实现源：assets/cost-core.js（与 /en/cost/ 及 pricing.mjs 对拍一致） */
 
     var state = {
       selected: DEFAULT_SELECTED.slice(),
@@ -290,37 +294,15 @@
     }
 
     /* ---------- 计算 ---------- */
-    /* 条件价档：按单次输入长度选档（models.json priceTiers，升序，upToInputTokens=null 为最高档） */
-    function tierPrice(m, inTok) {
-      if (!m.priceTiers || !m.priceTiers.length) return null;
-      for (var i = 0; i < m.priceTiers.length; i++) {
-        var t = m.priceTiers[i];
-        if (t.upToInputTokens == null || inTok <= t.upToInputTokens) return t;
-      }
-      return m.priceTiers[m.priceTiers.length - 1];
-    }
+    /* 条件价档 / 有效单价 / 月成本：委托共享核心 CostCore（assets/cost-core.js），公式与英文版及 pricing.mjs 完全一致 */
+    function tierPrice(m, inTok) { return Calc.tierPrice(m, inTok); }
     function effectiveInputPrice(m, hitRatio) {
-      var base;
-      if (m.peakOffpeak) {
-        var p = m.peakOffpeak;
-        base = state.offpeak
-          ? { input: p.offIn, cache: p.offCache, output: p.offOut }
-          : { input: p.peakIn, cache: p.peakCache, output: p.peakOut };
-      } else {
-        var t = tierPrice(m, state.inTok);
-        if (t && t.unverified) return null; /* 该输入长度档位费率未公开：无法精确估算，不得按低档套用 */
-        base = { input: t ? t.priceIn : m.priceIn, cache: t ? t.priceCacheHit : m.priceCacheHit, output: t ? t.priceOut : m.priceOut };
-      }
-      if (base.input == null || base.output == null) return null;
-      var effIn = (base.cache == null) ? base.input : hitRatio * base.cache + (1 - hitRatio) * base.input;
-      return { effIn: effIn, output: base.output };
+      return Calc.effectiveInputPrice(m, { offpeak: state.offpeak, inTok: state.inTok }, hitRatio);
     }
     function monthlyCost(m) {
       var pr = effectiveInputPrice(m, state.cacheHit / 100);
       if (!pr) return null;
-      var inCost = state.calls * 30 * (state.inTok / 1000000) * pr.effIn;
-      var outCost = state.calls * 30 * (state.outTok / 1000000) * pr.output;
-      return { total: inCost + outCost, inCost: inCost, outCost: outCost };
+      return Calc.monthlyCost(pr, state.calls, state.inTok, state.outTok);
     }
     function fmt(n) {
       return '¥' + n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
