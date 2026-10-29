@@ -246,8 +246,8 @@ ${priceTable(m)}
 
   return page({
     depth: 2,
-    title: `${m.name} 价格与参数档案 - ${m.vendor} | ${BRAND}`,
-    desc: `${m.name}（${m.vendor}）API 价格（${modelCurrency(m) === 'USD' ? '美元' : '人民币'}）：输入 ${price(m.priceIn, modelCurrency(m))}/输出 ${price(m.priceOut, modelCurrency(m))} 每百万Token，上下文 ${m.context}K，支持${modText}。数据核验于 ${m.verifiedAt}。`,
+    title: `${m.name} API 价格、参数与上下文长度 | ${BRAND}`,
+    desc: `查看 ${m.name} 的 API 输入与输出价格、上下文长度、支持的模态及模型参数。附价格来源与最近核验日期，方便评估模型成本。`,
     canonicalPath: `/models/${m.id}/`,
     jsonld: [
       ld,

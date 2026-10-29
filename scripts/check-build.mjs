@@ -176,9 +176,10 @@ const usdModels = models.filter(m => (m.currency || 'CNY') === 'USD');
 R.check(`B19 ${usdModels.length} 款美元模型的详情页以 $ 展示原价（description/正文均不得伪装成 ¥）`,
   usdModels.length === 5 && usdModels.every(m => {
     const t = readFileSync(join(DIST, 'models', m.id, 'index.html'), 'utf8');
-    const metaOk = t.includes(`输入 $${m.priceIn}/输出 $${m.priceOut}`) &&
-      !t.includes(`输入 ¥${m.priceIn}`) && !t.includes(`¥${m.priceIn}/输出`);
-    return metaOk && t.includes('$' + m.priceIn) && t.includes('美元');
+    /* 正文（lede/价格表）必须以 $ 展示美元原价，不得伪装成 ¥；meta description 自 2026-10-29 起为固定文案，只校验不含伪装的 ¥ 价格 */
+    return t.includes(`输入 $${m.priceIn}`) && t.includes(`输出 $${m.priceOut}`) &&
+      !t.includes(`输入 ¥${m.priceIn}`) && !t.includes(`¥${m.priceIn}/输出`) &&
+      t.includes('$' + m.priceIn) && t.includes('美元');
   }));
 R.check('B19b 美元模型详情页含人民币折算参考与汇率日期',
   usdModels.every(m => readFileSync(join(DIST, 'models', m.id, 'index.html'), 'utf8').includes('6.718')));
