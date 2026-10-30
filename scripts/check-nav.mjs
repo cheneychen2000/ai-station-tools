@@ -292,9 +292,14 @@ if (deskBlock && !/\.site-nav ul\s*\{[^}]*flex-wrap:\s*nowrap/.test(deskBlock)) 
 if (deskBlock && !/\.site-nav a\s*\{[^}]*white-space:\s*normal/.test(deskBlock)) cssProblems.push('导航文字未允许换行');
 if (deskBlock && !/\.site-nav a\s*\{[^}]*word-break:\s*normal/.test(deskBlock)) cssProblems.push('导航文字缺 word-break: normal');
 if (deskBlock && !/\.site-nav a\s*\{[^}]*overflow-wrap:\s*normal/.test(deskBlock)) cssProblems.push('导航文字缺 overflow-wrap: normal');
-if (!/html\[lang="en"\]\s*\.site-nav a\s*\{[^}]*max-width:/.test(css)) cssProblems.push('英文导航缺菜单项最大宽度（无法控制在单词边界折行）');
-const enNavRule = (css.match(/html\[lang="en"\]\s*\.site-nav a\s*\{[^}]*\}/) || [''])[0];
+if (!/html\[lang="en"\]\s*\.site-nav\s*>\s*ul\s*>\s*li\s*>\s*a\s*\{[^}]*max-width:/.test(css)) cssProblems.push('英文导航缺菜单项最大宽度（无法控制在单词边界折行）');
+const enNavRule = (css.match(/html\[lang="en"\]\s*\.site-nav\s*>\s*ul\s*>\s*li\s*>\s*a\s*\{[^}]*\}/) || [''])[0];
 if (/font-size/.test(enNavRule)) cssProblems.push('英文导航被缩了字号');
+/* 语言菜单里的切换链接必须保持整行可点：任何 max-width 都不能落到 .lang-menu 的链接上
+   （历史 bug：`html[lang="en"] .site-nav a` 把菜单链接也压到 82.6px，右侧 1/3 点不动）。 */
+for (const rule of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+  if (/max-width\s*:\s*5\.9em/.test(rule[2]) && /\.lang-menu/.test(rule[1])) cssProblems.push(`语言菜单链接被限制了宽度：${rule[1].trim()}`);
+}
 if (/word-break:\s*break-all|overflow-wrap:\s*anywhere|word-break:\s*break-word/.test(css)) cssProblems.push('出现拆词设置（break-all / anywhere）');
 R.check('N19b 英文导航换行规则：nowrap 外层 + 单词边界折行 + em 级 max-width，未缩字号、未拆词',
   cssProblems.length === 0, cssProblems.join(' | ') || '全部合规');

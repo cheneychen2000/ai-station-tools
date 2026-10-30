@@ -251,7 +251,10 @@ a:hover { text-decoration: underline; }
     text-align: center;
     line-height: 1.3;
   }
-  html[lang="en"] .site-nav a { max-width: 5.9em; }
+  /* 只限制"业务导航项"（.site-nav > ul > li > a）。不能用 `.site-nav a`：
+     语言菜单里的切换链接也是 .site-nav 内的 <a>，被套上 max-width 后整行就点不全了
+     （实测英文页那行只有 83/130px 可点）。 */
+  html[lang="en"] .site-nav > ul > li > a { max-width: 5.9em; }
 }
 
 /* 紧凑档（1024~1111px）：视口窄于 1112px 时 .wrap 开始被挤压，英文六个长标签 +
