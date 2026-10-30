@@ -213,6 +213,33 @@ if (/html\s*\{[^}]*overflow-x:\s*hidden/.test(css) || /body\s*\{[^}]*overflow-x:
 R.check('N17a 移动端样式：≤768px 改为纵向导航面板、取消横向滚动、显示汉堡按钮，且无 overflow-x:hidden 掩盖',
   mobProblems.length === 0, mobProblems.join(' | ') || '全部合规');
 
+/* N18 首页模块卡片：中英两版必须是同一套 7 个栏目（成本计算器/模型库/模型对比/开发指南/
+   AI 工具目录/Prompt 资源/AI 认知测试），英文不得少项、不得混入额外的单模型推广卡。 */
+const moduleGrid = (rel, aria) => {
+  const html = read(rel);
+  const block = (html.match(new RegExp(`<nav class="module-grid" aria-label="${aria}">[\\s\\S]*?</nav>`)) || [])[0];
+  if (!block) return null;
+  return [...block.matchAll(/<a class="module-card[^"]*" href="([^"]+)"/g)].map(m => m[1]);
+};
+const zhCards = moduleGrid('index.html', '工具导航');
+const enCards = moduleGrid('en/index.html', 'Tools');
+const cardProblems = [];
+if (!zhCards || !enCards) cardProblems.push('首页模块卡片容器缺失');
+else {
+  if (zhCards.length !== NAV_ITEMS.length + 1) cardProblems.push(`中文首页卡片 ${zhCards.length} 个（应为 ${NAV_ITEMS.length + 1}）`);
+  if (enCards.length !== NAV_ITEMS.length + 1) cardProblems.push(`英文首页卡片 ${enCards.length} 个（应为 ${NAV_ITEMS.length + 1}）`);
+  NAV_ITEMS.forEach((it, i) => {
+    if (zhCards[i] !== it.path) cardProblems.push(`中文第 ${i + 1} 张卡片 href=${zhCards[i]}（应为 ${it.path}）`);
+    const enExpect = it.pathEn.replace(/^en\//, '');
+    if (enCards[i] !== enExpect) cardProblems.push(`英文第 ${i + 1} 张卡片 href=${enCards[i]}（应为 ${enExpect}）`);
+    if (!existsSync(join(DIST, it.pathEn, 'index.html'))) cardProblems.push(`英文卡片目标页缺失 /${it.pathEn}`);
+  });
+  if (!enCards.includes('quiz/')) cardProblems.push('英文首页缺 AI 认知测试卡片');
+  if (enCards.some(h => /^models\/[a-z0-9-]+\//.test(h))) cardProblems.push('英文首页混入了单模型推广卡片');
+}
+R.check('N18 首页模块卡片：中英两版同为 7 张且逐项对应（英文含 guides/tools/prompts/quiz，无单模型推广卡）',
+  cardProblems.length === 0, cardProblems.join(' | ') || `中文 ${zhCards && zhCards.length} 张 / 英文 ${enCards && enCards.length} 张，顺序与目标页一致`);
+
 const toggleProblems = [];
 for (const file of pages) {
   const rel = relative(DIST, file).replace(/\\/g, '/');
