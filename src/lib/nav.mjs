@@ -65,20 +65,19 @@ ${items.join('\n')}
 }
 
 /**
- * 英文站主导航：**由 NAV_ITEMS 派生**（Home 入口 + 六个业务项），末项为语言切换器。
+ * 英文站主导航：**由 NAV_ITEMS 派生**（六个业务项），末项为语言切换器。
  * 与中文站共享同一份顺序与栏目，只换文案与 /en/ 前缀，避免两套菜单再次分叉。
- * 每个业务项都指向真实存在的英文页（EN_MODELS / en/guides / en/tools / en/prompts / en/compare）。
+ * 首页入口与中文站一致，由品牌 Logo 承担（`active === 'home'` 时给品牌链接加 aria-current），
+ * 导航列表里不再单列 Home —— 两端菜单项一一对应、数量完全相同。
+ * 每个业务项都指向真实存在的英文页（en/models / en/cost / en/compare / en/guides / en/tools / en/prompts）。
  * @param base 相对根路径前缀（'../' × depth）
- * @param active 'home' | NAV_ITEMS.key（cost/models/compare/guides/tools/prompts）
+ * @param active 'home'（品牌高亮）| NAV_ITEMS.key（cost/models/compare/guides/tools/prompts）
  * @param switchHref 中文切换目标（switchTarget 计算）
  */
 export function navHeaderHtmlEn(base, active = null, crumb = '', switchHref = null) {
-  const items = [
-    { key: 'home', label: 'Home', path: `${base}en/` },
-    ...NAV_ITEMS.map(it => ({ key: it.key, label: it.labelEn, path: `${base}${it.pathEn}` }))
-  ];
+  const items = NAV_ITEMS.map(it => ({ key: it.key, label: it.labelEn, path: `${base}${it.pathEn}` }));
   const lis = items.map(it => {
-    const cur = active === it.key && it.key !== 'home' ? ' class="active" aria-current="page"' : '';
+    const cur = active === it.key ? ' class="active" aria-current="page"' : '';
     return `          <li><a href="${it.path}"${cur}>${esc(it.label)}</a></li>`;
   });
   if (switchHref) lis.push(`          <li class="lang-switch-item"><a class="lang-switch" href="${esc(switchHref)}">中文</a></li>`);

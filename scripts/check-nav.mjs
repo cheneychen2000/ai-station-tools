@@ -55,10 +55,10 @@ function expectedActive(rel) {
 }
 
 const NAV_LABELS = ['成本计算器', '模型库', '模型对比', '开发指南', 'AI 工具目录', 'Prompt 资源', 'English'];
-/* 英文站导航：Home 入口 + 与中文一一对应的六个业务项，末项为语言切换器。
-   这里刻意写死期望值而不从 NAV_ITEMS 推导——N0 再把两者对齐比对，才能同时抓住
-   "渲染端漏项" 与 "检查端跟着一起漂" 两类问题（历史上英文导航就是手写的三条数组）。 */
-const EN_NAV_LABELS = ['Home', 'Cost Calculator', 'Model Library', 'Model Comparison', 'Developer Guide', 'AI Tools Directory', 'Prompt Resources', '中文'];
+/* 英文站导航：与中文一一对应的六个业务项，末项为语言切换器（首页入口由品牌 Logo 承担，
+   列表里不再单列 Home）。这里刻意写死期望值而不从 NAV_ITEMS 推导——N0 再把两者对齐比对，
+   才能同时抓住"渲染端漏项"与"检查端跟着一起漂"两类问题（历史上英文导航是手写的三条数组）。 */
+const EN_NAV_LABELS = ['Cost Calculator', 'Model Library', 'Model Comparison', 'Developer Guide', 'AI Tools Directory', 'Prompt Resources', '中文'];
 let navBad = [], linkBad = [], activeBad = [], skipBad = [], footerBad = [];
 
 for (const file of pages) {
@@ -92,7 +92,7 @@ for (const file of pages) {
   const currents = items.filter(m => m[2].includes('aria-current="page"'));
   const activeKey = expect && expect !== 'home' && expect !== 'en-home' ? expect : null;
   if (activeKey) {
-    const labelIdx = { cost: 0, models: 1, compare: 2, guides: 3, tools: 4, prompts: 5, 'en-cost': 1, 'en-models': 2, 'en-compare': 3, 'en-guides': 4, 'en-tools': 5, 'en-prompts': 6 }[activeKey];
+    const labelIdx = { cost: 0, models: 1, compare: 2, guides: 3, tools: 4, prompts: 5, 'en-cost': 0, 'en-models': 1, 'en-compare': 2, 'en-guides': 3, 'en-tools': 4, 'en-prompts': 5 }[activeKey];
     const target = (isEn ? EN_NAV_LABELS : NAV_LABELS)[labelIdx];
     if (currents.length !== 1 || currents[0][3] !== target || !currents[0][2].includes('class="active"')) {
       activeBad.push(`${rel}（期望 ${target} 唯一 aria-current+active）`);
@@ -132,13 +132,13 @@ R.check('N5 页脚站内导航区齐全（核心工具/关于本站/GitHub 反�
 const navProblems = [];
 const missingEn = NAV_ITEMS.filter(it => !it.labelEn || !it.pathEn).map(it => it.key);
 if (missingEn.length) navProblems.push(`NAV_ITEMS 缺英文文案或路由：${missingEn.join(',')}`);
-if (NAV_ITEMS.length !== EN_NAV_LABELS.length - 2) { /* Home + 六项 + 语言切换 */
-  navProblems.push(`项数不一致：中文业务项 ${NAV_ITEMS.length}，英文导航 ${EN_NAV_LABELS.length}（应为业务项+2）`);
+if (NAV_ITEMS.length !== EN_NAV_LABELS.length - 1) { /* 六项业务 + 语言切换（首页入口由品牌 Logo 承担，不单列） */
+  navProblems.push(`项数不一致：中文业务项 ${NAV_ITEMS.length}，英文导航 ${EN_NAV_LABELS.length}（应为业务项+1）`);
 }
 if ([...NAV_ITEMS.map(it => it.label), 'English'].join('|') !== NAV_LABELS.join('|')) {
   navProblems.push(`中文渲染顺序与 NAV_ITEMS 不一致：${NAV_ITEMS.map(it => it.label).join('|')}`);
 }
-if (['Home', ...NAV_ITEMS.map(it => it.labelEn), '中文'].join('|') !== EN_NAV_LABELS.join('|')) {
+if ([...NAV_ITEMS.map(it => it.labelEn), '中文'].join('|') !== EN_NAV_LABELS.join('|')) {
   navProblems.push(`英文渲染顺序与 NAV_ITEMS 不一致：${NAV_ITEMS.map(it => it.labelEn).join('|')}`);
 }
 for (const it of NAV_ITEMS) {
@@ -159,11 +159,10 @@ const enHrefs = navHrefsOf('en/index.html', 'Main navigation') || [];
 const hrefProblems = [];
 if (zhHrefs.length !== NAV_ITEMS.length + 1) hrefProblems.push(`中文首页导航项 ${zhHrefs.length} 个（应为 ${NAV_ITEMS.length + 1}，含语言切换）`);
 NAV_ITEMS.forEach((it, i) => { if (zhHrefs[i] !== it.path) hrefProblems.push(`中文第 ${i + 1} 项 href=${zhHrefs[i]}（应为 ${it.path}）`); });
-if (enHrefs.length !== NAV_ITEMS.length + 2) hrefProblems.push(`英文首页导航项 ${enHrefs.length} 个（应为 ${NAV_ITEMS.length + 2}，含 Home 与语言切换）`);
-if (enHrefs[0] !== '../en/') hrefProblems.push(`英文第一项 href=${enHrefs[0]}（应为 ../en/）`);
-NAV_ITEMS.forEach((it, i) => { if (enHrefs[i + 1] !== `../${it.pathEn}`) hrefProblems.push(`英文第 ${i + 2} 项 href=${enHrefs[i + 1]}（应为 ../${it.pathEn}）`); });
+if (enHrefs.length !== NAV_ITEMS.length + 1) hrefProblems.push(`英文首页导航项 ${enHrefs.length} 个（应为 ${NAV_ITEMS.length + 1}，含语言切换、不含 Home）`);
+NAV_ITEMS.forEach((it, i) => { if (enHrefs[i] !== `../${it.pathEn}`) hrefProblems.push(`英文第 ${i + 1} 项 href=${enHrefs[i]}（应为 ../${it.pathEn}）`); });
 R.check('N0b 首页导航渲染的 href 与 NAV_ITEMS 配置逐项一致（中文相对路径 / 英文 /en/ 前缀）',
-  hrefProblems.length === 0, hrefProblems.join(' | ') || '中文 6 项 + English、英文 Home + 6 项 + 中文 全部匹配');
+  hrefProblems.length === 0, hrefProblems.join(' | ') || '中文 6 项 + English、英文 6 项 + 中文 全部匹配（首页入口由品牌 Logo 承担）');
 
 /* N6 陈旧字符串：旧品牌与过时硬编码数量（历史报告不在扫描范围） */
 let stale = [];

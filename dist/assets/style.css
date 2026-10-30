@@ -90,7 +90,7 @@ a:hover { text-decoration: underline; }
 .site-nav ul {
   list-style: none;
   display: flex;
-  gap: 4px;
+  gap: 2px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
@@ -100,7 +100,7 @@ a:hover { text-decoration: underline; }
   display: block;
   min-height: 44px;
   line-height: 24px;
-  padding: 10px 12px;
+  padding: 10px 10px;
   font-size: 14px;
   color: var(--muted);
   white-space: nowrap;
@@ -109,10 +109,9 @@ a:hover { text-decoration: underline; }
 .site-nav a:hover { color: var(--primary); text-decoration: none; }
 .site-nav a.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
 
-/* 桌面端：导航项多到放不下时换行，而不是把它裁进横向滚动区。
-   英文站 8 项（Home + 六个长标签 + 中文）在 1024~1440 宽会溢出，被裁掉的正好是
-   "Prompt Resources" 与语言切换入口；换行保证这两项始终可见。
-   移动端（<720px）保持原有"整行 + 横向滚动"行为，不受影响。 */
+/* 桌面端兜底：导航项确实放不下时换行，而不是把它裁进横向滚动区（被裁掉的会是最后几项，
+   包括语言切换入口）。当前 7 项（英文六个长标签 + 中文）在 1024 宽以上都能单行放下，
+   该规则只在将来继续加菜单/加长文案时生效；移动端（<720px）仍是"整行 + 横向滚动"。 */
 @media (min-width: 720px) {
   .site-nav ul { flex-wrap: wrap; justify-content: flex-end; }
 }
