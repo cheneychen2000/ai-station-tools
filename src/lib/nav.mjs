@@ -35,6 +35,40 @@ export const FOOTER_INFO = [
   { label: '使用条款', path: 'terms/' }
 ];
 
+/* ---------- 语言切换器（中英共用一份实现，只换文案） ----------
+   结构：地球图标 + 当前语言 + 箭头按钮；点击展开两项菜单（当前语言带勾选、另一语言为链接）。
+   交互由 assets/app.js 的 langSwitcher() 接管（展开/收起、点击外部、Escape、键盘方向键、
+   以 fixed 定位贴住按钮避免被导航横向滚动容器裁切）；无 JS 时 <noscript> 里的样式把菜单
+   直接平铺出来，语言切换依然可用。
+   注意：菜单里的另一语言仍是 <a class="lang-switch" href="…">，即"每页恰一条语言切换链接"
+   的既有约定与 app.js 的语言偏好记忆（rh_lang_pref）都保持不变。 */
+const LANG_SWITCH_UI = {
+  zh: { current: '中文', other: 'English', aria: '语言：中文，点击切换语言', menu: '选择语言' },
+  en: { current: 'English', other: '中文', aria: 'Language: English, click to switch', menu: 'Select language' }
+};
+
+const ICON_GLOBE = '<svg class="lang-ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">'
+  + '<circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/>'
+  + '<path d="M1.9 8h12.2M8 1.9c1.7 1.8 2.5 3.9 2.5 6.1S9.7 12.3 8 14.1C6.3 12.3 5.5 10.2 5.5 8s.8-4.3 2.5-6.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
+const ICON_CARET = '<svg class="lang-caret" viewBox="0 0 10 6" width="8" height="5" aria-hidden="true" focusable="false">'
+  + '<path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_CHECK = '<svg class="lang-check" viewBox="0 0 12 10" width="11" height="10" aria-hidden="true" focusable="false">'
+  + '<path d="M1 5.2 4.2 8.3 11 1.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/** 语言切换器的整段 <li>（zh/en 仅文案不同） */
+function langSwitchItemHtml(switchHref, ui) {
+  return `          <li class="lang-switch-item">
+            <div class="lang-switch-wrap">
+              <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="${esc(ui.aria)}">${ICON_GLOBE}<span class="lang-cur">${esc(ui.current)}</span>${ICON_CARET}</button>
+              <ul class="lang-menu" id="langMenu" role="menu" aria-label="${esc(ui.menu)}">
+                <li class="lang-opt is-current" role="none"><span class="lang-opt-cur" role="menuitemradio" aria-checked="true" aria-current="true" tabindex="-1">${ICON_CHECK}<span>${esc(ui.current)}</span></span></li>
+                <li class="lang-opt" role="none"><a class="lang-switch" href="${esc(switchHref)}" role="menuitemradio" aria-checked="false">${esc(ui.other)}</a></li>
+              </ul>
+              <noscript><style>.lang-btn{display:none}.lang-menu{display:block;position:static;margin-top:6px;box-shadow:none}</style></noscript>
+            </div>
+          </li>`;
+}
+
 /**
  * 统一 header：跳到正文链接 + 品牌链接（始终回首页）+ 可选面包屑 + 主导航 + 语言切换器。
  * @param base 相对根路径前缀（'' / '../' / '../../'），404 传 '/' 使用根绝对路径
@@ -49,7 +83,7 @@ export function navHeaderHtml(base, active = null, crumb = '', switchHref = null
     const cur = active === it.key ? ' class="active" aria-current="page"' : '';
     return `          <li><a href="${base}${it.path}"${cur}>${esc(it.label)}</a></li>`;
   });
-  if (switchHref) items.push(`          <li class="lang-switch-item"><a class="lang-switch" href="${esc(switchHref)}">English</a></li>`);
+  if (switchHref) items.push(langSwitchItemHtml(switchHref, LANG_SWITCH_UI.zh));
   return `<a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
@@ -80,7 +114,7 @@ export function navHeaderHtmlEn(base, active = null, crumb = '', switchHref = nu
     const cur = active === it.key ? ' class="active" aria-current="page"' : '';
     return `          <li><a href="${it.path}"${cur}>${esc(it.label)}</a></li>`;
   });
-  if (switchHref) lis.push(`          <li class="lang-switch-item"><a class="lang-switch" href="${esc(switchHref)}">中文</a></li>`);
+  if (switchHref) lis.push(langSwitchItemHtml(switchHref, LANG_SWITCH_UI.en));
   const homeCur = active === 'home' ? ' aria-current="page"' : '';
   const brandHref = base === '../' ? './' : `${base}en/`;
   return `<a class="skip-link" href="#main">Skip to content</a>

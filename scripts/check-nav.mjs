@@ -164,6 +164,37 @@ NAV_ITEMS.forEach((it, i) => { if (enHrefs[i] !== `../${it.pathEn}`) hrefProblem
 R.check('N0b 首页导航渲染的 href 与 NAV_ITEMS 配置逐项一致（中文相对路径 / 英文 /en/ 前缀）',
   hrefProblems.length === 0, hrefProblems.join(' | ') || '中文 6 项 + English、英文 6 项 + 中文 全部匹配（首页入口由品牌 Logo 承担）');
 
+/* ---------- N16 语言切换器（下拉控件）结构与无障碍属性 ----------
+   约定：按钮（地球 + 当前语言 + 箭头）+ role=menu 菜单；当前语言为 aria-checked=true 的
+   menuitemradio 且带勾选图标；另一语言是菜单里唯一的 a.lang-switch（"每页恰一条切换链接"
+   的既有约定不变）。无 JS 时靠 <noscript> 里的样式把菜单平铺，语言切换不可用即为回归。 */
+const LANG_STRINGS = {
+  zh: { current: '中文', aria: '语言：中文，点击切换语言', menu: '选择语言' },
+  en: { current: 'English', aria: 'Language: English, click to switch', menu: 'Select language' }
+};
+const langProblems = [];
+for (const file of pages) {
+  const rel = relative(DIST, file).replace(/\\/g, '/');
+  const txt = readFileSync(file, 'utf8');
+  const lang = rel.startsWith('en/') ? 'en' : 'zh';
+  const S = LANG_STRINGS[lang];
+  const btn = (txt.match(/<button type="button" class="lang-btn"[\s\S]*?<\/button>/g) || []);
+  if (btn.length !== 1) { langProblems.push(`${rel}（lang-btn ${btn.length} 个）`); continue; }
+  const b = btn[0];
+  for (const attr of ['aria-haspopup="true"', 'aria-expanded="false"', 'aria-controls="langMenu"', `aria-label="${S.aria}"`]) {
+    if (!b.includes(attr)) langProblems.push(`${rel}（按钮缺 ${attr}）`);
+  }
+  if (!b.includes(`<span class="lang-cur">${S.current}</span>`)) langProblems.push(`${rel}（按钮当前语言文案不是 ${S.current}）`);
+  if (!b.includes('class="lang-ico"') || !b.includes('class="lang-caret"')) langProblems.push(`${rel}（缺地球/箭头图标）`);
+  if (!txt.includes(`<ul class="lang-menu" id="langMenu" role="menu" aria-label="${S.menu}">`)) langProblems.push(`${rel}（菜单容器缺失或 aria-label 不符）`);
+  if (!txt.includes(`role="menuitemradio" aria-checked="true" aria-current="true"`) || !txt.includes('class="lang-check"')) langProblems.push(`${rel}（当前语言缺勾选态）`);
+  if (!/<a class="lang-switch" href="[^"]+" role="menuitemradio" aria-checked="false">/.test(txt)) langProblems.push(`${rel}（另一语言菜单项缺失）`);
+  if (!txt.includes('<noscript><style>')) langProblems.push(`${rel}（无 JS 兜底缺失）`);
+  if ((txt.match(/class="lang-switch"/g) || []).length !== 1) langProblems.push(`${rel}（lang-switch 链接数不为 1）`);
+}
+R.check(`N16 语言切换器结构：${pages.length} 页均为"按钮 + role=menu 菜单 + 勾选当前语言 + 单一切换链接"`,
+  langProblems.length === 0, langProblems.slice(0, 6).join(' | ') || '全部合规（zh 中文 / en English，含 noscript 兜底）');
+
 /* N6 陈旧字符串：旧品牌与过时硬编码数量（历史报告不在扫描范围） */
 let stale = [];
 for (const file of pages) {

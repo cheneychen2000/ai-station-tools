@@ -90,7 +90,7 @@ a:hover { text-decoration: underline; }
 .site-nav ul {
   list-style: none;
   display: flex;
-  gap: 2px;
+  gap: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
@@ -100,7 +100,7 @@ a:hover { text-decoration: underline; }
   display: block;
   min-height: 44px;
   line-height: 24px;
-  padding: 10px 10px;
+  padding: 10px 8px;
   font-size: 14px;
   color: var(--muted);
   white-space: nowrap;
@@ -108,6 +108,75 @@ a:hover { text-decoration: underline; }
 }
 .site-nav a:hover { color: var(--primary); text-decoration: none; }
 .site-nav a.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+
+/* ---------- 语言切换器：地球图标 + 当前语言 + 箭头，点击展开两项菜单 ----------
+   按钮沿用导航的克制风格（透明底 + 细边框，仅 hover/展开时用主色浅底）；
+   菜单由 assets/app.js 以 position: fixed 贴住按钮定位，因此不会被导航栏的横向滚动容器裁切，
+   也不会撑高顶栏造成布局跳动。无 JS 时 <noscript> 里的样式让菜单直接平铺。 */
+.lang-switch-item { display: flex; align-items: center; }
+.lang-switch-wrap { display: inline-flex; }
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 8px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+.lang-btn:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+.lang-btn[aria-expanded="true"] { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+.lang-ico { flex-shrink: 0; opacity: 0.9; }
+.lang-cur { white-space: nowrap; }
+.lang-caret { flex-shrink: 0; opacity: 0.65; transition: transform 0.15s; }
+.lang-btn[aria-expanded="true"] .lang-caret { transform: rotate(180deg); }
+
+/* 选择器带 .site-nav 前缀是必须的：`.site-nav ul` 会把 display/gap/overflow 一并作用于这个内层 ul，
+   没有更高优先级就会被渲染成"默认展开的横向 flex 条"（历史上踩过）。 */
+.site-nav .lang-menu {
+  display: none;
+  position: fixed;
+  z-index: 60;
+  min-width: 144px;
+  max-width: 240px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  flex-direction: column;
+  gap: 0;
+  overflow: visible;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(16, 26, 51, 0.14);
+}
+.site-nav .lang-menu.is-open { display: block; }
+.lang-opt { flex-shrink: 0; }
+.lang-opt-cur,
+.site-nav .lang-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 10px;
+  border-bottom: 0;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text);
+  white-space: nowrap;
+}
+.site-nav .lang-menu a:hover,
+.site-nav .lang-menu a:focus-visible { background: var(--primary-soft); color: var(--primary); text-decoration: none; }
+.lang-opt.is-current .lang-opt-cur { color: var(--primary); font-weight: 600; cursor: default; }
+.lang-check { flex-shrink: 0; }
 
 /* 桌面端兜底：导航项确实放不下时换行，而不是把它裁进横向滚动区（被裁掉的会是最后几项，
    包括语言切换入口）。当前 7 项（英文六个长标签 + 中文）在 1024 宽以上都能单行放下，

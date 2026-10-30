@@ -100,3 +100,87 @@ window.CF_ANALYTICS_TOKEN = window.CF_ANALYTICS_TOKEN || '';
   bar.appendChild(close);
   document.body.appendChild(bar);
 })();
+
+/* 语言切换器（顶部导航）：点击展开两项菜单（当前语言带勾选、另一语言为链接）。
+   菜单用 position: fixed 跟随按钮定位并按视口夹紧，因此既不会被导航的横向滚动容器裁切，
+   也不会超出屏幕右侧；展开/收起不改变文档流，顶栏高度与业务导航布局都不受影响。
+   支持：点击切换、点击外部关闭、Escape 关闭、↑/↓ 在菜单项间移动、Tab 自然进出。
+   语言目标 URL 由构建期（locales.mjs switchTarget）算好，前端只跳转、不拼 URL。 */
+(function langSwitcher() {
+  var btn = document.getElementById('langBtn');
+  var menu = document.getElementById('langMenu');
+  if (!btn || !menu) return;
+  var isOpen = false;
+
+  /* 菜单项：当前语言（不可点选）+ 另一语言（链接） */
+  function items() {
+    return Array.prototype.slice.call(menu.querySelectorAll('[role^="menuitem"]'));
+  }
+
+  /* 以按钮为锚点定位：优先向下、空间不足则向上，水平按视口夹紧 */
+  function place() {
+    var r = btn.getBoundingClientRect();
+    var w = menu.offsetWidth || 144;
+    var h = menu.offsetHeight || 44;
+    var gap = 8;
+    var left = Math.min(r.right - w, window.innerWidth - w - 8);
+    left = Math.max(8, left);
+    var top = r.bottom + gap;
+    if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - gap);
+    menu.style.left = Math.round(left) + 'px';
+    menu.style.top = Math.round(top) + 'px';
+  }
+
+  function setOpen(open, focusFirst) {
+    if (isOpen === open) return;
+    isOpen = open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menu.classList.toggle('is-open', open);
+    if (open) {
+      place();
+      if (focusFirst) {
+        var list = items();
+        if (list.length > 1 && list[1].focus) list[1].focus();
+      }
+    }
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    setOpen(!isOpen, false);
+  });
+
+  /* 点击菜单项（另一语言链接）后先收起，跳转由 <a> 自身完成 */
+  menu.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setOpen(false, false);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!isOpen) return;
+    if (btn.contains(e.target) || menu.contains(e.target)) return;
+    setOpen(false, false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!isOpen) return;
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      setOpen(false, false);
+      btn.focus();
+      return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      var list = items().filter(function (el) { return el.tabIndex !== -1 || el.tagName === 'A'; });
+      if (!list.length) return;
+      var idx = list.indexOf(document.activeElement);
+      var next = e.key === 'ArrowDown' ? idx + 1 : idx - 1;
+      if (next < 0) next = list.length - 1;
+      if (next >= list.length) next = 0;
+      list[next].focus();
+      e.preventDefault();
+    }
+  });
+
+  /* 视口变化时跟随（滚动/缩放）：菜单是 fixed 定位，不跟随会产生"飘在空中"的错觉 */
+  window.addEventListener('resize', function () { if (isOpen) place(); });
+  window.addEventListener('scroll', function () { if (isOpen) place(); }, true);
+})();
