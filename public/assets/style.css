@@ -109,6 +109,14 @@ a:hover { text-decoration: underline; }
 .site-nav a:hover { color: var(--primary); text-decoration: none; }
 .site-nav a.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
 
+/* 桌面端：导航项多到放不下时换行，而不是把它裁进横向滚动区。
+   英文站 8 项（Home + 六个长标签 + 中文）在 1024~1440 宽会溢出，被裁掉的正好是
+   "Prompt Resources" 与语言切换入口；换行保证这两项始终可见。
+   移动端（<720px）保持原有"整行 + 横向滚动"行为，不受影响。 */
+@media (min-width: 720px) {
+  .site-nav ul { flex-wrap: wrap; justify-content: flex-end; }
+}
+
 /* 移动端：Logo 缩小，导航整行换到第二行并横向滚动（Logo 行不受影响） */
 @media (max-width: 719px) {
   .brand-logo { width: 130px; }

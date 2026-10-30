@@ -349,7 +349,7 @@ ${enPriceRows(m).map(r => `          <tr><th>${r[0]}</th><td class="num">${r[1]}
     </div>`;
 
   return {
-    active: 'model',
+    active: 'models', /* 与 NAV_ITEMS.key 对齐（历史值 'model' 会导致英文导航无 active 高亮） */
     title,
     desc,
     canonicalPath: `/en/models/${m.id}/`,

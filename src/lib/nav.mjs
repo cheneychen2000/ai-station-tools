@@ -5,14 +5,19 @@
 import { BRAND } from './paths.mjs';
 import { esc } from './escape.mjs';
 
-/** 主导航项（顺序即全站展示顺序；品牌链接承担"首页"入口） */
+/**
+ * 主导航项（顺序即全站展示顺序；品牌链接承担"首页"入口）。
+ * 中英两站都从**这一份数组**渲染：labelEn/pathEn 与 label/path 必须成对填写，
+ * 少了任何一侧都会被 scripts/check-nav.mjs 的 N0 断言拦下（历史问题：英文导航曾经是
+ * 手写的三条独立数组，中文加菜单后英文长期没跟上）。
+ */
 export const NAV_ITEMS = [
-  { key: 'cost', label: '成本计算器', path: 'cost/' },
-  { key: 'models', label: '模型库', path: 'models/' },
-  { key: 'compare', label: '模型对比', path: 'compare/' },
-  { key: 'guides', label: '开发指南', path: 'guides/' },
-  { key: 'tools', label: 'AI 工具目录', path: 'tools/' },
-  { key: 'prompts', label: 'Prompt 资源', path: 'prompts/' }
+  { key: 'cost', label: '成本计算器', labelEn: 'Cost Calculator', path: 'cost/', pathEn: 'en/cost/' },
+  { key: 'models', label: '模型库', labelEn: 'Model Library', path: 'models/', pathEn: 'en/models/' },
+  { key: 'compare', label: '模型对比', labelEn: 'Model Comparison', path: 'compare/', pathEn: 'en/compare/' },
+  { key: 'guides', label: '开发指南', labelEn: 'Developer Guide', path: 'guides/', pathEn: 'en/guides/' },
+  { key: 'tools', label: 'AI 工具目录', labelEn: 'AI Tools Directory', path: 'tools/', pathEn: 'en/tools/' },
+  { key: 'prompts', label: 'Prompt 资源', labelEn: 'Prompt Resources', path: 'prompts/', pathEn: 'en/prompts/' }
 ];
 
 /** 页脚"核心工具"额外收录（不在主导航，避免过多项） */
@@ -60,17 +65,17 @@ ${items.join('\n')}
 }
 
 /**
- * 英文站主导航：只链接真实存在的英文页，末项为语言切换器（switchHref 由路由映射计算）。
- * 与 dist/en/ 手写页内联导航同结构（顺序/文案由 check-nav N1 的 EN_NAV_LABELS 强制一致）。
+ * 英文站主导航：**由 NAV_ITEMS 派生**（Home 入口 + 六个业务项），末项为语言切换器。
+ * 与中文站共享同一份顺序与栏目，只换文案与 /en/ 前缀，避免两套菜单再次分叉。
+ * 每个业务项都指向真实存在的英文页（EN_MODELS / en/guides / en/tools / en/prompts / en/compare）。
  * @param base 相对根路径前缀（'../' × depth）
- * @param active 'home' | 'cost' | 'model'
+ * @param active 'home' | NAV_ITEMS.key（cost/models/compare/guides/tools/prompts）
  * @param switchHref 中文切换目标（switchTarget 计算）
  */
 export function navHeaderHtmlEn(base, active = null, crumb = '', switchHref = null) {
   const items = [
     { key: 'home', label: 'Home', path: `${base}en/` },
-    { key: 'cost', label: 'Cost Calculator', path: `${base}en/cost/` },
-    { key: 'model', label: 'Model Library', path: `${base}en/models/` }
+    ...NAV_ITEMS.map(it => ({ key: it.key, label: it.labelEn, path: `${base}${it.pathEn}` }))
   ];
   const lis = items.map(it => {
     const cur = active === it.key && it.key !== 'home' ? ' class="active" aria-current="page"' : '';

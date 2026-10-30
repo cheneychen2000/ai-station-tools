@@ -13,7 +13,7 @@ import { modelCardsHtmlEn, modelToolbarMetaHtmlEn } from '../../../lib/render.mj
   ogDescription={"Browse LLM API pricing, context windows and supported modalities for major models, with official sources and verification dates."}
   canonicalPath="/en/models/"
   jsonld={[{"@context":"https://schema.org","@type":"CollectionPage","name":"AI Model Library","url":"https://www.reflex-hub.com/en/models/","inLanguage":"en","description":"LLM API pricing, context windows and supported modalities with official sources and verification dates"}]}
-  active="model"
+  active="models"
   crumb={"/ Model Library"}>
   <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>\n  <script src=\"../../assets/lib-filter.js\"></script>\n  <script>\n  /* 与中文模型库共用 assets/lib-filter.js（同一套筛选/排序逻辑），仅计数文案为英文 */\n  window.initLibFilter({ countText: function (visible, total) { return 'Showing ' + visible + ' of ' + total + ' models'; } });\n  </script>"} />
 <section class="hero">
