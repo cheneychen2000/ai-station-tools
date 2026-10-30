@@ -179,10 +179,19 @@ a:hover { text-decoration: underline; }
 .lang-check { flex-shrink: 0; }
 
 /* 桌面端兜底：导航项确实放不下时换行，而不是把它裁进横向滚动区（被裁掉的会是最后几项，
-   包括语言切换入口）。当前 7 项（英文六个长标签 + 中文）在 1024 宽以上都能单行放下，
-   该规则只在将来继续加菜单/加长文案时生效；移动端（<720px）仍是"整行 + 横向滚动"。 */
+   包括语言切换入口）。移动端（<720px）仍是"整行 + 横向滚动"。 */
 @media (min-width: 720px) {
   .site-nav ul { flex-wrap: wrap; justify-content: flex-end; }
+}
+
+/* 紧凑档（1024~1111px）：视口窄于 1112px 时 .wrap 开始被挤压，英文六个长标签 +
+   语言按钮会超出可用宽度而在 1024 换行。这里只压缩导航的字号与内边距、并缩小 Logo，
+   让英文导航在这些宽度下也保持单行；1440/1280（.wrap 已到 1080 上限）不进入本档，
+   外观与间距完全不变。 */
+@media (max-width: 1111px) {
+  .brand-logo { width: 140px; }
+  .site-nav a { font-size: 13px; padding: 10px 6px; }
+  .lang-btn { font-size: 13px; padding: 0 7px; }
 }
 
 /* 移动端：Logo 缩小，导航整行换到第二行并横向滚动（Logo 行不受影响） */
