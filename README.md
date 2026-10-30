@@ -70,29 +70,40 @@ Reflex Hub 独立维护，不代表任何模型厂商或第三方工具供应商
 
 ## 项目说明
 
-Reflex Hub 使用静态网页技术构建，并托管于 Cloudflare Pages。项目包含模型资料、互动计算工具和相关辅助资源。
+Reflex Hub 使用静态网页技术构建，并托管于 Cloudflare（Workers Static Assets，`wrangler deploy` 发布 `./dist`）。项目包含模型资料、互动计算工具和相关辅助资源。
 
 ### 技术栈与本地开发
 
-站点使用 **Astro 7（静态输出）** 构建，页面为纯静态 HTML，交互仍是原生 JavaScript（不引入任何前端 UI 框架）。
+站点使用 **Astro 7（静态输出）** 构建，页面为纯静态 HTML，交互是原生 TypeScript 经 Vite 打包的 Vanilla JS（不引入任何前端 UI 框架）。
 
 ```bash
-npm ci              # 安装依赖（Node ≥ 22.23.4）
-npm run dev         # 本地预览（Astro dev server）
-npm run build       # 构建到 dist/（发布目录）
-npm run check       # 运行既有 17 个构建产物检查脚本
-npm run check:migrate  # 迁移回归：URL 集合、产物对拍、资产契约、交互验证
+npm ci                 # 安装依赖（Node ≥ 22.23.4）
+npm run dev            # 本地预览（Astro dev server）
+npm run build          # 标准构建（astro build → dist/）
+npm run build:compat   # 本地兼容构建（带 IDE 垫片剥离与中间目录清理的包装）
+npm run check          # 全量检查（构建 + 20 个检查/审计脚本）
+npm run check:migrate  # 迁移回归：dist 与迁移前基线快照对拍（URL/SEO/资产契约）
+npm run check:types    # astro check（TypeScript 零错误零警告）
+npm run check:unit     # pricing 公式对拍单测（TS 实现 vs 检查脚本副本）
 ```
 
-目录约定：
+目录约定（Astro 原生架构）：
 
-- `src/pages/`：全部页面路由（手写页 + `[id]` 动态路由），`src/components/`：布局与页头页脚，`src/lib/`：数据、双语路由映射、文案字典、片段模板。
-- `src/integrations/post-build.mjs`：构建后统一生成 sitemap、浏览器端字典资产，并推进联盟/广告位占位状态机。
-- `public/`：原样承接 `assets/**`、`robots.txt`、`_headers`、favicon 等公开静态资源（URL 不变）。
-- `dist/`：构建输出（Cloudflare Pages 直接发布该目录，随源码一起提交）。
-- 模型价格、参数等事实数据只有一份：`public/assets/data/models.json`（构建期读取，同时作为公开 JSON 端点对外提供）。
+- `src/pages/`：页面路由 + 动态路由（`[id]`/`[a]/[b]`）+ 静态端点（`sitemap.xml.ts`、`assets/**` 派生资产）；
+- `src/layouts/SiteLayout.astro`：统一 HTML 布局（head/导航/页脚/脚本位），SEO 经 `src/components/seo/`（SEOHead/JsonLd/Breadcrumbs）；
+- `src/components/`：可复用 UI（common/model/compare/cost/tools/prompts/guide/placements/seo）；
+- `src/content.config.ts` + `src/lib/data/`：Content Collections（models/tools/prompts，直接读取 `public/assets/data/*.json`）与统一数据访问层（Zod Schema 校验）；
+- `src/lib/domain/`：纯业务逻辑（pricing 成本公式、manifest sitemap 规则、compare/model/tool 视图构建）；
+- `src/lib/i18n/`：英文字典、语言路由映射（hreflang/语言切换唯一事实源）；
+- `src/scripts/`：浏览器端 TypeScript 模块（app/cost-calculator/model-filter/compare/prompts/tools），Vite 打包为 `/_astro/*.js`；
+- `src/styles/global.css`：全站样式（构建期打包，URL 由检查脚本定位）；
+- `public/`：原样承接数据 JSON、favicon、`_headers`、`robots.txt` 与独立运行库（cost-core.js/qr.js/quiz.js，固定 URL 契约）；
+- `dist/`：构建输出（Workers Static Assets 发布目录，当前随源码提交，切换为纯 CI 构建发布后可移出版本控制）；
+- `migration/baseline-snapshot.json`：迁移前基线快照（URL + 每页 SEO 语义 + 资产哈希，`check:migrate` 对拍）。
 
-部署方式保持不变：Cloudflare Pages 采用 Git 集成发布，**提交前必须先 `npm run build`** 并让检查通过（发布目录 `dist/`）。
+模型价格、参数等事实数据只有一份：`public/assets/data/models.json`（Content Collection 构建期读取，同时作为公开 JSON 端点对外提供）。
+
+部署：先 `npm run build` 让检查全绿，再 `npx wrangler deploy`（`wrangler.jsonc` 的 `assets.directory` 指向 `./dist`，404 由 `not_found_handling: "404-page"` 处理）。
 
 仓库中的代码与网站部署内容并不等同于保密数据存储。不要将 API 密钥、账号凭证、私人合同或其他敏感信息提交到公开仓库或部署目录。
 

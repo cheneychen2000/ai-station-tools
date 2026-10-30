@@ -4,9 +4,11 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../components/Layout.astro';
-import { toolGroupsHtml } from '../../lib/render.mjs';
-import { pairs } from '../../lib/site.mjs';
+import Layout from '../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../lib/data';
+import ToolGroups from '../../components/tools/ToolGroups.astro';
+
+const { tools, models, pairs } = await getSiteData();
 ---
 
 <Layout title={"AI 工具库 - 主流 AI 工具盘点与直达 | Reflex Hub"}
@@ -14,7 +16,6 @@ import { pairs } from '../../lib/site.mjs';
   canonicalPath="/tools/"
   active="tools"
   crumb={"/ 工具库"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>\n  <script>\n  /* 卡片内容由 build.mjs 静态生成；此处仅保留与静态内容无关的点击埋点委托 */\n  document.addEventListener('click', function (e) {\n    var a = e.target.closest && e.target.closest('a[data-tool]');\n    if (a) window.track('tool_outbound', { id: a.getAttribute('data-tool') });\n  });\n  </script>"} />
 <section class="hero">
       <h1>AI 工具库</h1>
       <p class="tagline">按场景选对工具，比追新工具更重要</p>
@@ -27,8 +28,9 @@ import { pairs } from '../../lib/site.mjs';
     </p>
 
     <div id="toolGroups">
-      
-<Fragment set:html={toolGroupsHtml(pairs.length)} />
-
+      <ToolGroups tools={tools} modelCount={models.length} compareCount={pairs.length} />
     </div>
+    <script>
+      import '../../scripts/tools';
+    </script>
 </Layout>

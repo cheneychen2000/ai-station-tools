@@ -1,0 +1,64 @@
+---
+/**
+ * 全站页脚（原生 Astro 模板）：合规文字、数据来源链接、最近核验日期、
+ * 免责声明、页脚导航全部服务端静态输出（与迁移前同一事实源与同一文案）。
+ * 来源链接去重、核验日期聚合等"业务"逻辑在下方 frontmatter 完成，模板只负责展示。
+ */
+import { BRAND } from '../../lib/config';
+import { NAV_ITEMS, FOOTER_EXTRA, FOOTER_INFO } from '../../lib/nav.mjs';
+import { maxDate } from '../../lib/domain/manifest';
+import { enSrcLabel } from '../../lib/i18n/helpers';
+import { safeUrl } from '../../lib/utils/escape';
+import type { Model } from '../../lib/data/schemas';
+
+interface Props {
+  base: string;
+  en?: boolean;
+  models: Model[];
+}
+
+const { base, en = false, models } = Astro.props;
+
+const verified = maxDate(models.map(m => m.verifiedAt));
+/* 数据来源链接按 sourceUrl 去重（合规文字必须存在于原始 HTML） */
+const seen = new Set<string>();
+const sources: Array<{ url: string; label: string }> = [];
+for (const m of models) {
+  const u = safeUrl(m.sourceUrl);
+  if (u && !seen.has(u)) {
+    seen.add(u);
+    sources.push({ url: u, label: en ? enSrcLabel(m) : m.sourceName });
+  }
+}
+---
+
+{en ? (
+  <p>Price sources: {sources.map((s, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={s.url} target="_blank" rel="noopener">{s.label}</a></Fragment>))}</p>
+) : (
+  <p>数据来源：{sources.map((s, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={s.url} target="_blank" rel="noopener">{s.label}</a></Fragment>))}</p>
+)}
+    {en
+      ? <p>Most recent model price verification: <span class="num">{verified}</span> (each page shows its own verification date)</p>
+      : <p>模型价格最近核验日期：<span class="num">{verified}</span>（各模型、各工具的核验日期以对应页面标注为准）</p>}
+    {en
+      ? <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
+      : <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>}
+    {en
+      ? <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
+      : <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>}
+    {en ? (
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <p>Core tools: <a href={`${base}en/`}>Home</a> · <a href={`${base}en/cost/`}>Cost Calculator</a> · <a href={`${base}en/models/glm-53-flash/`}>GLM-5.3-Flash</a></p>
+      <p>Chinese site: <a href={base || './'}>Home</a> · <a href={`${base}cost/`}>Cost Calculator</a> · <a href={`${base}models/`}>Model Library</a> · <a href={`${base}guides/`}>Guides</a> · <a href={`${base}about/`}>About</a> · <a href={`${base}pricing-methodology/`}>Pricing Methodology</a> · <a href={`${base}privacy/`}>Privacy Policy</a> · <a href={`${base}terms/`}>Terms of Use</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
+    </nav>
+    ) : (
+    <nav class="footer-nav" aria-label="页脚导航">
+      <p>核心工具：{[...NAV_ITEMS, ...FOOTER_EXTRA].map((it, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={`${base}${it.path}`}>{it.label}</a></Fragment>))}</p>
+      <p>站点信息：{FOOTER_INFO.map((it, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={`${base}${it.path}`}>{it.label}</a></Fragment>))}</p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+    </nav>
+    )}
+    {en
+      ? <p>© 2026 {BRAND} · Free · No sign-up · Runs entirely in your browser</p>
+      : <p>© 2026 {BRAND} · 免费 · 免注册 · 打开即用</p>}

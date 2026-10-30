@@ -4,7 +4,8 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../../components/Layout.astro';
+import Layout from '../../../../layouts/SiteLayout.astro';
+import AffiliateCTA from '../../../../components/placements/AffiliateCTA.astro';
 ---
 
 <Layout title={"Make, n8n or a Custom API: Choosing an AI Workflow Platform | Reflex Hub"}
@@ -130,8 +131,7 @@ import Layout from '../../../../components/Layout.astro';
           site configures no such analytics).
         </p>
       </div>
-      <!-- AFFILIATE:make:BEGIN -->
-      <!-- AFFILIATE:make:END -->
+      <AffiliateCTA partnerId="make" />
     </section>
 
     <section class="panel">

@@ -9,15 +9,24 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/build.mjs",
-    "build:astro": "astro build",
+    "build": "astro build",
+    "build:compat": "node scripts/build.mjs",
     "preview": "astro preview",
+    "check:types": "astro check",
+    "check:unit": "node scripts/test-pricing.mjs",
+    "check:seo": "node scripts/check-seo-pages.mjs",
+    "check:routes": "node scripts/check-i18n.mjs && node scripts/check-nav.mjs && node scripts/check-domain.mjs && node scripts/check-sitemap-lastmod.mjs",
+    "check:build": "node scripts/check-build.mjs",
+    "check:migrate": "node scripts/snapshot-site.mjs compare migration/baseline-snapshot.json",
     "check": "node scripts/run-checks.mjs"
   },
   "dependencies": {
     "astro": "7.4.4"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
     "wrangler": "4.155.0"
   }
 }

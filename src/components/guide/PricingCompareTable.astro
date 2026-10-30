@@ -1,0 +1,54 @@
+---
+/** 指南《定价比较》静态表：固定默认假设下全模型估算月成本，统一折算 CNY 升序；原价保留官方币种。 */
+import { SAMPLE_PARAMS as P } from '../../lib/domain/pricing';
+import { priceCellLines } from '../../lib/domain/price-cells';
+import { guideCostRows, type GuideCostRow } from '../../lib/domain/guide-data';
+import { fxNote, enFxNote } from '../../lib/domain/fx-notes';
+import EstCell from './EstCell.astro';
+import { enModelName } from '../../lib/i18n/helpers';
+import { EN_VENDOR } from '../../lib/i18n/dictionaries.mjs';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; fx: FxFile; en?: boolean }
+const { models, fx, en = false } = Astro.props;
+
+const rows: GuideCostRow[] = guideCostRows(models, fx, { calls: P.calls, inTok: P.inTok, outTok: P.outTok, hit: P.hit });
+const usdNote = fxNote(fx, 'USD');
+const enNote = enFxNote(fx, 'USD');
+const hint = en
+  ? `Assumptions: ${P.calls} calls/day · ${P.inTok} input / ${P.outTok} output tokens per call · off-peak rates · ${P.hit * 100}% cache hit rate · 30-day month; USD models converted at ${enNote || 'a reference rate (unverified)'}. Estimates use list prices only and do not constitute purchase advice.`
+  : `假设：日均 ${P.calls} 次 · 单次输入 ${P.inTok} / 输出 ${P.outTok} Token · 错峰低谷价 · 缓存命中率 ${P.hit * 100}% · 每月 30 天；美元模型按参考汇率（${usdNote || '未核实'}）折算。估算仅为刊例口径，不构成采购建议。`;
+const cellLines = (r: GuideCostRow, kind: 'in' | 'out' | 'cache') => priceCellLines(r.m, kind, en);
+---
+
+<div class="table-scroll">
+  <table class="spec wide">
+    <thead>
+      <tr>
+        <th>{en ? 'Model' : '模型'}</th>
+        <th>{en ? 'Vendor / channel' : '厂商 / 渠道'}</th>
+        <th>{en ? 'Input price' : '输入价'}<br>({en ? 'list price / 1M tokens' : '刊例原价/百万Token'})</th>
+        <th>{en ? 'Output price' : '输出价'}<br>({en ? 'list price / 1M tokens' : '刊例原价/百万Token'})</th>
+        <th>{en ? 'Cache-hit price' : '缓存命中价'}</th>
+        <th>{en ? 'Context' : '上下文'}</th>
+        <th>{en ? 'Est. monthly cost' : '估算月成本'}<br>({en ? 'CNY-converted' : '人民币折算'})</th>
+        <th>{en ? 'Verified' : '核验日期'}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(r => (
+        <tr>
+          <th><a href={`../../models/${r.m.id}/`}>{enModelName(r.m)}</a></th>
+          <td>{en ? (EN_VENDOR[r.m.vendor] || r.m.vendor) : r.m.vendor}</td>
+          <td class="num">{cellLines(r, 'in').map((line, i) => (<Fragment>{i > 0 ? <br /> : ''}{line}</Fragment>))}</td>
+          <td class="num">{cellLines(r, 'out').map((line, i) => (<Fragment>{i > 0 ? <br /> : ''}{line}</Fragment>))}</td>
+          <td class="num">{cellLines(r, 'cache').map((line, i) => (<Fragment>{i > 0 ? <br /> : ''}{line}</Fragment>))}</td>
+          <td class="num">{r.m.context}K</td>
+          <td class="num"><EstCell row={r} en={en} usdLabel /></td>
+          <td class="num">{r.m.verifiedAt}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="s-hint">{hint}</p>

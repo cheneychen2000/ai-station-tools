@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-    <title>大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub</title>
+  <title>大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub</title>
   <meta name="description" content="固定同一用量假设（日均 100 次、输入 2000 / 输出 800 Token、错峰低谷价、缓存命中率 30%），对收录的国内外主流模型计算估算月成本并统一折算人民币排序，保留美元模型官方原币价格，标注来源与核验日期。">
+  
   <link rel="canonical" href="https://www.reflex-hub.com/guides/llm-api-pricing-comparison/">
-  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/llm-api-pricing-comparison/">
-  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/llm-api-pricing-comparison/">
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/llm-api-pricing-comparison/"><link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/llm-api-pricing-comparison/">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub">
@@ -20,54 +20,48 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="../../assets/style.css">
-    <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "大模型 API 定价比较：同用量下国内外模型月成本对比",
-    "inLanguage": "zh-CN",
-    "datePublished": "2026-10-28",
-    "dateModified": "2026-10-28",
-    "author": {
-      "@type": "Organization",
-      "name": "Reflex Hub",
-      "url": "https://www.reflex-hub.com/"
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "大模型 API 定价比较：同用量下国内外模型月成本对比",
+  "inLanguage": "zh-CN",
+  "datePublished": "2026-10-28",
+  "dateModified": "2026-10-28",
+  "author": {
+    "@type": "Organization",
+    "name": "Reflex Hub",
+    "url": "https://www.reflex-hub.com/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Reflex Hub",
+    "url": "https://www.reflex-hub.com/"
+  }
+}</script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": "https://www.reflex-hub.com/"
     },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Reflex Hub",
-      "url": "https://www.reflex-hub.com/"
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "指南",
+      "item": "https://www.reflex-hub.com/guides/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "定价比较",
+      "item": "https://www.reflex-hub.com/guides/llm-api-pricing-comparison/"
     }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "首页",
-        "item": "https://www.reflex-hub.com/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "指南",
-        "item": "https://www.reflex-hub.com/guides/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "定价比较",
-        "item": "https://www.reflex-hub.com/guides/llm-api-pricing-comparison/"
-      }
-    ]
-  }
-  </script>
-</head>
+  ]
+}</script>
+<link rel="stylesheet" href="/_astro/global.DrAxsy5L.css"></head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
@@ -76,17 +70,12 @@
       <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteMenu" aria-label="打开导航菜单" data-label-open="打开导航菜单" data-label-close="关闭导航菜单"><span class="nav-toggle-icon" aria-hidden="true"></span></button>
       <nav class="site-nav" aria-label="主导航">
         <ul id="siteMenu">
-          <li><a href="../../cost/">成本计算器</a></li>
-          <li><a href="../../models/">模型库</a></li>
-          <li><a href="../../compare/">模型对比</a></li>
-          <li><a href="../../guides/" class="active" aria-current="page">开发指南</a></li>
-          <li><a href="../../tools/">AI 工具目录</a></li>
-          <li><a href="../../prompts/">Prompt 资源</a></li>
+          <li><a href="../../cost/">成本计算器</a></li><li><a href="../../models/">模型库</a></li><li><a href="../../compare/">模型对比</a></li><li><a href="../../guides/" class="active" aria-current="page">开发指南</a></li><li><a href="../../tools/">AI 工具目录</a></li><li><a href="../../prompts/">Prompt 资源</a></li>
           <li class="lang-switch-item">
             <div class="lang-switch-wrap">
-              <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="语言：中文，点击切换语言"><svg class="lang-ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1.9 8h12.2M8 1.9c1.7 1.8 2.5 3.9 2.5 6.1S9.7 12.3 8 14.1C6.3 12.3 5.5 10.2 5.5 8s.8-4.3 2.5-6.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="lang-cur">中文</span><svg class="lang-caret" viewBox="0 0 10 6" width="8" height="5" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="语言：中文，点击切换语言"><svg class="lang-ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"></circle><path d="M1.9 8h12.2M8 1.9c1.7 1.8 2.5 3.9 2.5 6.1S9.7 12.3 8 14.1C6.3 12.3 5.5 10.2 5.5 8s.8-4.3 2.5-6.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span class="lang-cur">中文</span><svg class="lang-caret" viewBox="0 0 10 6" width="8" height="5" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
               <ul class="lang-menu" id="langMenu" role="menu" aria-label="选择语言">
-                <li class="lang-opt is-current" role="none"><span class="lang-opt-cur" role="menuitemradio" aria-checked="true" aria-current="true" tabindex="-1"><svg class="lang-check" viewBox="0 0 12 10" width="11" height="10" aria-hidden="true" focusable="false"><path d="M1 5.2 4.2 8.3 11 1.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>中文</span></span></li>
+                <li class="lang-opt is-current" role="none"><span class="lang-opt-cur" role="menuitemradio" aria-checked="true" aria-current="true" tabindex="-1"><svg class="lang-check" viewBox="0 0 12 10" width="11" height="10" aria-hidden="true" focusable="false"><path d="M1 5.2 4.2 8.3 11 1.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>中文</span></span></li>
                 <li class="lang-opt" role="none"><a class="lang-switch" href="/en/guides/llm-api-pricing-comparison/" role="menuitemradio" aria-checked="false">English</a></li>
               </ul>
               <noscript><style>.lang-btn{display:none}.lang-menu{display:block;position:static;margin-top:6px;box-shadow:none}</style></noscript>
@@ -130,41 +119,187 @@
     <section class="panel">
       <h2>二、同用量成本总表</h2>
       
-      <div class="table-scroll">
-        <table class="spec wide">
-          <thead>
-            <tr><th>模型</th><th>厂商 / 渠道</th><th>输入价<br>（刊例原价/百万Token）</th><th>输出价<br>（刊例原价/百万Token）</th><th>缓存命中价</th><th>上下文</th><th>估算月成本<br>（人民币折算）</th><th>核验日期</th></tr>
-          </thead>
-          <tbody>
-          <tr><th><a href="../../models/qwen38-flash/">Qwen3.8-Flash</a></th><td>阿里云百炼</td><td class="num">¥0.8</td><td class="num">¥2.7</td><td class="num">¥0.1</td><td class="num">1000K</td><td class="num">¥10.02</td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/glm-53-flash/">GLM-5.3-Flash</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥0.8</td><td class="num">¥2.8</td><td class="num">¥0.23</td><td class="num">1024K</td><td class="num">¥10.49</td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/gpt-6-luna/">GPT-6 Luna</a></th><td>OpenAI</td><td class="num">输入 ≤272K $0.1<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">输入 ≤272K $0.5<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">$0.01<br>未公开</td><td class="num">1050K</td><td class="num">约 ¥11.00<br><span class="lib-meta">原价 $1.64</span></td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/claude-haiku-5-5/">Claude Haiku 5.5</a></th><td>Anthropic</td><td class="num">提示 ≤100K $0.1<br>提示 &gt;100K $0.5</td><td class="num">提示 ≤100K $0.5<br>提示 &gt;100K $2.5</td><td class="num">$0.01<br>$0.05</td><td class="num">1024K</td><td class="num">约 ¥11.00<br><span class="lib-meta">原价 $1.64</span></td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th><td>DeepSeek</td><td class="num">高峰 ¥2<br>低谷 ¥1</td><td class="num">高峰 ¥8<br>低谷 ¥4</td><td class="num">高峰 ¥0.04<br>低谷 ¥0.02</td><td class="num">1000K</td><td class="num">¥13.84</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/qwen35-plus/">Qwen3.5-Plus</a></th><td>阿里云百炼（≤128K档）</td><td class="num">¥0.8</td><td class="num">¥4.8</td><td class="num">未公开</td><td class="num">1000K</td><td class="num">¥16.32</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/step-37-flash/">Step 3.7 Flash</a></th><td>阿里云百炼·阶跃星辰</td><td class="num">¥1.35</td><td class="num">¥8.1</td><td class="num">¥0.27</td><td class="num">256K</td><td class="num">¥25.60</td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/qwen37-plus/">Qwen3.7-Plus</a></th><td>阿里云百炼（≤256K档，原价）</td><td class="num">¥2</td><td class="num">¥8</td><td class="num">未公开</td><td class="num">1000K</td><td class="num">¥31.20</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th><td>Google</td><td class="num">$0.25</td><td class="num">$1.5</td><td class="num">$0.025</td><td class="num">1024K</td><td class="num">约 ¥31.54<br><span class="lib-meta">原价 $4.69</span></td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/minimax-m3/">MiniMax M3</a></th><td>MiniMax 稀宇科技</td><td class="num">输入 ≤512K ¥2.1<br>输入 &gt;512K ¥4.2</td><td class="num">输入 ≤512K ¥8.4<br>输入 &gt;512K ¥16.8</td><td class="num">未公开</td><td class="num">1024K</td><td class="num">¥32.76</td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/hunyuan-turbos-vision/">Hunyuan TurboS Vision</a></th><td>腾讯云</td><td class="num">¥3</td><td class="num">¥9</td><td class="num">未公开</td><td class="num">128K</td><td class="num">¥39.60</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th><td>腾讯云原厂直供</td><td class="num">高峰 ¥9<br>低谷 ¥4.5</td><td class="num">高峰 ¥27<br>低谷 ¥13.5</td><td class="num">高峰 ¥0.3<br>低谷 ¥0.15</td><td class="num">1000K</td><td class="num">¥51.57</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/mimo-v25-pro/">Xiaomi MiMo V2.5 Pro</a></th><td>阿里云百炼·小米（≤256K档）</td><td class="num">¥7</td><td class="num">¥21</td><td class="num">未公开</td><td class="num">1000K</td><td class="num">¥92.40</td><td class="num">2026-09-18</td></tr>
-          <tr><th><a href="../../models/glm-53/">GLM-5.3</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥8</td><td class="num">¥28</td><td class="num">¥2</td><td class="num">1024K</td><td class="num">¥104.40</td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th><td>OpenAI</td><td class="num">输入 ≤272K $2<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">输入 ≤272K $10<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">$0.1<br>未公开</td><td class="num">1050K</td><td class="num">约 ¥218.87<br><span class="lib-meta">原价 $32.58</span></td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th><td>Anthropic</td><td class="num">$2</td><td class="num">$10</td><td class="num">$0.1</td><td class="num">1024K</td><td class="num">约 ¥218.87<br><span class="lib-meta">原价 $32.58</span></td><td class="num">2026-10-28</td></tr>
-          <tr><th><a href="../../models/kimi-k3/">Kimi K3</a></th><td>阿里云百炼</td><td class="num">¥20</td><td class="num">¥100</td><td class="num">¥2</td><td class="num">1024K</td><td class="num">¥327.60</td><td class="num">2026-10-28</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="s-hint">假设：日均 100 次 · 单次输入 2000 / 输出 800 Token · 错峰低谷价 · 缓存命中率 30% · 每月 30 天；美元模型按参考汇率（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算。估算仅为刊例口径，不构成采购建议。</p>
+<div class="table-scroll">
+  <table class="spec wide">
+    <thead>
+      <tr>
+        <th>模型</th>
+        <th>厂商 / 渠道</th>
+        <th>输入价<br>(刊例原价/百万Token)</th>
+        <th>输出价<br>(刊例原价/百万Token)</th>
+        <th>缓存命中价</th>
+        <th>上下文</th>
+        <th>估算月成本<br>(人民币折算)</th>
+        <th>核验日期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          <th><a href="../../models/qwen38-flash/">Qwen3.8-Flash</a></th>
+          <td>阿里云百炼</td>
+          <td class="num">¥0.8</td>
+          <td class="num">¥2.7</td>
+          <td class="num">¥0.1</td>
+          <td class="num">1000K</td>
+          <td class="num">¥10.02</td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/glm-53-flash/">GLM-5.3-Flash</a></th>
+          <td>阿里云百炼·智谱直供</td>
+          <td class="num">¥0.8</td>
+          <td class="num">¥2.8</td>
+          <td class="num">¥0.23</td>
+          <td class="num">1024K</td>
+          <td class="num">¥10.49</td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/gpt-6-luna/">GPT-6 Luna</a></th>
+          <td>OpenAI</td>
+          <td class="num">输入 ≤272K $0.1<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $0.5<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $0.01<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">1050K</td>
+          <td class="num">约 ¥11.00<br><span class="lib-meta">原价 $1.64</span></td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/claude-haiku-5-5/">Claude Haiku 5.5</a></th>
+          <td>Anthropic</td>
+          <td class="num">提示 ≤100K $0.1<br>提示 &gt;100K $0.5</td>
+          <td class="num">提示 ≤100K $0.5<br>提示 &gt;100K $2.5</td>
+          <td class="num">提示 ≤100K $0.01<br>提示 &gt;100K $0.05</td>
+          <td class="num">1024K</td>
+          <td class="num">约 ¥11.00<br><span class="lib-meta">原价 $1.64</span></td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th>
+          <td>DeepSeek</td>
+          <td class="num">高峰 ¥2<br>低谷 ¥1</td>
+          <td class="num">高峰 ¥8<br>低谷 ¥4</td>
+          <td class="num">高峰 ¥0.04<br>低谷 ¥0.02</td>
+          <td class="num">1000K</td>
+          <td class="num">¥13.84</td>
+          <td class="num">2026-09-18</td>
+        </tr><tr>
+          <th><a href="../../models/qwen35-plus/">Qwen3.5-Plus</a></th>
+          <td>阿里云百炼（≤128K档）</td>
+          <td class="num">¥0.8</td>
+          <td class="num">¥4.8</td>
+          <td class="num">未公开</td>
+          <td class="num">1000K</td>
+          <td class="num">¥16.32</td>
+          <td class="num">2026-09-18</td>
+        </tr><tr>
+          <th><a href="../../models/step-37-flash/">Step 3.7 Flash</a></th>
+          <td>阿里云百炼·阶跃星辰</td>
+          <td class="num">¥1.35</td>
+          <td class="num">¥8.1</td>
+          <td class="num">¥0.27</td>
+          <td class="num">256K</td>
+          <td class="num">¥25.60</td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/qwen37-plus/">Qwen3.7-Plus</a></th>
+          <td>阿里云百炼（≤256K档，原价）</td>
+          <td class="num">¥2</td>
+          <td class="num">¥8</td>
+          <td class="num">未公开</td>
+          <td class="num">1000K</td>
+          <td class="num">¥31.20</td>
+          <td class="num">2026-09-18</td>
+        </tr><tr>
+          <th><a href="../../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th>
+          <td>Google</td>
+          <td class="num">$0.25</td>
+          <td class="num">$1.5</td>
+          <td class="num">$0.025</td>
+          <td class="num">1024K</td>
+          <td class="num">约 ¥31.54<br><span class="lib-meta">原价 $4.69</span></td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/minimax-m3/">MiniMax M3</a></th>
+          <td>MiniMax 稀宇科技</td>
+          <td class="num">输入 ≤512K ¥2.1<br>输入 &gt;512K ¥4.2</td>
+          <td class="num">输入 ≤512K ¥8.4<br>输入 &gt;512K ¥16.8</td>
+          <td class="num">未公开</td>
+          <td class="num">1024K</td>
+          <td class="num">¥32.76</td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/hunyuan-turbos-vision/">Hunyuan TurboS Vision</a></th>
+          <td>腾讯云</td>
+          <td class="num">¥3</td>
+          <td class="num">¥9</td>
+          <td class="num">未公开</td>
+          <td class="num">128K</td>
+          <td class="num">¥39.60</td>
+          <td class="num">2026-09-18</td>
+        </tr><tr>
+          <th><a href="../../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th>
+          <td>腾讯云原厂直供</td>
+          <td class="num">高峰 ¥9<br>低谷 ¥4.5</td>
+          <td class="num">高峰 ¥27<br>低谷 ¥13.5</td>
+          <td class="num">高峰 ¥0.3<br>低谷 ¥0.15</td>
+          <td class="num">1000K</td>
+          <td class="num">¥51.57</td>
+          <td class="num">2026-09-18</td>
+        </tr><tr>
+          <th><a href="../../models/mimo-v25-pro/">Xiaomi MiMo V2.5 Pro</a></th>
+          <td>阿里云百炼·小米（≤256K档）</td>
+          <td class="num">¥7</td>
+          <td class="num">¥21</td>
+          <td class="num">未公开</td>
+          <td class="num">1000K</td>
+          <td class="num">¥92.40</td>
+          <td class="num">2026-09-18</td>
+        </tr><tr>
+          <th><a href="../../models/glm-53/">GLM-5.3</a></th>
+          <td>阿里云百炼·智谱直供</td>
+          <td class="num">¥8</td>
+          <td class="num">¥28</td>
+          <td class="num">¥2</td>
+          <td class="num">1024K</td>
+          <td class="num">¥104.40</td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th>
+          <td>OpenAI</td>
+          <td class="num">输入 ≤272K $2<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $10<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $0.1<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">1050K</td>
+          <td class="num">约 ¥218.87<br><span class="lib-meta">原价 $32.58</span></td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th>
+          <td>Anthropic</td>
+          <td class="num">$2</td>
+          <td class="num">$10</td>
+          <td class="num">$0.1</td>
+          <td class="num">1024K</td>
+          <td class="num">约 ¥218.87<br><span class="lib-meta">原价 $32.58</span></td>
+          <td class="num">2026-10-28</td>
+        </tr><tr>
+          <th><a href="../../models/kimi-k3/">Kimi K3</a></th>
+          <td>阿里云百炼</td>
+          <td class="num">¥20</td>
+          <td class="num">¥100</td>
+          <td class="num">¥2</td>
+          <td class="num">1024K</td>
+          <td class="num">¥327.60</td>
+          <td class="num">2026-10-28</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+<p class="s-hint">假设：日均 100 次 · 单次输入 2000 / 输出 800 Token · 错峰低谷价 · 缓存命中率 30% · 每月 30 天；美元模型按参考汇率（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算。估算仅为刊例口径，不构成采购建议。</p>
 
       <p class="s-hint">表内单价为厂商公开刊例原价（每百万 Token），美元模型保留 $ 原价；估算月成本统一折算人民币用于排序。厂商调价、汇率变化或缓存命中率不同都会改变排名——把你的真实参数代入 <a href="../../cost/">成本计算器</a> 得到自己的结论。</p>
     </section>
 
     
 
-    
-      
+    <!-- ADSLOT:guide-mid:BEGIN -->
+      <!-- ADSLOT:guide-mid:END -->
     <section class="panel">
       <h2>三、怎么读这张表（四个事实性观察）</h2>
       <div style="font-size:14px;line-height:1.9">
@@ -211,14 +346,16 @@
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
     <nav class="footer-nav" aria-label="页脚导航">
-    <p>核心工具：<a href="../../cost/">成本计算器</a> · <a href="../../models/">模型库</a> · <a href="../../compare/">模型对比</a> · <a href="../../guides/">开发指南</a> · <a href="../../tools/">AI 工具目录</a> · <a href="../../prompts/">Prompt 资源</a> · <a href="../../quiz/">AI 认知测试</a> · <a href="../../guides/">计算指南</a></p>
-    <p>站点信息：<a href="../../about/">关于本站</a> · <a href="../../pricing-methodology/">定价方法论</a> · <a href="../../privacy/">隐私政策</a> · <a href="../../affiliate-disclosure/">联盟推广披露</a> · <a href="../../terms/">使用条款</a></p>
-    <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
-  </nav>
+      <p>核心工具：<a href="../../cost/">成本计算器</a> · <a href="../../models/">模型库</a> · <a href="../../compare/">模型对比</a> · <a href="../../guides/">开发指南</a> · <a href="../../tools/">AI 工具目录</a> · <a href="../../prompts/">Prompt 资源</a> · <a href="../../quiz/">AI 认知测试</a> · <a href="../../guides/">计算指南</a></p>
+      <p>站点信息：<a href="../../about/">关于本站</a> · <a href="../../pricing-methodology/">定价方法论</a> · <a href="../../privacy/">隐私政策</a> · <a href="../../affiliate-disclosure/">联盟推广披露</a> · <a href="../../terms/">使用条款</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+    </nav>
     <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
     </div>
   </footer>
 
+    <script>window.ASSETS_BASE = '../../assets';</script>
+  <script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.BNhtZMoM.js"></script>
   
 
   <script>window.ASSETS_BASE = '../../assets';</script>

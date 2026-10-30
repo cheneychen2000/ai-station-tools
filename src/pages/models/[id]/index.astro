@@ -1,29 +1,59 @@
 ---
 /**
- * 中文模型详情页（/models/<id>/）：数据源 models.json，模板 modelDetail（与旧构建同一函数）。
+ * 中文模型详情页（/models/<id>/）：数据源 models.json（Content Collection），
+ * 元数据由 lib/domain/model-view 构建，正文由 Astro 组件组合。
  */
-import Layout from '../../../components/Layout.astro';
-import { models } from '../../../lib/site.mjs';
-import { modelDetail } from '../../../lib/render.mjs';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { getModels, getCompares, getFx } from '../../../lib/data';
+import { buildModelDetail } from '../../../lib/domain/model-view';
+import ModelTags from '../../../components/model/ModelTags.astro';
+import ModelPriceSection from '../../../components/model/ModelPriceSection.astro';
+import ModelSpecTable from '../../../components/model/ModelSpecTable.astro';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const models = await getModels();
   return models.map(m => ({ params: { id: m.id }, props: { id: m.id } }));
 }
 
-const m = models.find(x => x.id === Astro.props.id);
+const m = (await getModels()).find(x => x.id === Astro.props.id);
 if (!m) throw new Error(`model not found: ${Astro.props.id}`);
-const p = modelDetail(m);
+const fx = getFx();
+const view = buildModelDetail(m, await getModels(), getCompares(), false);
 ---
 
-<Layout
-  title={p.title}
-  desc={p.desc}
-  canonicalPath={p.canonicalPath}
-  robots={p.robots}
-  jsonld={p.jsonld}
-  active={p.active}
-  crumb={p.crumb}
-  inlineScript={p.inlineScript}
+<SiteLayout
+  title={view.title}
+  desc={view.desc}
+  canonicalPath={view.canonicalPath}
+  jsonld={view.jsonld}
+  active={view.active}
+  crumb={view.crumb}
+  inlineScript={view.inlineScript}
 >
-  <Fragment set:html={p.main} />
-</Layout>
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">{m.name}</h1>
+      <p class="tagline">{m.vendor} · {view.featText}</p>
+      <ModelTags m={m} />
+    </section>
+
+    <p class="lede">{view.lede}</p>
+
+    <ModelPriceSection m={m} fx={fx} />
+
+    <ModelSpecTable view={view} m={m} />
+
+    <section class="panel">
+      <h2>数据说明与使用限制</h2>
+      <p class="s-hint" style="line-height:1.9">
+        · 价格为厂商公开刊例原价（人民币 / 百万 Token），不含限时活动与套餐优惠，实际以官方页面与控制台为准；<br>
+        · 成本估算结果不等同于服务商实际账单，不构成采购建议；本页不推断模型性能或质量排名；<br>
+        · 厂商 / 渠道标注的是该价格的官方来源，不代表本站与厂商存在隶属或背书关系。{view.priceNote && <Fragment><br>· {view.priceNote}</Fragment>}
+      </p>
+    </section>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href={`../../cost/?models=${m.id}`}>在成本计算器中估算 →</a>
+      <a class="btn btn-ghost" href={`../../compare/?a=${m.id}`}>与其他模型对比 →</a>
+      <a class="btn btn-ghost" href="../../models/">返回模型库</a>
+    </div>
+</SiteLayout>

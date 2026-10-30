@@ -198,8 +198,10 @@ R.check(`N16 语言切换器结构：${pages.length} 页均为"按钮 + role=men
 /* ---------- N17 移动端导航：≤768px 汉堡按钮 + 纵向面板，且不靠横向滚动 ----------
    静态可查的部分：按钮唯一/aria 属性正确、aria-controls 指向真实 #siteMenu、
    DOM 顺序为 品牌 → 按钮 → 导航、移动端断点里改成纵向排列并显式取消 overflow-x，
-   以及禁止用 html/body 的 overflow-x:hidden 掩盖溢出。（真实视口行为由浏览器测试覆盖） */
-const css = read('assets/style.css');
+   以及禁止用 html/body 的 overflow-x:hidden 掩盖溢出。（真实视口行为由浏览器测试覆盖）
+   样式已迁移为 src/styles/global.css（Vite 打包为 /_astro/*.css），从首页 link 定位产物。 */
+const cssHref = read('index.html').match(/<link rel="stylesheet" href="([^"]+)"/)[1];
+const css = readFileSync(join(DIST, cssHref.replace(/^\//, '')), 'utf8');
 const mobStart = css.indexOf('@media (max-width: 768px)');
 const mobBlock = mobStart >= 0 ? css.slice(mobStart, mobStart + 1800) : '';
 const mobProblems = [];
@@ -312,7 +314,11 @@ for (const file of pages) {
     if (txt.includes(s)) stale.push(`${relative(DIST, file)}（${s}）`);
   }
 }
-for (const asset of ['assets/style.css', 'assets/app.js', 'assets/quiz.js']) {
+/* 样式与全站共享脚本已打包进 /_astro/（Vite 产物，哈希名不稳定），按命名定位；quiz.js 仍为固定 URL 公共库 */
+const astroDir = join(DIST, '_astro');
+const appChunkName = readdirSync(astroDir).find(n => n.startsWith('SiteLayout.astro_astro_type_script'));
+if (!appChunkName) throw new Error('未找到全站共享脚本打包产物（SiteLayout 脚本块）');
+for (const asset of [cssHref, '_astro/' + appChunkName, 'assets/quiz.js']) {
   const txt = read(asset);
   if (txt.includes('AI驿站') || txt.includes('AI七号驿站')) stale.push(asset);
 }
@@ -377,8 +383,14 @@ R.check('N9c 模型详情页含成本计算器与模型库内链',
     const t = read(`models/${m.id}/index.html`);
     return t.includes(`../../cost/?models=${m.id}`) && t.includes('>返回模型库</a>');
   }));
-R.check('N9d 比较器选择器读取同一份 models.json 与 compare-pairs.json',
-  compareIdx.includes("fetch('../assets/data/models.json')") && compareIdx.includes("fetch('../assets/data/compare-pairs.json')"));
+const cmpChunkTxt = [...compareIdx.matchAll(/<script type="module" src="([^"]+)"/g)]
+  .map(m => readFileSync(join(DIST, m[1].replace(/^\//, '')), 'utf8')).join('\n');
+/* 选择器逻辑在共享模块 chunk（页面入口只 import），断言"存在同时读取两份数据的模块 chunk" */
+const cmpBoth = readdirSync(astroDir)
+  .map(n => readFileSync(join(astroDir, n), 'utf8'))
+  .some(t => t.includes('/data/models.json') && t.includes('/data/compare-pairs.json'));
+R.check('N9d 比较器选择器读取同一份 models.json 与 compare-pairs.json（相对路径经 ASSETS_BASE 推导，断言落在打包模块）',
+  cmpBoth && (cmpChunkTxt + compareIdx).includes('ASSETS_BASE'));
 
 /* N10 favicon：所有页面（含 404）含 4 条图标引用，且引用文件真实存在于发布根目录 */
 const ICON_LINKS = [
@@ -504,12 +516,12 @@ for (const file of pages) {
   if (t.includes('data-ad-slot')) adLeak.push(relative(DIST, file) + '（残留广告容器）');
 }
 R.check('N13b 全站 HTML 零广告脚本引用、零广告容器（默认配置）', adLeak.length === 0, adLeak.join(' | ') || '零引用');
-const appTxt = read('assets/app.js');
-R.check('N13c app.js 广告加载器带四重闸（enabled/Publisher ID 格式/生产域名/CMP 认证状态）',
-  appTxt.includes("location.hostname !== 'www.reflex-hub.com'") &&
+const appTxt = read('_astro/' + appChunkName); /* 全站共享脚本（src/scripts/app.ts 打包产物；esbuild 打印用双引号，按语义正则匹配） */
+R.check('N13c 全站共享脚本广告加载器带四重闸（enabled/Publisher ID 格式/生产域名/CMP 认证状态）',
+  /location\.hostname !== ["']www\.reflex-hub\.com["']/.test(appTxt) &&
   appTxt.includes('/^ca-pub-\\d{16}$/') &&
-  appTxt.includes("cfg.cmp.status !== 'google-certified'") &&
-  appTxt.includes('cfg.enabled !== true'));
+  /cfg\.cmp\.status !== ["']google-certified["']/.test(appTxt) &&
+  /cfg\.enabled !== true/.test(appTxt));
 const adsTxtPath = join(DIST, 'ads.txt');
 const adsTxtOk = !existsSync(adsTxtPath) ||
   (isValidPub(adsCfg.publisherId) && readFileSync(adsTxtPath, 'utf8').includes(`google.com, ${adsCfg.publisherId.replace('ca-pub-', 'pub-')}, DIRECT, f08c47fec0942fa0`));

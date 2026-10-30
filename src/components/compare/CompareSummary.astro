@@ -1,0 +1,15 @@
+---
+/** 对比摘要面板：固定用量口径的事实性摘要（列表）+ 免责声明。 */
+import type { CompareView } from '../../lib/domain/compare-view';
+
+interface Props { view: CompareView; en?: boolean }
+const { view, en = false } = Astro.props;
+---
+
+<section class="panel">
+  <h2>{en ? 'Comparison summary (fixed usage basis)' : '对比摘要（固定用量口径）'}</h2>
+  <ul style="font-size:14px;line-height:1.9;padding-left:20px;margin:0">
+    {view.summary.map((s) => <li>{s}</li>)}
+  </ul>
+  <p class="s-hint" style="margin-top:10px">{view.summaryDisclaimer}</p>
+</section>

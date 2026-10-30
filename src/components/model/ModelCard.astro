@@ -1,0 +1,50 @@
+---
+/**
+ * 模型库卡片：models.json 驱动，服务端静态渲染；
+ * data-* 属性是 lib-filter 的筛选契约（属性名/顺序不可变）。
+ */
+import { price, monthlyBase, modelCurrency, fxEntry } from '../../lib/domain/pricing';
+import { enTierDesc, EN_VENDOR } from '../../lib/i18n/dictionaries.mjs';
+import { enModelName } from '../../lib/i18n/helpers';
+import { EN_MODELS } from '../../lib/i18n/locales';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { m: Model; fx: FxFile; en?: boolean }
+const { m, fx, en = false } = Astro.props;
+
+const cur = modelCurrency(m);
+const vendorLabel = en ? (EN_VENDOR[m.vendor] || m.vendor) : m.vendor;
+const name = en ? enModelName(m) : m.name;
+
+const priceLine = m.priceTiers
+  ? `${en ? enTierDesc(m.priceTiers[0].desc) : m.priceTiers[0].desc} ${en ? 'In ' : '入'}${price(m.priceTiers[0].priceIn, cur)} / ${en ? 'Out ' : '出'}${price(m.priceTiers[0].priceOut, cur)}${en ? ' · tiered' : ' · 分档'}`
+  : m.peakOffpeak
+    ? `Peak ${en ? 'In ' : '入'}${price(m.peakOffpeak.peakIn, cur)} / ${en ? 'Out ' : '出'}${price(m.peakOffpeak.peakOut, cur)}${en ? ' · off-peak ≈ half' : ' · 低谷半价'}`
+    : `${en ? 'Input' : '输入'} ${price(m.priceIn, cur)} / ${en ? 'Output' : '输出'} ${price(m.priceOut, cur)}`;
+
+/* 与旧实现同一事实数据：参考汇率未核实时 rate 按 0 折算展示（展示层注记已声明仅供参考） */
+const usdRate = fxEntry(fx, 'USD')?.rate || 0;
+const cnyIn = (m.priceIn * usdRate).toFixed(2);
+const cnyOut = (m.priceOut * usdRate).toFixed(2);
+const cnyLine = cur === 'USD'
+  ? (en ? `≈ ¥${cnyIn} / ¥${cnyOut} (CFETS central parity, indicative only)` : `约 ¥${cnyIn} / ¥${cnyOut}（按中间价折算，仅供参考）`)
+  : null;
+
+const costCny = monthlyBase(m, fx); /* 价格排序键：默认用量月成本统一折算 CNY，未核实不参与排序 */
+const hasEn = EN_MODELS.includes(m.id);
+const href = en ? (hasEn ? `${m.id}/` : `../../models/${m.id}/`) : `${m.id}/`;
+const metaKind = m.peakOffpeak ? (en ? 'time-based' : '分时段') : m.priceTiers ? (en ? 'tiered' : '分档计价') : (en ? 'single price' : '单一价');
+const metaLine = en
+  ? `Context ${m.context}K · ${metaKind} · ${cur === 'USD' ? 'USD list price · ' : ''}verified ${m.verifiedAt}`
+  : `上下文 ${m.context}K · ${metaKind} · ${cur === 'USD' ? '美元原价 · ' : ''}核验 ${m.verifiedAt}`;
+const searchText = `${m.name} ${m.id} ${m.vendor}${en ? ` ${vendorLabel}` : ''}`.toLowerCase();
+---
+
+<a class="module-card active" href={href} data-search={searchText} data-vendor={vendorLabel} data-cur={cur} data-cost={costCny == null ? '' : costCny.toFixed(4)} data-ctx={m.context} data-verified={m.verifiedAt}>
+  <h3>{name}</h3>
+  <p>{vendorLabel}</p>
+  <p class="num">{priceLine}</p>
+  {cnyLine && <p class="lib-meta">{cnyLine}</p>}
+  <p class="lib-meta">{metaLine}</p>
+  <span class="go">{en ? (hasEn ? 'View profile →' : 'View profile (中文) →') : '查看档案 →'}</span>
+</a>

@@ -103,8 +103,9 @@ const w = {};
 new Function('window', read('assets/labels-en.js'))(w);
 const labelsSame = JSON.stringify(w.EnLabels) === JSON.stringify({ vendor: EN_VENDOR, modality: EN_MODALITY, feature: EN_FEATURE, tierDesc: EN_TIER_DESC.map(x => [...x]), promptScene: EN_PROMPT_SCENE, promptTag: EN_PROMPT_TAG, promptTitle: EN_PROMPT_TITLE });
 R.check('I8 共享计算/筛选/字典脚本双端复用且生成物与源一致',
-  cnCost.includes('cost-core.js') && enCost.includes('cost-core.js') && enCost.includes('labels-en.js') &&
-  read('models/index.html').includes('lib-filter.js') && read('en/models/index.html').includes('lib-filter.js') &&
+  cnCost.includes('cost-core.js') && enCost.includes('cost-core.js') && /* 公式核心仍为双端同一份固定 URL 库 */
+  read('models/index.html').includes('_astro') && read('en/models/index.html').includes('_astro') && /* 筛选模块经打包产物加载 */
+  existsSync(join(DIST, 'assets/labels-en.js')) && /* 字典生成物仍为公开资产（端点生成） */
   labelsSame);
 
 /* I9 每页 hreflang 与映射推导一致 */
@@ -170,11 +171,13 @@ R.check('I14 英文模型目录覆盖全部模型（静态卡片存在，名称�
   models.every(m => enModelsIdx.includes(EN_MODEL_NAME[m.id] || m.name)) &&
   EN_MODELS.every(id => enModelsIdx.includes(`href="${id}/"`)));
 
-/* I15 语言推荐脚本安全 */
-const appJs = read('assets/app.js');
-R.check('I15 app.js 语言推荐无强制跳转、localStorage 访问有降级',
+/* I15 语言推荐脚本安全（全站共享脚本已迁移为 src/scripts/app.ts 的打包产物，按命名定位） */
+const appChunkName = readdirSync(join(DIST, '_astro')).find(n => n.startsWith('SiteLayout.astro_astro_type_script'));
+if (!appChunkName) throw new Error('未找到全站共享脚本打包产物');
+const appJs = readFileSync(join(DIST, '_astro', appChunkName), 'utf8');
+R.check('I15 全站共享脚本语言推荐无强制跳转、localStorage 访问有降级',
   !/location\.(href|replace|assign)\s*[=(]/.test(appJs) &&
-  appJs.includes("try { pref = localStorage.getItem") &&
+  /try\s*\{\s*pref = localStorage\.getItem/.test(appJs) && /* esbuild 打印会重排行内 try，按语义正则匹配 */
   appJs.includes('lang-switch'));
 
 /* I17 英文页可见文本零中文（白名单：语言切换器"中文"标签；提示词本体为中文内容资产，单独豁免 en/prompts 正文卡片区由字典覆盖其标题/场景/标签） */

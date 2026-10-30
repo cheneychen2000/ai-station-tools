@@ -1,0 +1,14 @@
+---
+/** 指南表估算月成本单元格：CNY 折算值 +（美元模型）原价子行；无法估算如实标注。 */
+import { money } from '../../lib/domain/pricing';
+import type { GuideCostRow } from '../../lib/domain/guide-data';
+
+interface Props { row: GuideCostRow; en?: boolean; usdLabel?: boolean }
+const { row, en = false, usdLabel = true } = Astro.props;
+---
+
+{row.cny == null
+  ? (en ? 'Cannot estimate (tier rate not published)' : '该档位费率未公开，无法估算')
+  : row.cur === 'USD'
+    ? (<Fragment>{en ? '≈ ' : '约 '}{money(row.cny)}<br /><span class="lib-meta">{usdLabel ? (en ? 'list price ' : '原价 ') : ''}{money(row.usd, 'USD')}</span></Fragment>)
+    : money(row.cny)}

@@ -4,7 +4,7 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../components/Layout.astro';
+import Layout from '../../../layouts/SiteLayout.astro';
 ---
 
 <Layout title={"AI Literacy Rank Test - 12 Questions Across Six Dimensions | Reflex Hub"}
@@ -13,7 +13,7 @@ import Layout from '../../../components/Layout.astro';
   canonicalPath="/en/quiz/"
   jsonld={[{"@context":"https://schema.org","@type":"WebApplication","name":"AI Literacy Rank Test","url":"https://www.reflex-hub.com/en/quiz/","inLanguage":"en","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"description":"A 12-question AI literacy test across concepts, pricing, capability limits, industry landscape, practical skills and safety, with instant explanations, nine ranks and a shareable poster."}]}
   crumb={"/ Rank Test"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script>\n  /* 英文配置注入：与中文共用 assets/quiz.js（同一实现），题库/段位/文案为英文 */\n  window.QUIZ_CFG = {\n    posterUrl: 'https://www.reflex-hub.com/en/quiz/?utm_source=poster',\n    bankUrl: '../../assets/data/quiz-en.json'\n  };\n  </script>\n  <script src=\"../../assets/app.js\"></script>\n  <script src=\"../../assets/qr.js\"></script>\n  <script src=\"../../assets/quiz-en-cfg.js\"></script>\n  <script>\n  /* 英文 dims/tiers/weakLinks/UI 由 i18n.mjs QUIZ_EN 经构建序列化，避免第二份配置 */\n  window.QUIZ_CFG.dims = window.QUIZ_EN_CFG.dims;\n  window.QUIZ_CFG.tiers = window.QUIZ_EN_CFG.tiers;\n  window.QUIZ_CFG.weakLinks = window.QUIZ_EN_CFG.weakLinks;\n  window.QUIZ_CFG.ui = window.QUIZ_EN_UI;\n  </script>\n  <script src=\"../../assets/quiz.js\"></script>"} />
+  <Fragment slot="bodyend" set:html={"\n\n  <script>\n  /* 英文配置注入：与中文共用 assets/quiz.js（同一实现），题库/段位/文案为英文 */\n  window.QUIZ_CFG = {\n    posterUrl: 'https://www.reflex-hub.com/en/quiz/?utm_source=poster',\n    bankUrl: '../../assets/data/quiz-en.json'\n  };\n  </script>\n  <script src=\"../../assets/qr.js\"></script>\n  <script src=\"../../assets/quiz-en-cfg.js\"></script>\n  <script>\n  /* 英文 dims/tiers/weakLinks/UI 由 i18n.mjs QUIZ_EN 经构建序列化，避免第二份配置 */\n  window.QUIZ_CFG.dims = window.QUIZ_EN_CFG.dims;\n  window.QUIZ_CFG.tiers = window.QUIZ_EN_CFG.tiers;\n  window.QUIZ_CFG.weakLinks = window.QUIZ_EN_CFG.weakLinks;\n  window.QUIZ_CFG.ui = window.QUIZ_EN_UI;\n  </script>\n  <script src=\"../../assets/quiz.js\"></script>"} />
 <section class="hero">
       <h1>AI literacy rank test</h1>
       <p class="tagline">12 questions · six dimensions · instant explanations</p>

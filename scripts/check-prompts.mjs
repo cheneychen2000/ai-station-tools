@@ -57,14 +57,29 @@ R.check('P3 标题/场景/标签的既有双语 UI 映射完整（本次未改�
 const zhPage = readFileSync(join(DIST, 'prompts/index.html'), 'utf8');
 const enPage = readFileSync(join(DIST, 'en/prompts/index.html'), 'utf8');
 const pageBad = [];
-const readCount = (html, needle) => (html.match(new RegExp(needle, 'g')) || []).length;
-if (readCount(zhPage, 'p\\.prompt\\.zh') !== 2) pageBad.push(`中文页 p.prompt.zh 出现 ${readCount(zhPage, 'p\\.prompt\\.zh')} 次（应 2）`);
-if (readCount(enPage, 'p\\.prompt\\.en') !== 2) pageBad.push(`英文页 p.prompt.en 出现 ${readCount(enPage, 'p\\.prompt\\.en')} 次（应 2）`);
-if (readCount(enPage, 'p\\.prompt(?!\\.)') !== 0) pageBad.push('英文页仍存在裸用 p.prompt（会读到对象而不是字符串）');
-if (readCount(zhPage, 'p\\.prompt\\.en') !== 0) pageBad.push('中文页引用了 p.prompt.en');
-if (readCount(enPage, 'p\\.prompt\\.zh') !== 0) pageBad.push('英文页引用了 p.prompt.zh');
-if (!zhPage.includes('prompts.json') || !enPage.includes('prompts.json')) pageBad.push('页面未引用 prompts.json');
-R.check('P4 中文页读 prompt.zh / 英文页读 prompt.en（渲染 + 复制各 1 次），且无裸用 p.prompt',
+/* 静态渲染架构（重构后）：卡片由服务端渲染，复制从 DOM 文本读取（src/scripts/prompts.ts）。
+   等价强度断言：12 条全部静态上卡（id 全量 + 复制按钮 12 个）、中文页只含 zh 正文、英文页只含 en 正文（抽样防串台）。 */
+const stripTags = s => s.replace(/<[^>]+>/g, '');
+for (const p of pub) {
+  if (!zhPage.includes(`data-prompt-id="${p.id}"`) || !enPage.includes(`data-prompt-id="${p.id}"`)) pageBad.push(`${p.id} 未静态上卡`);
+}
+const zhBtn = (zhPage.match(/class="btn btn-primary btn-s copy-btn"/g) || []).length;
+const enBtn = (enPage.match(/class="btn btn-primary btn-s copy-btn"/g) || []).length;
+if (zhBtn !== 12) pageBad.push(`中文页复制按钮 ${zhBtn} 个（应 12）`);
+if (enBtn !== 12) pageBad.push(`英文页复制按钮 ${enBtn} 个（应 12）`);
+const SAMPLE = ['polish-article', 'code-review', 'feynman'];
+const snippet = s => stripTags(s).replace(/\s+/g, ' ').slice(0, 60);
+const zhText = stripTags(zhPage).replace(/\s+/g, ' ');
+const enText = stripTags(enPage).replace(/\s+/g, ' ');
+for (const id of SAMPLE) {
+  const p = pub.find(x => x.id === id);
+  const zhSnip = snippet(p.prompt.zh), enSnip = snippet(p.prompt.en);
+  if (!zhText.includes(zhSnip)) pageBad.push(`中文页缺 ${id} 的 zh 正文`);
+  if (enText.includes(zhSnip)) pageBad.push(`英文页混入 ${id} 的 zh 正文（串台）`);
+  if (!enText.includes(enSnip)) pageBad.push(`英文页缺 ${id} 的 en 正文`);
+  if (zhText.includes(enSnip)) pageBad.push(`中文页混入 ${id} 的 en 正文（串台）`);
+}
+R.check('P4 双语卡片服务端静态渲染（12 条全上卡 + 复制按钮 12 个），zh 页只含 zh 正文 / en 页只含 en 正文（抽样防串台）',
   pageBad.length === 0, pageBad.slice(0, 6).join(' | ') || '全部合规');
 
 const same = readFileSync(join(ROOT, 'public/assets/data/prompts.json')).equals(readFileSync(join(DIST, 'assets/data/prompts.json')));

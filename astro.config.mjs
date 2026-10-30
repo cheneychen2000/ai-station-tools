@@ -1,6 +1,5 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import postBuild from './src/integrations/post-build.mjs';
 
 /**
  * Reflex Hub · Astro 静态站配置
@@ -11,6 +10,10 @@ import postBuild from './src/integrations/post-build.mjs';
  *  - compressHTML: false：不让构建器重排/压缩 HTML，正文与既有检查断言以接近原产物的形态输出；
  *  - site 固定 https://www.reflex-hub.com（canonical / hreflang / sitemap / JSON-LD 的绝对 URL 来源）；
  *  - outDir 默认 dist（Cloudflare Pages 直发目录）；本地双目录对拍时可临时用 ASTRO_OUT_DIR=dist-astro。
+ *  - sitemap 与派生资产（labels-en.js / quiz-en-cfg.js / quiz-en.json / compare-pairs.json）由
+ *    src/pages 下的静态端点生成（唯一逻辑源），联盟/广告位由 placements 组件在构建期直接输出，
+ *    不再有任何构建后 HTML 重写（src/integrations 已整体退役）。
+ *  - vite build.minify/cssMinify 关闭：页面脚本与全局样式以可读形态输出（既有检查按内容断言）。
  */
 export default defineConfig({
   site: 'https://www.reflex-hub.com',
@@ -24,6 +27,11 @@ export default defineConfig({
     format: 'directory',
     inlineStylesheets: 'never'
   },
-  devToolbar: { enabled: false },
-  integrations: [postBuild()]
+  vite: {
+    build: {
+      minify: false,
+      cssMinify: false
+    }
+  },
+  devToolbar: { enabled: false }
 });

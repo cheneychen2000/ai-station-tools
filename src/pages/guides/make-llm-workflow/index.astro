@@ -4,8 +4,12 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../components/Layout.astro';
-import { wfCostHtml } from '../../../lib/render.mjs';
+import Layout from '../../../layouts/SiteLayout.astro';
+import AffiliateCTA from '../../../components/placements/AffiliateCTA.astro';
+import { getSiteData } from '../../../lib/data';
+import WorkflowCostTable from '../../../components/guide/WorkflowCostTable.astro';
+
+const { models, fx } = await getSiteData();
 ---
 
 <Layout title={"用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本 | Reflex Hub"}
@@ -65,7 +69,7 @@ import { wfCostHtml } from '../../../lib/render.mjs';
         下表为<strong>每 1,000 次运行的 LLM API 成本</strong>，由本站构建脚本按官方刊例价实算：
       </p>
       
-<Fragment set:html={wfCostHtml()} />
+<WorkflowCostTable models={models} fx={fx} />
 
       <p class="s-hint">把"每次输入/输出 Token"换成你试运行统计到的真实值，到 <a href="../../cost/">成本计算器</a> 重算；注意这是 API 侧成本，平台侧按模块操作数计费的部分未包含在内（见下节）。</p>
     </section>
@@ -102,8 +106,7 @@ import { wfCostHtml } from '../../../lib/render.mjs';
           · 本文为文档研究，不含实测结论；价格核验时间 ≠ 页面内容更新时间。
         </p>
       </div>
-      <!-- AFFILIATE:make:BEGIN -->
-      <!-- AFFILIATE:make:END -->
+      <AffiliateCTA partnerId="make" />
     </section>
 
     <section class="panel">

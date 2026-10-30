@@ -1,0 +1,57 @@
+---
+/**
+ * 工具目录分组卡片：自研工具与第三方工具分组、排序、索引策略不变；
+ * 外部链接安全属性（target=_blank rel=noopener data-tool）保留。
+ */
+import { TOOL_ORDER, TOOL_TITLES } from '../../lib/domain/guide-data';
+import { fillToolTagline } from '../../lib/domain/tool-view';
+import { EN_TOOL, EN_TOOL_CATEGORY, EN_TOOL_FREE } from '../../lib/i18n/dictionaries.mjs';
+import { enToolName } from '../../lib/i18n/helpers';
+import { safeUrl } from '../../lib/utils/escape';
+import type { Tool } from '../../lib/data/schemas';
+
+interface Props {
+  tools: Tool[];
+  modelCount: number;
+  compareCount: number;
+  en?: boolean;
+}
+const { tools, modelCount, compareCount, en = false } = Astro.props;
+---
+
+{TOOL_ORDER.map((cat) => {
+  const list = tools.filter(t => t.category === cat);
+  if (!list.length) return null;
+  return (
+    <Fragment>
+      <h2 class="group-title">{en ? (EN_TOOL_CATEGORY[cat] || cat) : (TOOL_TITLES[cat] || cat)}</h2>
+      <div class="tool-grid">
+        {list.map((t) => {
+          if (t.own) {
+            const meta = en ? EN_TOOL[t.id] : null;
+            if (en && !meta) throw new Error(`EN_TOOL missing for ${t.id}`);
+            return (
+              <div class="result-card">
+                <div class="r-head"><span class="r-name">{en ? (enToolName(t)) : t.name}<span class="free-badge own-badge">{en ? 'In-house' : '自研'}</span></span></div>
+                <p style="font-size:14px;margin-top:6px">{fillToolTagline(en ? meta!.tagline : t.tagline, modelCount, compareCount)}</p>
+                <p class="lib-meta">{en ? 'Use case: ' : '场景：'}{en ? meta!.scene : t.scene}</p>
+                <div class="cta-row"><a class="btn btn-primary btn-s" href={en ? `/en${t.url}` : t.url}>{en ? 'Open tool →' : '立即使用 →'}</a></div>
+              </div>
+            );
+          }
+          const u = safeUrl(t.url);
+          const meta = en ? EN_TOOL[t.id] : null;
+          if (en && !meta) throw new Error(`EN_TOOL missing for ${t.id}`);
+          return (
+            <div class="result-card">
+              <div class="r-head"><span class="r-name">{en ? enToolName(t) : t.name}<span class={`free-badge free-${t.free}`}>{en ? (EN_TOOL_FREE[t.free] || t.free) : t.free}</span></span></div>
+              <p style="font-size:14px;margin-top:6px">{en ? meta!.tagline : t.tagline}</p>
+              <p class="lib-meta">{en ? 'Use case: ' : '场景：'}{en ? meta!.scene : t.scene}{en ? ' · verified ' : ' · 核验 '}{t.verifiedAt}</p>
+              <div class="cta-row"><a class="btn btn-ghost btn-s" href={`${t.id}/`}>{en ? 'Details' : '详情'}</a>{u && <a class="btn btn-primary btn-s" href={u} target="_blank" rel="noopener" data-tool={t.id}>{en ? 'Official site →' : '官网 →'}</a>}</div>
+            </div>
+          );
+        })}
+      </div>
+    </Fragment>
+  );
+})}

@@ -1,10 +1,12 @@
 ---
 /**
- * 手写页（迁移自 en/prompts/index.html，源码即产物 → Astro 源文件）。
- * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
- * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ * Prompt Library (/en/prompts/): 与中文库同一 prompts.json，英文文案经 i18n 字典服务端呈现。
  */
-import Layout from '../../../components/Layout.astro';
+import Layout from '../../../layouts/SiteLayout.astro';
+import { getPrompts } from '../../../lib/data';
+import PromptCard from '../../../components/prompts/PromptCard.astro';
+
+const prompts = await getPrompts();
 ---
 
 <Layout title={"Prompt Library - Ready-to-Use AI Prompts for Everyday Tasks | Reflex Hub"}
@@ -13,7 +15,7 @@ import Layout from '../../../components/Layout.astro';
   canonicalPath="/en/prompts/"
   active="prompts"
   crumb={"/ Prompt Library"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <div class=\"toast\" id=\"toast\"></div>\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>\n  <script src=\"../../assets/labels-en.js\"></script>\n  <script>\n  function showToast(text) {\n    var t = document.getElementById('toast');\n    t.textContent = text;\n    t.classList.add('show');\n    clearTimeout(t._timer);\n    t._timer = setTimeout(function () { t.classList.remove('show'); }, 1600);\n  }\n  function copyText(text, done) {\n    if (navigator.clipboard && navigator.clipboard.writeText) {\n      navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done); });\n    } else {\n      legacyCopy(text, done);\n    }\n  }\n  function legacyCopy(text, done) {\n    var ta = document.createElement('textarea');\n    ta.value = text;\n    ta.style.position = 'fixed';\n    ta.style.opacity = '0';\n    document.body.appendChild(ta);\n    ta.select();\n    try { document.execCommand('copy'); done(); } catch (e) { showToast('Copy failed, please select the text manually'); }\n    document.body.removeChild(ta);\n  }\n\n  var SCENE_EN = (window.EnLabels && window.EnLabels.promptScene) || {};\n  var TAG_EN = (window.EnLabels && window.EnLabels.promptTag) || {};\n  var TITLE_EN = (window.EnLabels && window.EnLabels.promptTitle) || {};\n  fetch('../../assets/data/prompts.json').then(function (res) { return res.json(); }).then(function (prompts) {\n    var box = document.getElementById('promptList');\n    prompts.forEach(function (p) {\n      var card = document.createElement('div');\n      card.className = 'result-card';\n      card.innerHTML =\n        '<div class=\"r-head\">' +\n          '<span class=\"r-name\">' + (TITLE_EN[p.id] || p.title) + '<span class=\"r-vendor\">' + (SCENE_EN[p.scene] || p.scene) + '</span></span>' +\n          '<button class=\"btn btn-primary btn-s copy-btn\" type=\"button\">Copy</button>' +\n        '</div>' +\n        '<pre class=\"prompt-text\"></pre>' +\n        '<span class=\"m-tags\">' + (p.tags || []).map(function (t) { return '<span class=\"tag tag-feat\">' + (TAG_EN[t] || t) + '</span>'; }).join('') + '</span>';\n      card.querySelector('.prompt-text').textContent = p.prompt.en;\n      card.querySelector('.copy-btn').addEventListener('click', function () {\n        copyText(p.prompt.en, function () {\n          showToast('Copied');\n          window.track('prompt_copy', { id: p.id, lang: 'en' });\n        });\n      });\n      box.appendChild(card);\n    });\n  }).catch(function () {\n    document.getElementById('promptList').innerHTML = '<p class=\"empty-hint\">Failed to load prompt data — please refresh</p>';\n  });\n  </script>"} />
+  <Fragment slot="bodyend" set:html={"\n\n  <div class=\"toast\" id=\"toast\"></div>"} />
 <section class="hero">
       <h1>Prompt library</h1>
       <p class="tagline">Chinese prompt templates for high-frequency scenarios, one-tap copy</p>
@@ -27,5 +29,11 @@ import Layout from '../../../components/Layout.astro';
       prompt.
     </p>
 
-    <div id="promptList"></div>
+    <div id="promptList" data-copy-done="Copied" data-copy-fail="Copy failed, please select the text manually" data-lang="en">
+      {prompts.map((p) => <PromptCard p={p} en />)}
+    </div>
+
+    <script>
+      import '../../../scripts/prompts';
+    </script>
 </Layout>

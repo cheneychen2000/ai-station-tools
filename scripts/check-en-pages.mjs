@@ -193,12 +193,21 @@ R.check(`E6 cost-core.js 与 pricing.mjs 全模型参数网格对拍一致（${m
 /* E7 中英计算器均调用 CostCore + 英文页无价格硬编码 */
 const cnCost = read('cost/index.html');
 const enCost = read('en/cost/index.html');
-R.check('E7a 中/英计算器脚本均委托 CostCore（单一公式源）',
-  cnCost.includes('cost-core.js') && cnCost.includes('window.CostCore') &&
-  enCost.includes('cost-core.js') && enCost.includes('CostCore.monthlyCost'));
-const enScript = enCost.split('<script>').pop();
+/* 计算器交互已迁移为打包模块（src/scripts/cost-calculator.ts）：HTML 保留 cost-core.js 固定 URL 引用，
+   CostCore 调用断言落在页面加载的打包模块内容上（等强度，覆盖同一事实）。 */
+const chunkTxt = (html) => [...html.matchAll(/<script type="module" src="([^"]+)"/g)]
+  .map(m => readFileSync(join(DIST, m[1].replace(/^\//, '')), 'utf8')).join('\n');
+const cnChunkTxt = chunkTxt(cnCost), enChunkTxt = chunkTxt(enCost);
+/* 计算器逻辑在共享模块 chunk（中/英页面入口都 import 同一模块），断言该 chunk 委托 CostCore */
+const calcChunk = readdirSync(join(DIST, '_astro'))
+  .map(n => readFileSync(join(DIST, '_astro', n), 'utf8'))
+  .find(t => t.includes('CostCore.monthlyCost'));
+R.check('E7a 中/英计算器脚本均委托 CostCore（单一公式源，共享模块 chunk）',
+  cnCost.includes('cost-core.js') && !!calcChunk && calcChunk.includes('window.CostCore') &&
+  enCost.includes('cost-core.js'));
+const enScript = enCost.split('<script>').pop() + '\n' + enChunkTxt;
 const priceLiterals = enScript.match(/[^a-zA-Z](0\.04|0\.02|0\.3[^0-9]|0\.15|priceIn\s*[:=]\s*[\d.])/g);
-R.check('E7b 英文计算器脚本无价格硬编码（与 T3b 同口径）', !priceLiterals, priceLiterals ? JSON.stringify(priceLiterals) : '无字面量');
+R.check('E7b 英文计算器脚本无价格硬编码（与 T3b 同口径，含打包模块）', !priceLiterals, priceLiterals ? JSON.stringify(priceLiterals) : '无字面量');
 
 /* E8 币种与来源口径 */
 R.check('E8a 英文计算器保留原币口径声明（per 1M tokens / CNY / USD）',

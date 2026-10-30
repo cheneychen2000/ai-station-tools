@@ -1,0 +1,17 @@
+---
+/** 模型模态/特点标签组（英文页经 i18n 字典呈现）。 */
+import { EN_MODALITY, EN_FEATURE } from '../../lib/i18n/dictionaries.mjs';
+import type { Model } from '../../lib/data/schemas';
+
+interface Props { m: Model; en?: boolean }
+const { m, en = false } = Astro.props;
+const mods = (m.modalities || []).map(x => (en ? EN_MODALITY[x] || x : x));
+const feats = (m.features || []).map(x => (en ? EN_FEATURE[x] || x : x));
+---
+
+{mods.length > 0 || feats.length > 0 ? (
+<span class="m-tags">
+  {mods.map(x => <span class="tag tag-mod">{x}</span>)}
+  {feats.map(x => <span class="tag tag-feat">{x}</span>)}
+</span>
+) : null}

@@ -4,8 +4,10 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../components/Layout.astro';
-import { cmpStatsHtml } from '../../lib/render.mjs';
+import Layout from '../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../lib/data';
+
+const { pairs, models } = await getSiteData();
 ---
 
 <Layout title={"模型对比器 - 两款大模型价格与规格逐项对比 | Reflex Hub"}
@@ -14,7 +16,6 @@ import { cmpStatsHtml } from '../../lib/render.mjs';
   canonicalPath="/compare/"
   active="compare"
   crumb={"/ 模型对比"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>\n  <script>\n  Promise.all([\n    fetch('../assets/data/models.json').then(function (res) { return res.json(); }),\n    fetch('../assets/data/compare-pairs.json').then(function (res) { return res.json(); })\n  ]).then(function (res) {\n    var models = res[0];\n    var pairSet = {};\n    (res[1].pairs || []).forEach(function (p) { pairSet[p[0] + '/' + p[1]] = true; });\n    var selA = document.getElementById('selA');\n    var selB = document.getElementById('selB');\n    models.forEach(function (m) {\n      var label = m.name + '（' + m.vendor + '）';\n      selA.add(new Option(label, m.id));\n      selB.add(new Option(label, m.id));\n    });\n    if (models.length > 1) selB.selectedIndex = 1;\n    var qa = /[?&]a=([a-z0-9\\-]+)/i.exec(location.search);\n    if (qa) selA.value = qa[1];\n\n    document.getElementById('btnGo').addEventListener('click', function () {\n      var a = selA.value, b = selB.value;\n      if (a === b) {\n        document.getElementById('cmpHint').textContent = '请选择两款不同的模型';\n        return;\n      }\n      var ids = [a, b].sort();\n      if (!pairSet[ids[0] + '/' + ids[1]]) {\n        document.getElementById('cmpHint').textContent = '该组合的对比页暂未生成（现有 ' + Object.keys(pairSet).length + ' 组对比），可在下方常用入口或模型库档案中查看';\n        return;\n      }\n      location.href = ids[0] + '/' + ids[1] + '/';\n    });\n  }).catch(function () {\n    document.getElementById('cmpHint').textContent = '模型数据加载失败，请刷新重试';\n  });\n  </script>"} />
 <section class="hero">
       <h1>模型对比器</h1>
       <p class="tagline">两款模型，逐项对比，胜出一眼可见</p>
@@ -60,12 +61,15 @@ import { cmpStatsHtml } from '../../lib/render.mjs';
         · 低价轻量跨厂商：<a href="glm-53-flash/gpt-6-luna/">GLM-5.3-Flash 对比 GPT-6 Luna</a>　<a href="claude-haiku-5-5/glm-53-flash/">Claude Haiku 5.5 对比 GLM-5.3-Flash</a>　<a href="gemini-3-1-flash-lite/qwen38-flash/">Gemini 3.1 Flash-Lite 对比 Qwen3.8-Flash</a><br>
         · 主力档跨厂商：<a href="deepseek-v4-pro/gpt-6-1-sol/">DeepSeek V4 Pro 对比 GPT-6.1 Sol</a>　<a href="claude-sonnet-5-5/deepseek-v4-pro/">Claude Sonnet 5.5 对比 DeepSeek V4 Pro</a>
       </p>
-      
-<Fragment set:html={cmpStatsHtml()} />
+
+      <p class="s-hint">全部 {pairs.length} 组对比（{models.length} 款模型两两全组合）均可通过上方选择器进入；每个对比页都有固定口径摘要与双向模型档案链接。</p>
 
     </section>
 
     <noscript>
       <p class="empty-hint">模型选择器需要启用 JavaScript。你也可以直接浏览 <a href="../models/">模型库</a> 查看各模型价格与参数档案，或在 <a href="../cost/">成本计算器</a> 中估算月成本。</p>
     </noscript>
+    <script>
+      import '../../scripts/compare';
+    </script>
 </Layout>

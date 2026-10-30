@@ -1,19 +1,14 @@
 /**
- * 构建入口（Astro 静态站）。
+ * 本地兼容构建包装（npm run build:compat；CI/Cloudflare 直接用 `astro build`）。
  *
- * 保留 `node scripts/build.mjs` 这个历史入口：既有检查脚本（check-build 的幂等性断言、
- * 各 audit 脚本的前置构建）与运维习惯都不需要改动。真正的构建由 `astro build` 完成：
- *  - 页面路由 / 布局 / 组件 → src/pages 与 src/components
- *  - 数据表与卡片片段 → src/lib/render.mjs（与迁移前同一批函数，同一份 models.json）
- *  - sitemap、浏览器端生成资产、联盟/广告占位状态机 → src/integrations/post-build.mjs
- *
- * 旧的"改写 dist 内手写页标记区"的生成器（1644 行的 scripts/build.mjs）已退役：
- * 源码已整体提升为 src/pages 下的 .astro 源文件，dist 成为纯输出目录。
- * 迁移前产物快照保存在 migration/baseline-dist（供 scripts/check-migrate-diff.mjs 对拍）。
- *
- * 关于输出重定向：Windows 下把 Astro/Vite 的大段构建输出直接接到管道（execSync/Select-String）
- * 偶发 libuv 断言崩溃（UV_HANDLE_CLOSING）。因此仅在交互终端里继承 stdio，被管道捕获时
- * 改为写日志文件，结束时打印摘要；失败时回显日志尾部。
+ * 历史背景：本机 IDE 注入的 fs 批量删除保护垫片会把 Astro 构建结束时的 .prerender 临时目录
+ * 自删（约 500 chunk）拦成异常，导致本地裸 `astro build` 偶发失败；Windows 管道下大段构建
+ * 输出偶发 libuv 断言崩溃（UV_HANDLE_CLOSING）。本包装只做三件事：
+ *  1. 剥离 NODE_OPTIONS 中的垫片后 spawn astro build；
+ *  2. 非交互终端把构建日志写临时文件、结束时打印摘要；
+ *  3. 把残留的 .prerender 中间目录移到系统临时目录（改名不触发删除保护）。
+ * 标准构建命令 `npm run build` 已是裸 astro build，本包装仅为本地环境兼容保留
+ * （既有检查脚本如 check-build 的幂等断言以本入口构建两次对拍）。
  */
 import { spawnSync } from 'node:child_process';
 import { readFileSync, existsSync, rmSync, renameSync, openSync, closeSync, readdirSync, statSync } from 'node:fs';

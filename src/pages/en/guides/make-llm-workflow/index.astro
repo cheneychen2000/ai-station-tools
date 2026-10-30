@@ -4,8 +4,12 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../../components/Layout.astro';
-import { wfCostHtmlEn } from '../../../../lib/render.mjs';
+import Layout from '../../../../layouts/SiteLayout.astro';
+import AffiliateCTA from '../../../../components/placements/AffiliateCTA.astro';
+import { getSiteData } from '../../../../lib/data';
+import WorkflowCostTable from '../../../../components/guide/WorkflowCostTable.astro';
+
+const { models, fx } = await getSiteData();
 ---
 
 <Layout title={"Build an LLM Automation Workflow with Make | Reflex Hub"}
@@ -66,7 +70,7 @@ import { wfCostHtmlEn } from '../../../../lib/render.mjs';
         by this site's build script:
       </p>
       
-<Fragment set:html={wfCostHtmlEn()} />
+<WorkflowCostTable models={models} fx={fx} en />
 
       <p class="s-hint">Replace the per-call input/output tokens with the real values from your trial and recompute in the <a href="../../cost/">cost calculator</a>; note this is the API-side cost only — platform-side charges by operation count are covered in the next section.</p>
     </section>
@@ -118,8 +122,7 @@ import { wfCostHtmlEn } from '../../../../lib/render.mjs';
           · This article is documentation research with no hands-on conclusions; price-verification time ≠ page-content update time.
         </p>
       </div>
-      <!-- AFFILIATE:make:BEGIN -->
-      <!-- AFFILIATE:make:END -->
+      <AffiliateCTA partnerId="make" />
     </section>
 
     <section class="panel">

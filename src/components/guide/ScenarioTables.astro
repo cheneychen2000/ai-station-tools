@@ -1,0 +1,47 @@
+---
+/** 指南《场景成本案例》：三组场景假设 × 全模型估算表（公式与交互计算器一致）。 */
+import { guideCostRows, GUIDE_SCENARIOS, GUIDE_SCENARIOS_EN, type GuideScenario, type GuideCostRow } from '../../lib/domain/guide-data';
+import EstCell from './EstCell.astro';
+import { enModelName } from '../../lib/i18n/helpers';
+import { EN_VENDOR } from '../../lib/i18n/dictionaries.mjs';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; fx: FxFile; en?: boolean }
+const { models, fx, en = false } = Astro.props;
+
+const scenarios: GuideScenario[] = en ? GUIDE_SCENARIOS_EN : GUIDE_SCENARIOS;
+const tables: GuideCostRow[][] = scenarios.map(s => guideCostRows(models, fx, s));
+const hint = (s: GuideScenario): string => en
+  ? `Assumptions: ${s.calls} calls/day · ${s.inTok} input / ${s.outTok} output tokens per call · ${s.hit * 100}% cache hit rate · off-peak rates · 30-day month. Monthly cost = calls × 30 × (input ÷ 1,000,000 × effective input price + output ÷ 1,000,000 × output price); tiered models pick the tier by the ${s.inTok}-token input, and tiers with unpublished rates are honestly marked "cannot estimate".`
+  : `计算假设：日均 ${s.calls} 次 · 单次输入 ${s.inTok} / 输出 ${s.outTok} Token · 缓存命中率 ${s.hit * 100}% · 错峰低谷价 · 每月 30 天。月成本 = 调用 × 30 ×（输入 ÷ 1,000,000 × 有效输入价 + 输出 ÷ 1,000,000 × 输出单价）；分档模型按 ${s.inTok} Token 自动选档，未公开费率的档位如实标注无法估算。`;
+---
+
+{scenarios.map((s, si) => (
+  <Fragment>
+    <h2 id={`scene-${s.key}`}>{s.title}</h2>
+    <p style="font-size:14px;line-height:1.9" set:html={s.why}></p>
+    <p class="s-hint">{hint(s)}</p>
+    <div class="table-scroll">
+      <table class="spec wide">
+        <thead>
+          <tr>
+            <th>{en ? 'Model' : '模型'}</th>
+            <th>{en ? 'Vendor / channel' : '厂商 / 渠道'}</th>
+            <th>{en ? 'Est. monthly cost (CNY-converted)' : '估算月成本（人民币折算）'}</th>
+            <th>{en ? 'Verified' : '核验日期'}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tables[si].map(r => (
+            <tr>
+              <th><a href={`../../models/${r.m.id}/`}>{enModelName(r.m)}</a></th>
+              <td>{en ? (EN_VENDOR[r.m.vendor] || r.m.vendor) : r.m.vendor}</td>
+              <td class="num"><EstCell row={r} en={en} usdLabel /></td>
+              <td class="num">{r.m.verifiedAt}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Fragment>
+))}

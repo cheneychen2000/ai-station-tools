@@ -1,0 +1,27 @@
+---
+/** 模型详情页价格面板（价格表行由 domain/price-cells 构建，图标结构化渲染）。 */
+import { priceTableRows } from '../../lib/domain/price-cells';
+import { fxNote, enFxNote } from '../../lib/domain/fx-notes';
+import YesNo from '../common/YesNo.astro';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { m: Model; fx: FxFile; en?: boolean }
+const { m, fx, en = false } = Astro.props;
+
+const fxNoteText = en ? enFxNote(fx, 'USD') : fxNote(fx, 'USD');
+const rows = priceTableRows(m, en, fxNoteText);
+const cur = m.currency || 'CNY';
+---
+
+<section class="panel">
+  <h2>{en ? `API pricing (official list price, ${cur === 'USD' ? 'USD' : 'CNY'} per 1M tokens)` : `价格（${cur === 'USD' ? '美元' : '人民币'} / 百万Token）`}</h2>
+  <div class="table-scroll">
+    <table class="spec">
+      <tbody>
+        {rows.map((r) => (
+          <tr><th>{r.label}</th><td class="num">{r.icon ? (<Fragment><YesNo value={r.icon === 'yes'} /> {r.text}</Fragment>) : r.text}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -4,7 +4,7 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../components/Layout.astro';
+import Layout from '../../layouts/SiteLayout.astro';
 ---
 
 <Layout title={"AI认知段位测试 - 12 题六维认知测评 | Reflex Hub"}
@@ -13,7 +13,7 @@ import Layout from '../../components/Layout.astro';
   canonicalPath="/quiz/"
   jsonld={[{"@context":"https://schema.org","@type":"WebApplication","name":"AI认知段位测试","url":"https://www.reflex-hub.com/quiz/","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"description":"12 题的 AI 认知段位测试，覆盖概念辨析、价格账本、能力边界、行业格局、实操技能、安全防坑六个维度，每题即时对错与解析，按答对题数评定九个段位并生成段位海报。"}]}
   crumb={"/ 段位测试"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>\n  <script src=\"../assets/qr.js\"></script>\n  <script src=\"../assets/quiz.js\"></script>"} />
+  <Fragment slot="bodyend" set:html={"\n\n  <script src=\"../assets/qr.js\"></script>\n  <script src=\"../assets/quiz.js\"></script>"} />
 <section class="hero">
       <h1>AI 认知段位测试</h1>
       <p class="tagline">12 题 · 六维认知 · 每题即时解析</p>

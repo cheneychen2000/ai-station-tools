@@ -1,0 +1,37 @@
+---
+/** 指南页算例：选数据完整（含公开缓存价、单一价）的模型，四步演示月成本计算。 */
+import { price, money, SAMPLE_PARAMS as P } from '../../lib/domain/pricing';
+import { round2 } from '../../lib/domain/price-cells';
+import { safeUrl } from '../../lib/utils/escape';
+import { enModelName, enVendorLabel } from '../../lib/i18n/helpers';
+import type { Model } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; en?: boolean }
+const { models, en = false } = Astro.props;
+
+const m = models.find(x => x.priceCacheHit != null && !x.peakOffpeak) || models[0];
+const src = safeUrl(m.sourceUrl);
+const effIn = P.hit * (m.priceCacheHit ?? 0) + (1 - P.hit) * m.priceIn; /* ?? 0 与旧 JS 的 null 算术强转等价（示例模型必有缓存价） */
+const inCost = P.calls * 30 * (P.inTok / 1e6) * effIn;
+const outCost = P.calls * 30 * (P.outTok / 1e6) * m.priceOut;
+---
+
+<div class="table-scroll">
+  <table class="spec">
+    <tbody>
+      <tr>
+        <th>{en ? 'Model & source' : '模型与来源'}</th>
+        <td>
+          <a href={`../../models/${m.id}/`}>{enModelName(m)}</a>
+          {en
+            ? <Fragment> ({enVendorLabel(m)}), list prices: input {price(m.priceIn)} / output {price(m.priceOut)} / cache hit {price(m.priceCacheHit)} per 1M tokens; <a href={src || '#'} target="_blank" rel="noopener">official source</a>, verified {m.verifiedAt}</Fragment>
+            : <Fragment>（{m.vendor}），刊例原价：输入 {price(m.priceIn)} / 输出 {price(m.priceOut)} / 缓存命中 {price(m.priceCacheHit)} 每百万 Token；<a href={src || '#'} target="_blank" rel="noopener">官方来源</a>，核验日期 {m.verifiedAt}</Fragment>}
+        </td>
+      </tr>
+      <tr><th>{en ? 'Step 1: effective input price' : '第 1 步：输入有效单价'}</th><td class="num">30% × {price(m.priceCacheHit)} + 70% × {price(m.priceIn)} = {round2(effIn)} {en ? 'CNY/1M tokens' : '元/百万 Token'}</td></tr>
+      <tr><th>{en ? 'Step 2: input cost' : '第 2 步：输入成本'}</th><td class="num">{en ? '100 calls/day × 30 days' : '100 次/天 × 30 天'} × (2000 ÷ 1,000,000) × {round2(effIn)} = {money(round2(inCost))}</td></tr>
+      <tr><th>{en ? 'Step 3: output cost' : '第 3 步：输出成本'}</th><td class="num">{en ? '100 calls/day × 30 days' : '100 次/天 × 30 天'} × (800 ÷ 1,000,000) × {price(m.priceOut)} = {money(round2(outCost))}</td></tr>
+      <tr><th>{en ? 'Step 4: total' : '第 4 步：合计'}</th><td class="num"><strong>{money(round2(inCost + outCost))} / {en ? 'month' : '月'}</strong>{en ? ' (list-price estimate, not an actual invoice)' : '（刊例估算，不等于实际账单）'}</td></tr>
+    </tbody>
+  </table>
+</div>

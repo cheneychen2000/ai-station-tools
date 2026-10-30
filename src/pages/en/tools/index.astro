@@ -4,9 +4,11 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../components/Layout.astro';
-import { toolGroupsHtmlEn } from '../../../lib/render.mjs';
-import { pairs } from '../../../lib/site.mjs';
+import Layout from '../../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../../lib/data';
+import ToolGroups from '../../../components/tools/ToolGroups.astro';
+
+const { tools, models, pairs } = await getSiteData();
 ---
 
 <Layout title={"AI Tool Directory - Curated AI Tools by Scenario | Reflex Hub"}
@@ -15,7 +17,6 @@ import { pairs } from '../../../lib/site.mjs';
   canonicalPath="/en/tools/"
   active="tools"
   crumb={"/ AI Tool Directory"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>"} />
 <section class="hero">
       <h1>AI tool directory</h1>
       <p class="tagline">Picking the right tool for the scenario beats chasing every new release</p>
@@ -31,7 +32,7 @@ import { pairs } from '../../../lib/site.mjs';
 
     <div id="toolGroups">
       
-<Fragment set:html={toolGroupsHtmlEn(pairs.length)} />
+<ToolGroups tools={tools} modelCount={models.length} compareCount={pairs.length} en />
 
     </div>
 </Layout>

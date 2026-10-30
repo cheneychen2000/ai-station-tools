@@ -1,0 +1,29 @@
+---
+/** 对比详情表：三列（维度 / A / B），胜出高亮只作用于示例月成本行。 */
+import CompareCell from './CompareCell.astro';
+import type { CompareView, CompareRow } from '../../lib/domain/compare-view';
+
+interface Props { view: CompareView; en?: boolean }
+const { view, en = false } = Astro.props;
+
+const winClass = (row: CompareRow, side: 'a' | 'b'): string | undefined =>
+  row.cost ? (view.verdict === side ? 'win num' : 'num') : undefined;
+---
+
+<div class="table-scroll" style="margin-top:20px">
+  <table class="spec wide">
+    <thead>
+      <tr><th>{en ? 'Dimension' : '维度'}</th><th>{view.aName}</th><th>{view.bName}</th></tr>
+    </thead>
+    <tbody>
+      {view.rows.map((r) => (
+        <tr>
+          <th>{r.label}</th>
+          <td class={winClass(r, 'a')}><CompareCell row={r} side="a" en={en} /></td>
+          <td class={winClass(r, 'b')}><CompareCell row={r} side="b" en={en} /></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="s-hint">{view.hintLead}<a href="../../../cost/">{en ? 'cost calculator' : '成本计算器'}</a>{view.hintTrail}</p>

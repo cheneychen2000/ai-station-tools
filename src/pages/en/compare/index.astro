@@ -4,8 +4,10 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../components/Layout.astro';
-import { cmpStatsHtmlEn } from '../../../lib/render.mjs';
+import Layout from '../../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../../lib/data';
+
+const { pairs, models } = await getSiteData();
 ---
 
 <Layout title={"Model Comparison - Two LLMs, Prices and Specs Side by Side | Reflex Hub"}
@@ -14,7 +16,6 @@ import { cmpStatsHtmlEn } from '../../../lib/render.mjs';
   canonicalPath="/en/compare/"
   active="compare"
   crumb={"/ Model Comparison"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>\n  <script src=\"../../assets/labels-en.js\"></script>\n  <script>\n  Promise.all([\n    fetch('../../assets/data/models.json').then(function (res) { return res.json(); }),\n    fetch('../../assets/data/compare-pairs.json').then(function (res) { return res.json(); })\n  ]).then(function (res) {\n    var models = res[0];\n    var L = window.EnLabels || { vendor: {} };\n    var pairSet = {};\n    (res[1].pairs || []).forEach(function (p) { pairSet[p[0] + '/' + p[1]] = true; });\n    var selA = document.getElementById('selA');\n    var selB = document.getElementById('selB');\n    models.forEach(function (m) {\n      var label = m.name + ' (' + (L.vendor[m.vendor] || m.vendor) + ')';\n      selA.add(new Option(label, m.id));\n      selB.add(new Option(label, m.id));\n    });\n    if (models.length > 1) selB.selectedIndex = 1;\n    var qa = /[?&]a=([a-z0-9\\-]+)/i.exec(location.search);\n    if (qa) selA.value = qa[1];\n\n    document.getElementById('btnGo').addEventListener('click', function () {\n      var a = selA.value, b = selB.value;\n      if (a === b) {\n        document.getElementById('cmpHint').textContent = 'Please choose two different models';\n        return;\n      }\n      var ids = [a, b].sort();\n      if (!pairSet[ids[0] + '/' + ids[1]]) {\n        document.getElementById('cmpHint').textContent = 'This pair has no comparison page yet (' + Object.keys(pairSet).length + ' pairs exist). Try the shortcuts above or the model library.';\n        return;\n      }\n      location.href = ids[0] + '/' + ids[1] + '/';\n    });\n  }).catch(function () {\n    document.getElementById('cmpHint').textContent = 'Failed to load model data — please refresh';\n  });\n  </script>"} />
 <section class="hero">
       <h1>Model comparison</h1>
       <p class="tagline">Two models, line by line — the winner is visible at a glance</p>
@@ -65,11 +66,14 @@ import { cmpStatsHtmlEn } from '../../../lib/render.mjs';
         · Cross-vendor workhorse: <a href="deepseek-v4-pro/gpt-6-1-sol/">DeepSeek V4 Pro vs GPT-6.1 Sol</a>　<a href="claude-sonnet-5-5/deepseek-v4-pro/">Claude Sonnet 5.5 vs DeepSeek V4 Pro</a>
       </p>
       
-<Fragment set:html={cmpStatsHtmlEn()} />
+      <p class="s-hint">All {pairs.length} pairs (every combination of {models.length} models) are reachable from the selector above; each comparison page has a fixed-basis summary and links to both model profiles.</p>
 
     </section>
 
     <noscript>
       <p class="empty-hint">The model selector requires JavaScript. You can also browse the <a href="../models/">model library</a> for per-model pricing and spec profiles, or estimate monthly costs in the <a href="../cost/">cost calculator</a>.</p>
     </noscript>
+    <script>
+      import '../../../scripts/compare';
+    </script>
 </Layout>

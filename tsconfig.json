@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/strictest",
+  "include": [".astro/types.d.ts", "src/**/*"],
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    /* strictest 子集保留，但关闭 noUncheckedIndexedAccess：业务里大量经守卫/白名单的索引访问
+       （zod 已校验的数据、路由映射）不需要 undefined 传染，避免成片的非空噪音断言 */
+    "noUncheckedIndexedAccess": false
+  }
+}

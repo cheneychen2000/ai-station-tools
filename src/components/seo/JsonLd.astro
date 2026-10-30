@@ -1,0 +1,12 @@
+---
+/**
+ * JsonLd：JSON-LD 结构化数据的安全输出。
+ * 序列化沿用 lib/utils/escape 的 jsonld()：< 转义为 \u003c，保证数据内容无法破坏 script 标签结构。
+ */
+import { jsonld as serialize } from '../../lib/utils/escape';
+
+interface Props { data: Array<Record<string, unknown>> }
+const { data } = Astro.props;
+---
+
+{data.map((o) => <script type="application/ld+json" set:html={serialize(o)} />)}

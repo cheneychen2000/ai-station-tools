@@ -2,29 +2,47 @@
 /**
  * 英文对比页（/en/compare/<a>/<b>/）：与中文页完全同一数据源、同一组合与同一公式，仅文案为英文。
  */
-import Layout from '../../../../../components/Layout.astro';
-import { models, pairs } from '../../../../../lib/site.mjs';
-import { compareDetailEn } from '../../../../../lib/render.mjs';
+import SiteLayout from '../../../../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../../../../lib/data';
+import { buildCompareView } from '../../../../../lib/domain/compare-view';
+import CompareTable from '../../../../../components/compare/CompareTable.astro';
+import CompareSummary from '../../../../../components/compare/CompareSummary.astro';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const { pairs } = await getSiteData();
   return pairs.map(([a, b]) => ({ params: { a, b }, props: { a, b } }));
 }
 
+const { models, fx } = await getSiteData();
 const ma = models.find(x => x.id === Astro.props.a);
 const mb = models.find(x => x.id === Astro.props.b);
 if (!ma || !mb) throw new Error(`compare models not found: ${Astro.props.a}/${Astro.props.b}`);
-const p = compareDetailEn(ma, mb);
+const view = buildCompareView(ma, mb, fx, true);
 ---
 
-<Layout
-  title={p.title}
-  desc={p.desc}
-  canonicalPath={p.canonicalPath}
-  robots={p.robots}
-  jsonld={p.jsonld}
-  active={p.active}
-  crumb={p.crumb}
-  inlineScript={p.inlineScript}
+<SiteLayout
+  title={view.title}
+  desc={view.desc}
+  canonicalPath={view.canonicalPath}
+  jsonld={view.jsonld}
+  active={view.active}
+  crumb={view.crumb}
+  inlineScript={view.inlineScript}
 >
-  <Fragment set:html={p.main} />
-</Layout>
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">{view.aName} <span style="color:var(--muted);font-weight:400">vs</span> {view.bName}</h1>
+      <p class="tagline">{view.aVendor} vs {view.bVendor} · prices and specs, line by line</p>
+    </section>
+
+    <p class="lede">{view.lede}</p>
+
+    <CompareTable view={view} en />
+
+    <CompareSummary view={view} en />
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href={`../../../cost/?models=${ma.id},${mb.id}`} onclick={`window.track('compare_to_cost', { a: '${ma.id}', b: '${mb.id}', lang: 'en' })`}>Calculate with your own usage →</a>
+      <a class="btn btn-ghost" href={`../../../models/${ma.id}/`}>{view.cta.aProfile}</a>
+      <a class="btn btn-ghost" href={`../../../models/${mb.id}/`}>{view.cta.bProfile}</a>
+    </div>
+</SiteLayout>

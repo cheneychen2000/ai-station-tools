@@ -4,8 +4,13 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../../components/Layout.astro';
-import { cexScenariosHtmlEn, cexSensitivityHtmlEn } from '../../../../lib/render.mjs';
+import Layout from '../../../../layouts/SiteLayout.astro';
+import AdSlot from '../../../../components/placements/AdSlot.astro';
+import { getSiteData } from '../../../../lib/data';
+import ScenarioTables from '../../../../components/guide/ScenarioTables.astro';
+import SensitivityTable from '../../../../components/guide/SensitivityTable.astro';
+
+const { models, fx } = await getSiteData();
 ---
 
 <Layout title={"LLM API Monthly Cost Scenarios | Reflex Hub"}
@@ -44,12 +49,11 @@ import { cexScenariosHtmlEn, cexSensitivityHtmlEn } from '../../../../lib/render
 
     <section class="panel">
       
-<Fragment set:html={cexScenariosHtmlEn()} />
+<ScenarioTables models={models} fx={fx} en />
 
     </section>
 
-    <!-- ADSLOT:guide-mid:BEGIN -->
-      <!-- ADSLOT:guide-mid:END -->
+    <AdSlot name="guide-mid" />
     <section class="panel">
       <h2>2. Comparing scenarios (factual observations)</h2>
       <div style="font-size:14px;line-height:1.9">
@@ -71,7 +75,7 @@ import { cexScenariosHtmlEn, cexSensitivityHtmlEn } from '../../../../lib/render
         magnitude of this single variable</strong>, not an industry survey or user statistics.
       </p>
       
-<Fragment set:html={cexSensitivityHtmlEn()} />
+<SensitivityTable models={models} fx={fx} en />
 
     </section>
 

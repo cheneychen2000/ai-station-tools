@@ -119,10 +119,15 @@ R.check('P7b /tools/ 全部工具卡片静态存在', tools.every(t => toolsInde
 R.check('P7c /cost/ 静态参考表含全部模型名称与官方来源链接',
   models.every(m => costHtml.includes(m.name) && costHtml.includes(m.sourceUrl)));
 
-/* 转义机制结构性断言：SEO 元数据插值必须经 esc()。
-   迁移等价改写（提示词 §9.0）：旧断言读 scripts/build.mjs 的 page()，现读 Astro 布局组件的 headSeo 拼接。 */
-const headSrc = readFileSync(join(ROOT, 'src/components/Layout.astro'), 'utf8');
-R.check('P8 元数据插值经 esc() 转义（src/components/Layout.astro 的 headSeo）',
-  headSrc.includes('<title>${esc(title)}</title>') && headSrc.includes('content="${esc(desc)}"'));
+/* 转义机制结构性断言：SEO 元数据只能在统一 SEOHead 组件内插值（Astro 对插值值做 HTML 转义，
+   与旧 esc() 字符串拼接等价；dist 级 P1/P2/P3 逐页校验仍是最终防线）。
+   迁移等价改写：旧断言读 Layout.astro 的 headSeo 拼接，现读 SEOHead.astro 的属性插值。 */
+const seoHeadSrc = readFileSync(join(ROOT, 'src/components/seo/SEOHead.astro'), 'utf8');
+const layoutSrc = readFileSync(join(ROOT, 'src/layouts/SiteLayout.astro'), 'utf8');
+R.check('P8 元数据插值走统一 SEOHead 组件（title/desc/canonical/og 单点插值输出）',
+  seoHeadSrc.includes('<title>{title}</title>')
+  && seoHeadSrc.includes('content={desc}')
+  && seoHeadSrc.includes('rel="canonical" href={SITE + pathname}')
+  && layoutSrc.includes('<SEOHead') && layoutSrc.includes('<JsonLd'));
 
 R.summary();

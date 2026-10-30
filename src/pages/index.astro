@@ -4,8 +4,10 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../components/Layout.astro';
-import { homeCmpHtml } from '../lib/render.mjs';
+import Layout from '../layouts/SiteLayout.astro';
+import { getSiteData } from '../lib/data';
+
+const { pairs } = await getSiteData();
 ---
 
 <Layout title={"Reflex Hub — 大模型 API 成本与模型选型工具"}
@@ -13,7 +15,6 @@ import { homeCmpHtml } from '../lib/render.mjs';
   canonicalPath="/"
   jsonld={[{"@context":"https://schema.org","@type":"WebSite","name":"Reflex Hub","url":"https://www.reflex-hub.com/","description":"免费估算大模型 API 调用成本，比较公开价格、上下文与模型能力边界，提供官方来源与核验日期"},{"@context":"https://schema.org","@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}]}
   active="home">
-  <Fragment slot="bodyend" set:html={"\n\n  <script src=\"assets/app.js\"></script>"} />
   <Fragment slot="head-meta" set:html={"<meta name=\"google-site-verification\" content=\"JQ9_MD6-aNd-7qfJzrbAqJKpE3BQ5B1gTESKeL1NcJM\" />\n  <meta name=\"msvalidate.01\" content=\"5F5169ADB9D64904031C0DE0469D339F\" />"} />
 
 <section class="hero">
@@ -42,8 +43,7 @@ import { homeCmpHtml } from '../lib/render.mjs';
       <a class="module-card active" href="compare/">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"/><line x1="5" y1="7" x2="19" y2="7"/><path d="M5 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><path d="M19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><line x1="8" y1="21" x2="16" y2="21"/></svg></div>
         <h3>模型对比</h3>
-        <p>两款模型价格与规格逐项对比，
-<Fragment set:html={homeCmpHtml()} />
+        <p>两款模型价格与规格逐项对比，{pairs.length} 组
 组合任选</p>
         <span class="go">立即使用 →</span>
       </a>

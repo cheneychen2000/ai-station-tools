@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-    <title>AI 大模型 API 成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub</title>
+  <title>AI 大模型 API 成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub</title>
   <meta name="description" content="输入日均调用量与 Token 用量，一键估算 DeepSeek、GLM、Kimi、Qwen、GPT、Claude、Gemini 等国内外大模型 API 的每月成本，支持错峰低谷价与缓存命中率加权，数据定期核验。">
+  
   <link rel="canonical" href="https://www.reflex-hub.com/cost/">
-  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/cost/">
-  <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
+  <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/cost/"><link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="AI大模型API成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub">
@@ -20,56 +20,50 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="../assets/style.css">
-    <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "AI大模型API成本计算器",
-    "url": "https://www.reflex-hub.com/cost/",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Web",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "CNY"
-    },
-    "description": "按厂商公开价目估算大模型 API 月成本，支持错峰低谷价与缓存命中率加权。"
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "这个计算器怎么算？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "月成本 = 日均调用次数 × 30 ×（单次输入Token数 ÷ 100万 × 输入有效单价 + 单次输出Token数 ÷ 100万 × 输出单价）。输入有效单价按缓存命中率加权：命中率 × 缓存命中价 +（1 - 命中率）× 未命中价；未公开缓存价的模型直接按未命中价计。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "DeepSeek 低谷价什么时候适用？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "DeepSeek 采用分时段定价，高峰时段为工作日 9:00-12:00 与 14:00-18:00，其余时段（夜间、凌晨、节假日全天）适用低谷价。低谷价约为高峰价的一半，把批量任务调度到低谷时段即可直接降本。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "缓存命中率是什么意思？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "缓存命中率指请求中命中上下文缓存的输入 Token 比例。命中部分按远低于标准价的缓存价计费，未命中部分按标准输入价计费。保持稳定的Prompt前缀（如固定系统提示词）可显著提高命中率，从而降低输入成本。"
-        }
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AI大模型API成本计算器",
+  "url": "https://www.reflex-hub.com/cost/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY"
+  },
+  "description": "按厂商公开价目估算大模型 API 月成本，支持错峰低谷价与缓存命中率加权。"
+}</script><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "这个计算器怎么算？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "月成本 = 日均调用次数 × 30 ×（单次输入Token数 ÷ 100万 × 输入有效单价 + 单次输出Token数 ÷ 100万 × 输出单价）。输入有效单价按缓存命中率加权：命中率 × 缓存命中价 +（1 - 命中率）× 未命中价；未公开缓存价的模型直接按未命中价计。"
       }
-    ]
-  }
-  </script>
-</head>
+    },
+    {
+      "@type": "Question",
+      "name": "DeepSeek 低谷价什么时候适用？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "DeepSeek 采用分时段定价，高峰时段为工作日 9:00-12:00 与 14:00-18:00，其余时段（夜间、凌晨、节假日全天）适用低谷价。低谷价约为高峰价的一半，把批量任务调度到低谷时段即可直接降本。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "缓存命中率是什么意思？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "缓存命中率指请求中命中上下文缓存的输入 Token 比例。命中部分按远低于标准价的缓存价计费，未命中部分按标准输入价计费。保持稳定的Prompt前缀（如固定系统提示词）可显著提高命中率，从而降低输入成本。"
+      }
+    }
+  ]
+}</script>
+<link rel="stylesheet" href="/_astro/global.DrAxsy5L.css"></head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
@@ -78,17 +72,12 @@
       <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteMenu" aria-label="打开导航菜单" data-label-open="打开导航菜单" data-label-close="关闭导航菜单"><span class="nav-toggle-icon" aria-hidden="true"></span></button>
       <nav class="site-nav" aria-label="主导航">
         <ul id="siteMenu">
-          <li><a href="../cost/" class="active" aria-current="page">成本计算器</a></li>
-          <li><a href="../models/">模型库</a></li>
-          <li><a href="../compare/">模型对比</a></li>
-          <li><a href="../guides/">开发指南</a></li>
-          <li><a href="../tools/">AI 工具目录</a></li>
-          <li><a href="../prompts/">Prompt 资源</a></li>
+          <li><a href="../cost/" class="active" aria-current="page">成本计算器</a></li><li><a href="../models/">模型库</a></li><li><a href="../compare/">模型对比</a></li><li><a href="../guides/">开发指南</a></li><li><a href="../tools/">AI 工具目录</a></li><li><a href="../prompts/">Prompt 资源</a></li>
           <li class="lang-switch-item">
             <div class="lang-switch-wrap">
-              <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="语言：中文，点击切换语言"><svg class="lang-ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1.9 8h12.2M8 1.9c1.7 1.8 2.5 3.9 2.5 6.1S9.7 12.3 8 14.1C6.3 12.3 5.5 10.2 5.5 8s.8-4.3 2.5-6.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="lang-cur">中文</span><svg class="lang-caret" viewBox="0 0 10 6" width="8" height="5" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="语言：中文，点击切换语言"><svg class="lang-ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"></circle><path d="M1.9 8h12.2M8 1.9c1.7 1.8 2.5 3.9 2.5 6.1S9.7 12.3 8 14.1C6.3 12.3 5.5 10.2 5.5 8s.8-4.3 2.5-6.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg><span class="lang-cur">中文</span><svg class="lang-caret" viewBox="0 0 10 6" width="8" height="5" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
               <ul class="lang-menu" id="langMenu" role="menu" aria-label="选择语言">
-                <li class="lang-opt is-current" role="none"><span class="lang-opt-cur" role="menuitemradio" aria-checked="true" aria-current="true" tabindex="-1"><svg class="lang-check" viewBox="0 0 12 10" width="11" height="10" aria-hidden="true" focusable="false"><path d="M1 5.2 4.2 8.3 11 1.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg><span>中文</span></span></li>
+                <li class="lang-opt is-current" role="none"><span class="lang-opt-cur" role="menuitemradio" aria-checked="true" aria-current="true" tabindex="-1"><svg class="lang-check" viewBox="0 0 12 10" width="11" height="10" aria-hidden="true" focusable="false"><path d="M1 5.2 4.2 8.3 11 1.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>中文</span></span></li>
                 <li class="lang-opt" role="none"><a class="lang-switch" href="/en/cost/" role="menuitemradio" aria-checked="false">English</a></li>
               </ul>
               <noscript><style>.lang-btn{display:none}.lang-menu{display:block;position:static;margin-top:6px;box-shadow:none}</style></noscript>
@@ -161,34 +150,180 @@
     <section class="panel">
       <h2>默认用量下的模型月成本参考</h2>
       <p class="s-hint">估算口径：日均调用 100 次 · 单次平均输入 2000 Token · 单次平均输出 800 Token · 错峰（低谷价）启用 · 缓存命中率 30% · 月度按 30 天估算 · 金额以人民币计。结果仅为估算，不构成采购建议。</p>
-      
+
       <div class="table-scroll">
-        <table class="spec wide">
-          <thead>
-            <tr><th>模型</th><th>厂商 / 渠道</th><th>输入价<br>（刊例原价/百万Token）</th><th>输出价<br>（刊例原价/百万Token）</th><th>缓存命中价</th><th>估算月成本（元）</th><th>核验日期</th><th>官方价格来源</th></tr>
-          </thead>
-          <tbody>
-          <tr><th><a href="../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th><td>DeepSeek</td><td class="num">高峰 ¥2<br>低谷 ¥1</td><td class="num">高峰 ¥8<br>低谷 ¥4</td><td class="num">高峰 ¥0.04<br>低谷 ¥0.02</td><td class="num">¥13.84</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a></td></tr>
-          <tr><th><a href="../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th><td>腾讯云原厂直供</td><td class="num">高峰 ¥9<br>低谷 ¥4.5</td><td class="num">高峰 ¥27<br>低谷 ¥13.5</td><td class="num">高峰 ¥0.3<br>低谷 ¥0.15</td><td class="num">¥51.57</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a></td></tr>
-          <tr><th><a href="../models/glm-53/">GLM-5.3</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥8</td><td class="num">¥28</td><td class="num">¥2</td><td class="num">¥104.40</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../models/glm-53-flash/">GLM-5.3-Flash</a></th><td>阿里云百炼·智谱直供</td><td class="num">¥0.8</td><td class="num">¥2.8</td><td class="num">¥0.23</td><td class="num">¥10.49</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../models/kimi-k3/">Kimi K3</a></th><td>阿里云百炼</td><td class="num">¥20</td><td class="num">¥100</td><td class="num">¥2</td><td class="num">¥327.60</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../models/qwen35-plus/">Qwen3.5-Plus</a></th><td>阿里云百炼（≤128K档）</td><td class="num">¥0.8</td><td class="num">¥4.8</td><td class="num">未公开</td><td class="num">¥16.32</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th><a href="../models/qwen37-plus/">Qwen3.7-Plus</a></th><td>阿里云百炼（≤256K档，原价）</td><td class="num">¥2</td><td class="num">¥8</td><td class="num">未公开</td><td class="num">¥31.20</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th><a href="../models/qwen38-flash/">Qwen3.8-Flash</a></th><td>阿里云百炼</td><td class="num">¥0.8</td><td class="num">¥2.7</td><td class="num">¥0.1</td><td class="num">¥10.02</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../models/hunyuan-turbos-vision/">混元 TurboS Vision</a></th><td>腾讯云</td><td class="num">¥3</td><td class="num">¥9</td><td class="num">未公开</td><td class="num">¥39.60</td><td class="num">2026-09-18</td><td><a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></td></tr>
-          <tr><th><a href="../models/minimax-m3/">MiniMax M3</a></th><td>MiniMax 稀宇科技</td><td class="num">输入 ≤512K ¥2.1<br>输入 &gt;512K ¥4.2</td><td class="num">输入 ≤512K ¥8.4<br>输入 &gt;512K ¥16.8</td><td class="num">未公开</td><td class="num">¥32.76</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a></td></tr>
-          <tr><th><a href="../models/mimo-v25-pro/">小米 MiMo V2.5 Pro</a></th><td>阿里云百炼·小米（≤256K档）</td><td class="num">¥7</td><td class="num">¥21</td><td class="num">未公开</td><td class="num">¥92.40</td><td class="num">2026-09-18</td><td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td></tr>
-          <tr><th><a href="../models/step-37-flash/">Step 3.7 Flash</a></th><td>阿里云百炼·阶跃星辰</td><td class="num">¥1.35</td><td class="num">¥8.1</td><td class="num">¥0.27</td><td class="num">¥25.60</td><td class="num">2026-10-28</td><td><a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td></tr>
-          <tr><th><a href="../models/gpt-6-luna/">GPT-6 Luna</a></th><td>OpenAI</td><td class="num">输入 ≤272K $0.1<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">输入 ≤272K $0.5<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">$0.01</td><td class="num">约 ¥11.00</td><td class="num">2026-10-28</td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td></tr>
-          <tr><th><a href="../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th><td>OpenAI</td><td class="num">输入 ≤272K $2<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">输入 ≤272K $10<br>输入 &gt;272K（长上下文） 未公开</td><td class="num">$0.1</td><td class="num">约 ¥218.87</td><td class="num">2026-10-28</td><td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td></tr>
-          <tr><th><a href="../models/claude-haiku-5-5/">Claude Haiku 5.5</a></th><td>Anthropic</td><td class="num">提示 ≤100K $0.1<br>提示 &gt;100K $0.5</td><td class="num">提示 ≤100K $0.5<br>提示 &gt;100K $2.5</td><td class="num">$0.01</td><td class="num">约 ¥11.00</td><td class="num">2026-10-28</td><td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a></td></tr>
-          <tr><th><a href="../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th><td>Anthropic</td><td class="num">$2</td><td class="num">$10</td><td class="num">$0.1</td><td class="num">约 ¥218.87</td><td class="num">2026-10-28</td><td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a></td></tr>
-          <tr><th><a href="../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th><td>Google</td><td class="num">$0.25</td><td class="num">$1.5</td><td class="num">$0.025</td><td class="num">约 ¥31.54</td><td class="num">2026-10-28</td><td><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="s-hint" style="margin-top:8px">缓存价未公开的模型按未命中价计（不假设缓存折扣）；分时段模型按低谷价计（与上方"错峰"开关一致）；分档模型按示例输入 2000 Token 落入的档位计价。估算月成本列与下方交互计算器使用完全相同的公式、默认参数与参考汇率。美元为官方原始币种；估算月成本按中国外汇交易中心中间价（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算为人民币，仅供参考。两款模型逐项对比请用 <a href="../compare/">模型对比</a>。</p>
+  <table class="spec wide">
+    <thead>
+      <tr>
+        <th>模型</th>
+        <th>厂商 / 渠道</th>
+        <th>输入价<br>(刊例原价/百万Token)</th>
+        <th>输出价<br>(刊例原价/百万Token)</th>
+        <th>缓存命中价</th>
+        <th>估算月成本（元）</th>
+        <th>核验日期</th>
+        <th>官方价格来源</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          <th><a href="../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a></th>
+          <td>DeepSeek</td>
+          <td class="num">高峰 ¥2<br>低谷 ¥1</td>
+          <td class="num">高峰 ¥8<br>低谷 ¥4</td>
+          <td class="num">高峰 ¥0.04<br>低谷 ¥0.02</td>
+          <td class="num">¥13.84</td>
+          <td class="num">2026-09-18</td>
+          <td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a></td>
+        </tr><tr>
+          <th><a href="../models/deepseek-v4-pro/">DeepSeek V4 Pro 0813</a></th>
+          <td>腾讯云原厂直供</td>
+          <td class="num">高峰 ¥9<br>低谷 ¥4.5</td>
+          <td class="num">高峰 ¥27<br>低谷 ¥13.5</td>
+          <td class="num">高峰 ¥0.3<br>低谷 ¥0.15</td>
+          <td class="num">¥51.57</td>
+          <td class="num">2026-09-18</td>
+          <td><a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a></td>
+        </tr><tr>
+          <th><a href="../models/glm-53/">GLM-5.3</a></th>
+          <td>阿里云百炼·智谱直供</td>
+          <td class="num">¥8</td>
+          <td class="num">¥28</td>
+          <td class="num">¥2</td>
+          <td class="num">¥104.40</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td>
+        </tr><tr>
+          <th><a href="../models/glm-53-flash/">GLM-5.3-Flash</a></th>
+          <td>阿里云百炼·智谱直供</td>
+          <td class="num">¥0.8</td>
+          <td class="num">¥2.8</td>
+          <td class="num">¥0.23</td>
+          <td class="num">¥10.49</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a></td>
+        </tr><tr>
+          <th><a href="../models/kimi-k3/">Kimi K3</a></th>
+          <td>阿里云百炼</td>
+          <td class="num">¥20</td>
+          <td class="num">¥100</td>
+          <td class="num">¥2</td>
+          <td class="num">¥327.60</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a></td>
+        </tr><tr>
+          <th><a href="../models/qwen35-plus/">Qwen3.5-Plus</a></th>
+          <td>阿里云百炼（≤128K档）</td>
+          <td class="num">¥0.8</td>
+          <td class="num">¥4.8</td>
+          <td class="num">未公开</td>
+          <td class="num">¥16.32</td>
+          <td class="num">2026-09-18</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td>
+        </tr><tr>
+          <th><a href="../models/qwen37-plus/">Qwen3.7-Plus</a></th>
+          <td>阿里云百炼（≤256K档，原价）</td>
+          <td class="num">¥2</td>
+          <td class="num">¥8</td>
+          <td class="num">未公开</td>
+          <td class="num">¥31.20</td>
+          <td class="num">2026-09-18</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td>
+        </tr><tr>
+          <th><a href="../models/qwen38-flash/">Qwen3.8-Flash</a></th>
+          <td>阿里云百炼</td>
+          <td class="num">¥0.8</td>
+          <td class="num">¥2.7</td>
+          <td class="num">¥0.1</td>
+          <td class="num">¥10.02</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td>
+        </tr><tr>
+          <th><a href="../models/hunyuan-turbos-vision/">混元 TurboS Vision</a></th>
+          <td>腾讯云</td>
+          <td class="num">¥3</td>
+          <td class="num">¥9</td>
+          <td class="num">未公开</td>
+          <td class="num">¥39.60</td>
+          <td class="num">2026-09-18</td>
+          <td><a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a></td>
+        </tr><tr>
+          <th><a href="../models/minimax-m3/">MiniMax M3</a></th>
+          <td>MiniMax 稀宇科技</td>
+          <td class="num">输入 ≤512K ¥2.1<br>输入 &gt;512K ¥4.2</td>
+          <td class="num">输入 ≤512K ¥8.4<br>输入 &gt;512K ¥16.8</td>
+          <td class="num">未公开</td>
+          <td class="num">¥32.76</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a></td>
+        </tr><tr>
+          <th><a href="../models/mimo-v25-pro/">小米 MiMo V2.5 Pro</a></th>
+          <td>阿里云百炼·小米（≤256K档）</td>
+          <td class="num">¥7</td>
+          <td class="num">¥21</td>
+          <td class="num">未公开</td>
+          <td class="num">¥92.40</td>
+          <td class="num">2026-09-18</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a></td>
+        </tr><tr>
+          <th><a href="../models/step-37-flash/">Step 3.7 Flash</a></th>
+          <td>阿里云百炼·阶跃星辰</td>
+          <td class="num">¥1.35</td>
+          <td class="num">¥8.1</td>
+          <td class="num">¥0.27</td>
+          <td class="num">¥25.60</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a></td>
+        </tr><tr>
+          <th><a href="../models/gpt-6-luna/">GPT-6 Luna</a></th>
+          <td>OpenAI</td>
+          <td class="num">输入 ≤272K $0.1<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $0.5<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $0.01<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">约 ¥11.00</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td>
+        </tr><tr>
+          <th><a href="../models/gpt-6-1-sol/">GPT-6.1 Sol</a></th>
+          <td>OpenAI</td>
+          <td class="num">输入 ≤272K $2<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $10<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">输入 ≤272K $0.1<br>输入 &gt;272K（长上下文） 未公开</td>
+          <td class="num">约 ¥218.87</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a></td>
+        </tr><tr>
+          <th><a href="../models/claude-haiku-5-5/">Claude Haiku 5.5</a></th>
+          <td>Anthropic</td>
+          <td class="num">提示 ≤100K $0.1<br>提示 &gt;100K $0.5</td>
+          <td class="num">提示 ≤100K $0.5<br>提示 &gt;100K $2.5</td>
+          <td class="num">提示 ≤100K $0.01<br>提示 &gt;100K $0.05</td>
+          <td class="num">约 ¥11.00</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a></td>
+        </tr><tr>
+          <th><a href="../models/claude-sonnet-5-5/">Claude Sonnet 5.5</a></th>
+          <td>Anthropic</td>
+          <td class="num">$2</td>
+          <td class="num">$10</td>
+          <td class="num">$0.1</td>
+          <td class="num">约 ¥218.87</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a></td>
+        </tr><tr>
+          <th><a href="../models/gemini-3-1-flash-lite/">Gemini 3.1 Flash-Lite</a></th>
+          <td>Google</td>
+          <td class="num">$0.25</td>
+          <td class="num">$1.5</td>
+          <td class="num">$0.025</td>
+          <td class="num">约 ¥31.54</td>
+          <td class="num">2026-10-28</td>
+          <td><a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+<p class="s-hint" style="margin-top:8px">缓存价未公开的模型按未命中价计（不假设缓存折扣）；分时段模型按低谷价计（与上方"错峰"开关一致）；分档模型按示例输入 2000 Token 落入的档位计价。估算月成本列与下方交互计算器使用完全相同的公式、默认参数与参考汇率。美元为官方原始币种；估算月成本按中国外汇交易中心中间价（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算为人民币，仅供参考。两款模型逐项对比请用 <a href="../compare/">模型对比</a>。</p>
 
     </section>
 
@@ -202,18 +337,30 @@
         <p><strong>错峰（峰谷定价）</strong>：部分厂商（如 DeepSeek）分时段计价，高峰时段外（夜间、午间、周末与法定节假日全天）按约为高峰一半的低谷价计费。</p>
         <p><strong>计算公式</strong>：月成本 = 日均调用 × 30 天 ×（单次输入 Token ÷ 1,000,000 × 输入有效单价 + 单次输出 Token ÷ 1,000,000 × 输出单价），其中输入有效单价 = 命中率 × 缓存命中价 +（1 − 命中率）× 未命中价。价格单位为各厂商官方原币种（人民币或美元 / 百万 Token），跨币种比价时按参考汇率折算为人民币，折算值仅供参考。</p>
       </div>
-      
+
       <div class="table-scroll">
-        <table class="spec">
-          <tbody>
-            <tr><th>示例模型</th><td><a href="../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a>（DeepSeek，低谷价（错峰），数据核验 2026-09-18，<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">官方来源</a>）</td></tr>
-            <tr><th>输入有效单价</th><td class="num">输入有效单价 = 30% × ¥0.02（缓存命中）+ 70% × ¥1（未命中）= 0.71 元/百万 Token。</td></tr>
-            <tr><th>输入成本</th><td class="num">100 次 × 30 天 × (2000 ÷ 1,000,000) × 0.71 = ¥4.24</td></tr>
-            <tr><th>输出成本</th><td class="num">100 次 × 30 天 × (800 ÷ 1,000,000) × ¥4 = ¥9.60</td></tr>
-            <tr><th>估算月成本</th><td class="num"><strong>¥13.84</strong>（示例仅为固定假设下的估算，不构成采购建议）</td></tr>
-          </tbody>
-        </table>
-      </div>
+  <table class="spec">
+    <tbody>
+      <tr>
+        <th>示例模型</th>
+        <td>
+          <a href="../models/deepseek-v41-flash/">DeepSeek V4.1 Flash</a>
+          （DeepSeek，低谷价（错峰），数据核验 2026-09-18，<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">官方来源</a>）
+        </td>
+      </tr>
+      <tr><th>输入有效单价</th><td class="num">输入有效单价 = 30% × ¥0.02（缓存命中）+ 70% × ¥1（未命中）= 0.71 元/百万 Token。</td></tr>
+      <tr><th>输入成本</th><td class="num">100 次 × 30 天 × (2000 ÷ 1,000,000) × 0.71 = ¥4.24</td></tr>
+      <tr><th>输出成本</th><td class="num">100 次 × 30 天 × (800 ÷ 1,000,000) × ¥4 = ¥9.60</td></tr>
+      <tr>
+        <th>估算月成本</th>
+        <td class="num">
+          <strong>¥13.84</strong>
+          （示例仅为固定假设下的估算，不构成采购建议）
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
       <p class="s-hint">不适用情形：估算基于上述固定假设，未计入免费额度、资源包、套餐折扣与限免活动；分档计价模型按页面标注档位估算；估算不等于服务商实际账单，不构成采购建议。</p>
     </section>
@@ -230,6 +377,7 @@
 
     <div class="sticky-summary" id="stickySummary" role="button" tabindex="0"></div>
     <div class="toast" id="toast"></div>
+    <script type="module" src="/_astro/index.astro_astro_type_script_index_0_lang.CvkA8cjg.js"></script>
 
   </main>
 
@@ -240,364 +388,18 @@
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
     <nav class="footer-nav" aria-label="页脚导航">
-    <p>核心工具：<a href="../cost/">成本计算器</a> · <a href="../models/">模型库</a> · <a href="../compare/">模型对比</a> · <a href="../guides/">开发指南</a> · <a href="../tools/">AI 工具目录</a> · <a href="../prompts/">Prompt 资源</a> · <a href="../quiz/">AI 认知测试</a> · <a href="../guides/">计算指南</a></p>
-    <p>站点信息：<a href="../about/">关于本站</a> · <a href="../pricing-methodology/">定价方法论</a> · <a href="../privacy/">隐私政策</a> · <a href="../affiliate-disclosure/">联盟推广披露</a> · <a href="../terms/">使用条款</a></p>
-    <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
-  </nav>
+      <p>核心工具：<a href="../cost/">成本计算器</a> · <a href="../models/">模型库</a> · <a href="../compare/">模型对比</a> · <a href="../guides/">开发指南</a> · <a href="../tools/">AI 工具目录</a> · <a href="../prompts/">Prompt 资源</a> · <a href="../quiz/">AI 认知测试</a> · <a href="../guides/">计算指南</a></p>
+      <p>站点信息：<a href="../about/">关于本站</a> · <a href="../pricing-methodology/">定价方法论</a> · <a href="../privacy/">隐私政策</a> · <a href="../affiliate-disclosure/">联盟推广披露</a> · <a href="../terms/">使用条款</a></p>
+      <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
+    </nav>
     <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
     </div>
   </footer>
 
+    <script>window.ASSETS_BASE = '../assets';</script>
+  <script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.BNhtZMoM.js"></script>
   
 
-  <script>
-    window.ASSETS_BASE = '../assets';
-  </script>
-  <script src="../assets/app.js"></script>
   <script src="../assets/cost-core.js"></script>
-  <script>
-  (function () {
-    var DEFAULT_SELECTED = ['deepseek-v41-flash', 'glm-53-flash', 'qwen35-plus', 'kimi-k3'];
-    var STORE_KEY = 'aih_cost_state_v1';
-    var Calc = window.CostCore; /* 公式唯一实现源：assets/cost-core.js（与 /en/cost/ 及 pricing.mjs 对拍一致） */
-
-    var state = {
-      selected: DEFAULT_SELECTED.slice(),
-      calls: 100,
-      inTok: 2000,
-      outTok: 800,
-      offpeak: true,
-      cacheHit: 30
-    };
-
-    var models = [];
-    var FX = { usdCny: null, rateDate: null }; /* 参考汇率：未核实不参与折算 */
-    function fxReady() { return typeof FX.usdCny === 'number' && FX.usdCny > 0 && !!FX.rateDate; }
-    function sym(m) { return (m.currency === 'USD') ? '$' : '¥'; }
-    function fmtCur(n, m) { return sym(m) + n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-    function toCny(m, v) { return (m.currency === 'USD') ? (fxReady() ? v * FX.usdCny : null) : v; }
-    function fmtCny(v) { return '¥' + v.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-    function fmtConv(m, v) {
-      var c = toCny(m, v);
-      if (c == null) return '参考汇率未核实，无法折算';
-      return (m.currency === 'USD') ? '约 ' + fmtCny(c) + '（按 ' + FX.rateDate + ' 中间价折算，仅供参考）' : fmtCny(c);
-    }
-
-    /* ---------- 状态持久化 ---------- */
-    function saveState() {
-      try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* 静默 */ }
-    }
-    function loadState() {
-      try {
-        var raw = localStorage.getItem(STORE_KEY);
-        if (!raw) return;
-        var s = JSON.parse(raw);
-        if (s && typeof s === 'object') {
-          if (Array.isArray(s.selected)) state.selected = s.selected;
-          ['calls', 'inTok', 'outTok', 'cacheHit'].forEach(function (k) {
-            if (typeof s[k] === 'number' && isFinite(s[k]) && s[k] >= 0) state[k] = s[k];
-          });
-          if (typeof s.offpeak === 'boolean') state.offpeak = s.offpeak;
-        }
-      } catch (e) { /* 静默 */ }
-    }
-    /* ?models=id1,id2 深链预勾选（优先级高于本地存储） */
-    function applyQueryModels() {
-      var m = /[?&]models=([a-z0-9,\-]+)/i.exec(location.search);
-      if (!m) return;
-      var ids = m[1].split(',').filter(Boolean);
-      if (ids.length) state.selected = ids;
-    }
-
-    /* ---------- 计算 ---------- */
-    /* 条件价档 / 有效单价 / 月成本：委托共享核心 CostCore（assets/cost-core.js），公式与英文版及 pricing.mjs 完全一致 */
-    function tierPrice(m, inTok) { return Calc.tierPrice(m, inTok); }
-    function effectiveInputPrice(m, hitRatio) {
-      return Calc.effectiveInputPrice(m, { offpeak: state.offpeak, inTok: state.inTok }, hitRatio);
-    }
-    function monthlyCost(m) {
-      var pr = effectiveInputPrice(m, state.cacheHit / 100);
-      if (!pr) return null;
-      return Calc.monthlyCost(pr, state.calls, state.inTok, state.outTok);
-    }
-    function fmt(n) {
-      return '¥' + n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-    function fmtMult(n) {
-      return n.toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-    }
-
-    /* ---------- 渲染 ---------- */
-    var modelEls = {};
-    var collapsed = true;
-
-    function tagsHtml(m) {
-      var t = '';
-      (m.modalities || []).forEach(function (x) { t += '<span class="tag tag-mod">' + x + '</span>'; });
-      (m.features || []).forEach(function (x) { t += '<span class="tag tag-feat">' + x + '</span>'; });
-      return t ? '<span class="m-tags">' + t + '</span>' : '';
-    }
-    function setSelected(id, on) {
-      var idx = state.selected.indexOf(id);
-      if (on && idx < 0) state.selected.push(id);
-      if (!on && idx >= 0) state.selected.splice(idx, 1);
-      var el = modelEls[id];
-      if (el) {
-        el.input.checked = on;
-        el.label.classList.toggle('checked', on);
-      }
-      renderChips();
-      onChange();
-    }
-    function renderChips() {
-      var box = document.getElementById('selChips');
-      box.innerHTML = '';
-      state.selected.forEach(function (id) {
-        var m = models.find(function (x) { return x.id === id; });
-        if (!m) return;
-        var chip = document.createElement('span');
-        chip.className = 'sel-chip';
-        chip.innerHTML = m.name + '<button type="button" aria-label="移除 ' + m.name + '">×</button>';
-        chip.querySelector('button').addEventListener('click', function () { setSelected(id, false); });
-        box.appendChild(chip);
-      });
-      box.style.visibility = state.selected.length ? 'visible' : 'hidden';
-    }
-    function toggleGrid() {
-      collapsed = !collapsed;
-      document.getElementById('modelGrid').classList.toggle('collapsed', collapsed);
-      document.getElementById('btnToggleModels').textContent =
-        collapsed ? '展开全部 ' + models.length + ' 款 ▾' : '收起 ▴';
-    }
-    function renderModelGrid() {
-      var grid = document.getElementById('modelGrid');
-      grid.innerHTML = '';
-      models.forEach(function (m) {
-        var label = document.createElement('label');
-        label.className = 'model-card' + (state.selected.indexOf(m.id) >= 0 ? ' checked' : '');
-        var s = sym(m);
-        var priceText = m.priceTiers
-          ? m.priceTiers.map(function (t) { return t.desc + (t.unverified ? ' 费率未公开' : ' 入' + s + t.priceIn + '/出' + s + t.priceOut); }).join('<br>')
-          : m.peakOffpeak
-            ? '高峰 入' + s + m.peakOffpeak.peakIn + '/出' + s + m.peakOffpeak.peakOut + '<br>低谷 入' + s + m.peakOffpeak.offIn + '/出' + s + m.peakOffpeak.offOut
-            : '输入 ' + s + m.priceIn + '<br>输出 ' + s + m.priceOut;
-        label.innerHTML =
-          '<input type="checkbox" value="' + m.id + '"' + (state.selected.indexOf(m.id) >= 0 ? ' checked' : '') + '>' +
-          '<span class="m-info">' +
-            '<span class="m-name">' + m.name + (m.peakOffpeak ? '<span class="tag-peak">分时段</span>' : '') + '</span><br>' +
-            '<span class="m-vendor">' + m.vendor + '</span>' + tagsHtml(m) +
-          '</span>' +
-          '<span class="m-price num">' + priceText + '</span>';
-        label.querySelector('input').addEventListener('change', function (e) {
-          setSelected(e.target.value, e.target.checked);
-        });
-        modelEls[m.id] = { label: label, input: label.querySelector('input') };
-        grid.appendChild(label);
-      });
-      document.getElementById('btnToggleModels').textContent = '展开全部 ' + models.length + ' 款 ▾';
-      document.getElementById('btnToggleModels').addEventListener('click', toggleGrid);
-    }
-
-    function renderResults() {
-      var area = document.getElementById('resultArea');
-      var ss = document.getElementById('stickySummary');
-      var picked = models.filter(function (m) { return state.selected.indexOf(m.id) >= 0; });
-      if (!picked.length) {
-        area.innerHTML = '<p class="empty-hint">请至少选择一款模型</p>';
-        ss.classList.remove('show');
-        return;
-      }
-      var rows = picked.map(function (m) {
-        var c = monthlyCost(m);
-        return { model: m, total: c ? c.total : null, inCost: c ? c.inCost : null, outCost: c ? c.outCost : null, cny: c ? toCny(m, c.total) : null };
-      }).sort(function (a, b) {
-        if (a.cny == null && b.cny == null) return 0;
-        if (a.cny == null) return 1;
-        if (b.cny == null) return -1;
-        return a.cny - b.cny;
-      });
-
-      var okRows = rows.filter(function (r) { return r.cny != null; });
-      var min = okRows.length ? okRows[0].cny : null, max = okRows.length ? okRows[okRows.length - 1].cny : null;
-      var EPS = 0.005; /* 展示精度（0.01 元）内视为持平，不突出任何一方 */
-      var allTie = okRows.length > 1 && max - min < EPS;
-      var minCount = okRows.filter(function (r) { return r.cny - min < EPS; }).length;
-      var html = !okRows.length
-        ? '<div class="summary">所选模型的估算成本均无法折算（参考汇率未核实或档位费率未公开）</div>'
-        : allTie
-          ? '<div class="summary">所选 ' + okRows.length + ' 款模型在该用量下的估算月成本持平（展示精度内相同，均为 <span class="num">' + fmtCny(min) + '/月</span>）</div>'
-          : '<div class="summary">最省的是 <b>' + okRows[0].model.name + '</b>（<span class="num">' + fmtCny(min) + '/月</span>）' +
-            '，最贵的是 <b>' + okRows[okRows.length - 1].model.name + '</b>（<span class="num">' + fmtCny(max) + '/月</span>）' +
-            '，相差 <span class="num">' + fmtMult(max / min) + '</span> 倍（统一按人民币折算口径）</div>';
-
-      rows.forEach(function (r, i) {
-        var best = !allTie && r.cny != null && r.cny - min < EPS;
-        var tier = tierPrice(r.model, state.inTok);
-        var tierNote = tier && tier.desc ? '（' + tier.desc + ' 档费率）' : '';
-        var costMain = r.total == null
-          ? '该档位费率未公开，无法估算'
-          : fmtCur(r.total, r.model) + '<span style="font-size:13px;font-weight:400;color:var(--muted)">/月</span>';
-        html += '<div class="result-card' + (best ? ' best' : '') + '">' +
-          '<div class="r-head">' +
-            '<span class="r-name"><a class="r-name-link" href="../models/' + r.model.id + '/" title="查看 ' + r.model.name + ' 档案">' + r.model.name + '</a>' +
-              '<span class="r-vendor">' + r.model.vendor + '</span>' +
-              (best ? '<span class="badge-best">' + (minCount > 1 ? '并列最低' : '该用量下成本最低') + '</span>' : '') +
-              tagsHtml(r.model) +
-            '</span>' +
-            '<span class="r-cost num">' + costMain + '</span>' +
-          '</div>' +
-          '<div class="r-detail">' +
-            (r.total == null ? '<span>官方未公布该输入长度档位费率，不套用低档价格</span>' :
-            '<span>输入成本 <span class="num">' + fmtCur(r.inCost, r.model) + '</span></span>' +
-            '<span>输出成本 <span class="num">' + fmtCur(r.outCost, r.model) + '</span></span>') +
-            (r.cny != null && r.model.currency === 'USD' ? '<span class="r-mult">' + fmtConv(r.model, r.total) + '</span>' : '') +
-            (r.cny != null ? '<span class="r-mult">' + (best ? (minCount > 1 ? '并列最便宜' : '最便宜') : '为最低价的 <span class="num">' + fmtMult(r.cny / min) + '</span> 倍') + tierNote + '</span>' : '') +
-          '</div>' +
-        '</div>';
-      });
-
-      html += '<p class="methodology">方法论：低谷跑批 + 稳定前缀（提升缓存命中）是两类确定性降本手段；美元模型按参考汇率折算参与比价，折算值仅供参考。</p>';
-      html += '<p class="disclaimer">实际费用以厂商账单为准，本结果仅供预算参考。</p>';
-      html += '<div class="quiz-actions" style="margin-top:14px"><button type="button" class="btn btn-ghost" id="btnShareCalc">复制结果，分享给朋友</button></div>';
-      area.innerHTML = html;
-
-      var shareBtn = document.getElementById('btnShareCalc');
-      if (shareBtn) {
-        shareBtn.addEventListener('click', function () { shareResults(rows, min, max); });
-      }
-
-      ss.innerHTML = okRows.length
-        ? '<span>最省 <b>' + okRows[0].model.name + '</b> <span class="ss-num num">' + fmtCny(min) + '/月</span></span><span class="ss-go">查看明细 ↓</span>'
-        : '<span>所选模型暂无法折算估算</span>';
-      ss.classList.add('show');
-    }
-
-    /* ---------- 结果复制分享 ---------- */
-    function showToast(text) {
-      var t = document.getElementById('toast');
-      t.textContent = text;
-      t.classList.add('show');
-      clearTimeout(t._timer);
-      t._timer = setTimeout(function () { t.classList.remove('show'); }, 1600);
-    }
-    function copyText(text, done) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done); });
-      } else {
-        legacyCopy(text, done);
-      }
-    }
-    function legacyCopy(text, done) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); done(); } catch (e) { showToast('复制失败，请手动选择文本'); }
-      document.body.removeChild(ta);
-    }
-    function shareResults(rows, min, max) {
-      var okRows = rows.filter(function (r) { return r.cny != null; });
-      var EPS = 0.005;
-      var allTie = max - min < EPS;
-      var lines = ['【AI大模型 API 月成本估算】'];
-      lines.push('用量：日均 ' + state.calls + ' 次调用 · 单次输入 ' + state.inTok + ' / 输出 ' + state.outTok + ' Token · 错峰' + (state.offpeak ? '（低谷价）' : '（高峰价）') + ' · 缓存命中率 ' + state.cacheHit + '%');
-      rows.forEach(function (r, i) {
-        if (r.total == null) { lines.push((i + 1) + '. ' + r.model.name + '：档位费率未公开，无法估算'); return; }
-        lines.push((i + 1) + '. ' + r.model.name + ' ' + fmtCur(r.total, r.model) + '/月' + (r.model.currency === 'USD' ? '（' + fmtConv(r.model, r.total) + '）' : '') + (!allTie && r.cny != null && r.cny - min < EPS ? ' ← 该用量下成本最低' : ''));
-      });
-      if (!okRows.length) {
-        lines.push('所选模型均无法折算估算。');
-      } else if (allTie) {
-        lines.push('所选模型在该用量下估算月成本持平（' + fmtCny(min) + '/月）。');
-      } else {
-        lines.push('最省的是 ' + okRows[0].model.name + '，最贵的是 ' + okRows[okRows.length - 1].model.name + '，相差 ' + fmtMult(max / min) + ' 倍（人民币折算口径）。');
-      }
-      lines.push('测算：Reflex Hub reflex-hub.com/cost/（免费免注册）');
-      copyText(lines.join('\n'), function () {
-        showToast('已复制，去粘贴分享吧');
-        window.track('cost_share', { models: state.selected.slice() });
-      });
-    }
-
-    /* ---------- 变更与埋点 ---------- */
-    var trackTimer = null;
-    function onChange() {
-      saveState();
-      renderResults();
-      clearTimeout(trackTimer);
-      trackTimer = setTimeout(function () {
-        window.track('cost_calculate', {
-          models: state.selected.slice(),
-          peakOff: state.offpeak,
-          cacheHit: state.cacheHit
-        });
-      }, 1000);
-    }
-
-    function bindInputs() {
-      var calls = document.getElementById('inCalls');
-      var inTok = document.getElementById('inTokens');
-      var outTok = document.getElementById('outTokens');
-      var sw = document.getElementById('swOffpeak');
-      var rg = document.getElementById('rgCache');
-      var cacheVal = document.getElementById('cacheVal');
-
-      calls.value = state.calls;
-      inTok.value = state.inTok;
-      outTok.value = state.outTok;
-      sw.checked = state.offpeak;
-      rg.value = state.cacheHit;
-      cacheVal.textContent = state.cacheHit + '%';
-
-      function num(input, key) {
-        input.addEventListener('input', function () {
-          var v = parseFloat(input.value);
-          state[key] = (isFinite(v) && v >= 0) ? v : 0;
-          onChange();
-        });
-      }
-      num(calls, 'calls');
-      num(inTok, 'inTok');
-      num(outTok, 'outTok');
-      sw.addEventListener('change', function () { state.offpeak = sw.checked; onChange(); });
-      rg.addEventListener('input', function () {
-        state.cacheHit = parseInt(rg.value, 10) || 0;
-        cacheVal.textContent = state.cacheHit + '%';
-        onChange();
-      });
-    }
-
-    /* ---------- 启动 ---------- */
-    loadState();
-    Promise.all([
-      fetch('../assets/data/models.json').then(function (res) { return res.json(); }),
-      fetch('../assets/data/fx.json').then(function (res) { return res.json(); }).catch(function () { return null; })
-    ]).then(function (res) {
-      models = res[0];
-      var fx = res[1];
-      if (fx && fx.rates && fx.rates.USD_CNY && typeof fx.rates.USD_CNY.rate === 'number' && fx.rates.USD_CNY.rate > 0 && fx.rates.USD_CNY.rateDate) {
-        FX.usdCny = fx.rates.USD_CNY.rate;
-        FX.rateDate = fx.rates.USD_CNY.rateDate;
-      }
-      applyQueryModels();
-      state.selected = state.selected.filter(function (id) {
-        return models.some(function (m) { return m.id === id; });
-      });
-      renderModelGrid();
-      renderChips();
-      bindInputs();
-      var ss = document.getElementById('stickySummary');
-      ss.addEventListener('click', function () {
-        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-      renderResults();
-    }).catch(function () {
-      document.getElementById('resultArea').innerHTML =
-        '<p class="empty-hint">价格数据加载失败，请刷新重试</p>';
-    });
-  })();
-  </script>
 </body>
 </html>

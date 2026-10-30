@@ -4,8 +4,11 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../components/Layout.astro';
-import { guideExampleHtml } from '../../../lib/render.mjs';
+import Layout from '../../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../../lib/data';
+import GuideExample from '../../../components/guide/GuideExample.astro';
+
+const { models } = await getSiteData();
 ---
 
 <Layout title={"如何计算 LLM API 成本：输入/输出 Token、缓存与月度用量 | Reflex Hub"}
@@ -81,7 +84,7 @@ import { guideExampleHtml } from '../../../lib/render.mjs';
         <p>下面用一个数据完整（含公开缓存价）的真实模型演示全部步骤。所有取值来自本站唯一数据源 models.json，模型页附官方来源与核验日期：</p>
       </div>
       
-<Fragment set:html={guideExampleHtml()} />
+<GuideExample models={models} />
 
       <p class="s-hint">复算方法：把上表取值代入第三节公式即可手工验证；也可以到 <a href="../../cost/">成本计算器</a> 选中同一模型、使用相同参数（日均 100 次 · 输入 2000 · 输出 800 · 命中率 30%）对照结果。</p>
     </section>

@@ -4,8 +4,12 @@
  * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../../components/Layout.astro';
-import { pcompTableHtmlEn } from '../../../../lib/render.mjs';
+import Layout from '../../../../layouts/SiteLayout.astro';
+import AdSlot from '../../../../components/placements/AdSlot.astro';
+import { getSiteData } from '../../../../lib/data';
+import PricingCompareTable from '../../../../components/guide/PricingCompareTable.astro';
+
+const { models, fx } = await getSiteData();
 ---
 
 <Layout title={"LLM API Pricing Comparison | Reflex Hub"}
@@ -47,13 +51,12 @@ import { pcompTableHtmlEn } from '../../../../lib/render.mjs';
     <section class="panel">
       <h2>2. Whole-market cost table at identical usage</h2>
       
-<Fragment set:html={pcompTableHtmlEn()} />
+<PricingCompareTable models={models} fx={fx} en />
 
       <p class="s-hint">Unit prices are vendors' published list prices per 1M tokens; USD models keep their $ list price, and monthly costs are converted to CNY for ranking. Vendor price changes, rate movements or a different hit rate will reshuffle the ranking — plug your real parameters into the <a href="../../cost/">cost calculator</a> to reach your own conclusion.</p>
     </section>
 
-    <!-- ADSLOT:guide-mid:BEGIN -->
-      <!-- ADSLOT:guide-mid:END -->
+    <AdSlot name="guide-mid" />
     <section class="panel">
       <h2>3. How to read this table (four factual observations)</h2>
       <div style="font-size:14px;line-height:1.9">

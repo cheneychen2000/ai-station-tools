@@ -1,0 +1,23 @@
+---
+/**
+ * 联盟 CTA 位：安全闸（仅 status==='active' 且 referralUrl 有效且披露文案存在才输出内容），
+ * BEGIN/END 注释标记无条件保留（与 placement 状态机契约一致：标记永不丢失，激活配置后重建即出现）。
+ */
+import { getPartners } from '../../lib/data';
+import { affiliateCtaAllowed, partnerById } from '../../lib/placements/gates';
+import { esc } from '../../lib/utils/escape';
+
+interface Props { partnerId: string }
+const { partnerId } = Astro.props;
+
+const cta = affiliateCtaAllowed(partnerById(getPartners(), partnerId));
+const inner = cta
+  ? `
+      <div class="affiliate-cta">
+        <a class="btn btn-primary btn-s" href="${esc(cta.url)}" target="_blank" rel="sponsored nofollow noopener" data-affiliate="${esc(cta.partnerId)}">访问 ${esc(cta.name)} 官网 →</a>
+        <p class="aff-note">${esc(cta.disclosureText)}</p>
+      </div>`
+  : '';
+---
+
+<Fragment set:html={`<!-- AFFILIATE:${partnerId}:BEGIN -->${inner}\n      <!-- AFFILIATE:${partnerId}:END -->`} />

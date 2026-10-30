@@ -9,6 +9,8 @@ import { ROOT } from './lib/paths.mjs';
 const SCRIPTS = [
   ['build', 'scripts/build.mjs'],
   ['selftest', 'scripts/selftest.mjs'],
+  ['test-pricing', 'scripts/test-pricing.mjs'],
+  ['check-migrate', 'scripts/check-migrate.mjs'],
   ['check-seo-pages', 'scripts/check-seo-pages.mjs'],
   ['check-en-pages', 'scripts/check-en-pages.mjs'],
   ['check-i18n', 'scripts/check-i18n.mjs'],

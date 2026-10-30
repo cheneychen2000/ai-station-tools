@@ -3,11 +3,13 @@
  * 404 页面：独立布局（无页脚、无 app.js、自有内联样式），保持原始 URL `/404.html`。
  * Cloudflare Pages 以产物根目录的 404.html 作为未找到响应，行为与原站点一致。
  */
-import { SITE, BRAND } from '../lib/paths.mjs';
-import { routeMap } from '../lib/site.mjs';
-import { switchTarget } from '../lib/locales.mjs';
-import SiteHeader from '../components/SiteHeader.astro';
+import { BRAND } from '../lib/config';
+import { getSiteData } from '../lib/data';
+import { switchTarget } from '../lib/i18n/locales';
+import SiteHeader from '../components/common/SiteHeader.astro';
+import '../styles/global.css';
 
+const { routeMap } = await getSiteData();
 const switchHref = switchTarget(routeMap, '/404.html', 'en');
 ---
 
@@ -23,7 +25,6 @@ const switchHref = switchTarget(routeMap, '/404.html', 'en');
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="/assets/style.css">
   <style is:inline>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {

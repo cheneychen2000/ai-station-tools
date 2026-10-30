@@ -4,8 +4,12 @@
  * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
-import Layout from '../../../components/Layout.astro';
-import { pcompTableHtml } from '../../../lib/render.mjs';
+import Layout from '../../../layouts/SiteLayout.astro';
+import AdSlot from '../../../components/placements/AdSlot.astro';
+import { getSiteData } from '../../../lib/data';
+import PricingCompareTable from '../../../components/guide/PricingCompareTable.astro';
+
+const { models, fx } = await getSiteData();
 ---
 
 <Layout title={"大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub"}
@@ -46,15 +50,14 @@ import { pcompTableHtml } from '../../../lib/render.mjs';
     <section class="panel">
       <h2>二、同用量成本总表</h2>
       
-<Fragment set:html={pcompTableHtml()} />
+<PricingCompareTable models={models} fx={fx} />
 
       <p class="s-hint">表内单价为厂商公开刊例原价（每百万 Token），美元模型保留 $ 原价；估算月成本统一折算人民币用于排序。厂商调价、汇率变化或缓存命中率不同都会改变排名——把你的真实参数代入 <a href="../../cost/">成本计算器</a> 得到自己的结论。</p>
     </section>
 
     
 
-    <!-- ADSLOT:guide-mid:BEGIN -->
-      <!-- ADSLOT:guide-mid:END -->
+    <AdSlot name="guide-mid" />
     <section class="panel">
       <h2>三、怎么读这张表（四个事实性观察）</h2>
       <div style="font-size:14px;line-height:1.9">

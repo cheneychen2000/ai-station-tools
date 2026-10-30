@@ -1,0 +1,43 @@
+---
+/**
+ * SEOHead：统一封装 title / description / robots / canonical / hreflang / Open Graph。
+ * 全站每个页面的 head 元数据只经此组件输出，语义与迁移前字符串模板逐字一致
+ * （noindex 页面由调用方决定是否传入 hreflang，组件本身不加额外规则）。
+ */
+import { SITE, BRAND } from '../../lib/config';
+import type { Locale } from '../../lib/i18n/locales';
+
+interface Props {
+  title: string;
+  desc: string;
+  pathname: string;
+  robots?: string | null;
+  ogType?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  altPairs?: Array<{ lang: Locale; url: string }>;
+}
+
+const {
+  title,
+  desc,
+  pathname,
+  robots = null,
+  ogType = 'website',
+  ogTitle = title,
+  ogDescription = desc,
+  altPairs = []
+} = Astro.props;
+---
+
+<title>{title}</title>
+  <meta name="description" content={desc}>
+  {robots && <meta name="robots" content={robots}>}
+  <link rel="canonical" href={SITE + pathname}>
+  {altPairs.map((a) => <link rel="alternate" hreflang={a.lang} href={SITE + a.url} />)}
+  <meta property="og:type" content={ogType}>
+  <meta property="og:site_name" content={BRAND}>
+  <meta property="og:title" content={ogTitle}>
+  <meta property="og:description" content={ogDescription}>
+  <meta property="og:url" content={SITE + pathname}>
+  <meta property="og:image" content={`${SITE}/assets/og-cover.png`}>

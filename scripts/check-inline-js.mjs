@@ -15,6 +15,10 @@ function walk(dir) {
 
 let fail = 0, checked = 0;
 for (const p of walk(DIST)) {
+  /* _astro/ 是 Vite 打包产物（ES module，经 <script type=module> 加载）：
+     vm.Script 按经典脚本解析会误报 import 语句，故跳过——其语法由构建器保证。
+     页面内联经典脚本块与 public/assets 下的经典 JS 仍全量校验。 */
+  if (p.includes('_astro')) continue;
   const txt = readFileSync(p, 'utf8');
   const blocks = [];
   if (p.endsWith('.js')) {
