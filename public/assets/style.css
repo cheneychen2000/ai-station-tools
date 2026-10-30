@@ -63,6 +63,10 @@ a:hover { text-decoration: underline; }
    所以它横跨整个内容容器、与 Header 左右边缘对齐；没有面包屑的页面不输出该容器，
    因此也不会出现多余的分隔线或空白。 */
 .crumb-row {
+  /* margin-top 是必须的：英文导航项两行时链接高度（58px）会顶满 .topbar-row，
+     它的 2px active 下划线正好压在分隔线上（实测间距 0~0.1px）；留 6px 让两者分开。
+     中文导航项 44px < 行高 56px，本来就有 6px 余量，加了之后是 12px，同样自然。 */
+  margin-top: 6px;
   padding-top: 8px;
   padding-bottom: 10px;
   border-top: 1px solid var(--border);
