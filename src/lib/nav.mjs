@@ -47,6 +47,19 @@ const LANG_SWITCH_UI = {
   en: { current: 'English', other: '中文', aria: 'Language: English, click to switch', menu: 'Select language' }
 };
 
+/* ---------- 移动端汉堡按钮 ----------
+   ≤768px 时导航不再是"整行 + 横向滚动"，而是收起成按钮 + 纵向面板（面板即 <nav> 内的 <ul>，
+   id="siteMenu"，由 assets/app.js 的 navToggle() 控制 .is-open / aria-expanded）。
+   桌面端该按钮 display:none，不参与布局，也不改变既有的 space-between 排列。 */
+const NAV_TOGGLE_UI = {
+  zh: { open: '打开导航菜单', close: '关闭导航菜单' },
+  en: { open: 'Open navigation menu', close: 'Close navigation menu' }
+};
+
+function navToggleHtml(ui) {
+  return `<button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteMenu" aria-label="${esc(ui.open)}" data-label-open="${esc(ui.open)}" data-label-close="${esc(ui.close)}"><span class="nav-toggle-icon" aria-hidden="true"></span></button>`;
+}
+
 const ICON_GLOBE = '<svg class="lang-ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">'
   + '<circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.4"/>'
   + '<path d="M1.9 8h12.2M8 1.9c1.7 1.8 2.5 3.9 2.5 6.1S9.7 12.3 8 14.1C6.3 12.3 5.5 10.2 5.5 8s.8-4.3 2.5-6.1Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
@@ -89,8 +102,9 @@ export function navHeaderHtml(base, active = null, crumb = '', switchHref = null
     <div class="wrap topbar-row">
       <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
       <span class="crumb">${crumb}</span>` : ''}
+      ${navToggleHtml(NAV_TOGGLE_UI.zh)}
       <nav class="site-nav" aria-label="主导航">
-        <ul>
+        <ul id="siteMenu">
 ${items.join('\n')}
         </ul>
       </nav>
@@ -122,8 +136,9 @@ export function navHeaderHtmlEn(base, active = null, crumb = '', switchHref = nu
     <div class="wrap topbar-row">
       <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
       <span class="crumb">${crumb}</span>` : ''}
+      ${navToggleHtml(NAV_TOGGLE_UI.en)}
       <nav class="site-nav" aria-label="Main navigation">
-        <ul>
+        <ul id="siteMenu">
 ${lis.join('\n')}
         </ul>
       </nav>

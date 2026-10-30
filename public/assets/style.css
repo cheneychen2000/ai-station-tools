@@ -178,6 +178,52 @@ a:hover { text-decoration: underline; }
 .lang-opt.is-current .lang-opt-cur { color: var(--primary); font-weight: 600; cursor: default; }
 .lang-check { flex-shrink: 0; }
 
+/* ---------- 移动端汉堡按钮（桌面端 display:none，不参与布局） ----------
+   三条横线在展开时叠成叉；44×44 点击区，颜色/圆角沿用现有语言按钮的克制风格。 */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+  font-family: inherit;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+}
+.nav-toggle:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+.nav-toggle[aria-expanded="true"] { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+.nav-toggle-icon {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: background-color 0.15s;
+}
+.nav-toggle-icon::before,
+.nav-toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.18s, top 0.18s;
+}
+.nav-toggle-icon::before { top: -6px; }
+.nav-toggle-icon::after { top: 6px; }
+.nav-toggle[aria-expanded="true"] .nav-toggle-icon { background: transparent; }
+.nav-toggle[aria-expanded="true"] .nav-toggle-icon::before { top: 0; transform: rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-icon::after { top: 0; transform: rotate(-45deg); }
+
 /* 桌面端兜底：导航项确实放不下时换行，而不是把它裁进横向滚动区（被裁掉的会是最后几项，
    包括语言切换入口）。移动端（<720px）仍是"整行 + 横向滚动"。 */
 @media (min-width: 720px) {
@@ -194,14 +240,48 @@ a:hover { text-decoration: underline; }
   .lang-btn { font-size: 13px; padding: 0 7px; }
 }
 
-/* 移动端：Logo 缩小，导航整行换到第二行并横向滚动（Logo 行不受影响） */
-@media (max-width: 719px) {
+/* 移动端（≤768px）：顶部栏 = Logo + 汉堡按钮；导航收起为纵向面板，展开后一次看到全部入口。
+   这里是把"横向滚动"整体去掉（flex-direction: column + overflow: visible + white-space: normal），
+   不是用 overflow: hidden 把溢出裁掉；面板本身在文档流内向下推开内容，不会遮挡正文。 */
+@media (max-width: 768px) {
   .brand-logo { width: 130px; }
   .topbar-row { flex-wrap: wrap; row-gap: 0; }
-  .topbar-row .site-nav {
-    flex: 0 0 100%; /* 仅窄屏占满整行换行，桌面端不触发 */
+  .nav-toggle { display: inline-flex; margin-left: auto; }
+  .site-nav {
+    display: none;
+    flex: 0 0 100%; /* 仅窄屏占满整行，桌面端不触发 */
     border-top: 1px solid var(--border);
   }
+  .site-nav.is-open { display: block; }
+  .site-nav ul {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
+    overflow-x: visible; /* 取消移动端导航内部的横向滚动 */
+    overflow-y: visible;
+  }
+  .site-nav li { width: 100%; }
+  .site-nav li > a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 10px 2px;
+    font-size: 15px;
+    line-height: 1.4;
+    white-space: normal; /* 长标签自然换行，不再靠 nowrap 撑宽 */
+    border-bottom: 1px solid var(--border);
+  }
+  .site-nav li:last-child > a { border-bottom: 0; }
+  .site-nav .lang-switch-item { width: 100%; padding: 10px 0; }
+  .lang-switch-wrap { display: block; width: 100%; }
+  .lang-btn {
+    width: 100%;
+    justify-content: flex-start;
+    height: 44px;
+    padding: 0 12px;
+    font-size: 15px;
+  }
+  .lang-caret { margin-left: auto; }
 }
 
 /* 统一焦点样式（键盘可用性） */

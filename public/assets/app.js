@@ -184,3 +184,64 @@ window.CF_ANALYTICS_TOKEN = window.CF_ANALYTICS_TOKEN || '';
   window.addEventListener('resize', function () { if (isOpen) place(); });
   window.addEventListener('scroll', function () { if (isOpen) place(); }, true);
 })();
+
+/* 移动端导航（≤768px）：汉堡按钮展开/收起纵向导航面板（面板 = <nav> 内的 #siteMenu）。
+   与语言切换器是两个独立面板：
+   - Escape 用捕获阶段处理，先判断语言菜单是否开着——开着就交给它关，避免一次按键关两层；
+   - 点击外部同时收起两者；面板收起时也顺手收掉语言菜单，避免留下悬空面板；
+   - 桌面端按钮 display:none，这段逻辑不产生任何影响。 */
+(function navToggle() {
+  var btn = document.getElementById('navToggle');
+  var menu = document.getElementById('siteMenu');
+  var nav = menu && menu.closest ? menu.closest('.site-nav') : null;
+  if (!btn || !menu || !nav) return;
+  var langBtn = document.getElementById('langBtn');
+  var langMenu = document.getElementById('langMenu');
+  var openLabel = btn.getAttribute('data-label-open') || btn.getAttribute('aria-label') || 'menu';
+  var closeLabel = btn.getAttribute('data-label-close') || openLabel;
+
+  function isOpen() { return btn.getAttribute('aria-expanded') === 'true'; }
+  function setOpen(open) {
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? closeLabel : openLabel);
+    nav.classList.toggle('is-open', open);
+  }
+  function langOpen() { return !!(langMenu && langMenu.classList.contains('is-open')); }
+  function closeLang() {
+    if (!langMenu) return;
+    langMenu.classList.remove('is-open');
+    if (langBtn) langBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', function () {
+    var next = !isOpen();
+    setOpen(next);
+    if (!next) closeLang();
+  });
+
+  /* 点任意业务导航链接（含语言切换链接）后收起面板；语言按钮不是链接，不触发收起 */
+  menu.addEventListener('click', function (e) {
+    var link = e.target && e.target.closest ? e.target.closest('a') : null;
+    if (link) setOpen(false);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!isOpen()) return;
+    if (btn.contains(e.target) || menu.contains(e.target)) return;
+    setOpen(false);
+    closeLang();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' && e.key !== 'Esc') return;
+    if (!isOpen()) return;
+    if (langOpen()) return; /* 语言菜单开着：让语言切换器先处理这次 Escape */
+    setOpen(false);
+    btn.focus();
+  }, true);
+
+  /* 回到桌面宽度时复位，避免下次进移动端仍残留展开态 */
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && isOpen()) { setOpen(false); closeLang(); }
+  });
+})();

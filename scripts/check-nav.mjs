@@ -195,6 +195,45 @@ for (const file of pages) {
 R.check(`N16 语言切换器结构：${pages.length} 页均为"按钮 + role=menu 菜单 + 勾选当前语言 + 单一切换链接"`,
   langProblems.length === 0, langProblems.slice(0, 6).join(' | ') || '全部合规（zh 中文 / en English，含 noscript 兜底）');
 
+/* ---------- N17 移动端导航：≤768px 汉堡按钮 + 纵向面板，且不靠横向滚动 ----------
+   静态可查的部分：按钮唯一/aria 属性正确、aria-controls 指向真实 #siteMenu、
+   DOM 顺序为 品牌 → 按钮 → 导航、移动端断点里改成纵向排列并显式取消 overflow-x，
+   以及禁止用 html/body 的 overflow-x:hidden 掩盖溢出。（真实视口行为由浏览器测试覆盖） */
+const css = read('assets/style.css');
+const mobStart = css.indexOf('@media (max-width: 768px)');
+const mobBlock = mobStart >= 0 ? css.slice(mobStart, mobStart + 1800) : '';
+const mobProblems = [];
+if (mobStart < 0) mobProblems.push('CSS 缺少 @media (max-width: 768px) 断点');
+if (mobBlock && !/\.site-nav ul\s*\{[\s\S]{0,220}?flex-direction:\s*column/.test(mobBlock)) mobProblems.push('移动端导航未改为纵向排列');
+if (mobBlock && !/\.site-nav ul\s*\{[\s\S]{0,260}?overflow-x:\s*visible/.test(mobBlock)) mobProblems.push('移动端导航未取消 overflow-x 滚动');
+if (mobBlock && !/\.nav-toggle\s*\{[\s\S]{0,200}?display:\s*inline-flex/.test(mobBlock)) mobProblems.push('移动端未显示汉堡按钮');
+if (/html\s*\{[^}]*overflow-x:\s*hidden/.test(css) || /body\s*\{[^}]*overflow-x:\s*hidden/.test(css) || /html\s*,\s*body\s*\{[^}]*overflow-x:\s*hidden/.test(css)) {
+  mobProblems.push('禁止用 html/body 的 overflow-x:hidden 掩盖溢出');
+}
+R.check('N17a 移动端样式：≤768px 改为纵向导航面板、取消横向滚动、显示汉堡按钮，且无 overflow-x:hidden 掩盖',
+  mobProblems.length === 0, mobProblems.join(' | ') || '全部合规');
+
+const toggleProblems = [];
+for (const file of pages) {
+  const rel = relative(DIST, file).replace(/\\/g, '/');
+  const txt = readFileSync(file, 'utf8');
+  const isEn = rel.startsWith('en/');
+  const toggles = txt.match(/<button type="button" class="nav-toggle"[\s\S]*?<\/button>/g) || [];
+  if (toggles.length !== 1) { toggleProblems.push(`${rel}（nav-toggle ${toggles.length} 个）`); continue; }
+  const t = toggles[0];
+  for (const attr of ['id="navToggle"', 'aria-expanded="false"', 'aria-controls="siteMenu"', 'data-label-open=', 'data-label-close=']) {
+    if (!t.includes(attr)) toggleProblems.push(`${rel}（按钮缺 ${attr}）`);
+  }
+  const label = isEn ? 'Open navigation menu' : '打开导航菜单';
+  if (!t.includes(`aria-label="${label}"`)) toggleProblems.push(`${rel}（按钮 aria-label 不是 ${label}）`);
+  if (!txt.includes('<ul id="siteMenu">')) toggleProblems.push(`${rel}（缺 #siteMenu 容器）`);
+  const iToggle = txt.indexOf('class="nav-toggle"');
+  const iNav = txt.indexOf('<nav class="site-nav"');
+  if (iToggle < 0 || iNav < 0 || iToggle > iNav) toggleProblems.push(`${rel}（DOM 顺序不是 品牌→按钮→导航）`);
+}
+R.check(`N17b 移动端汉堡按钮：${pages.length} 页各 1 个，aria-controls 指向真实 #siteMenu，DOM 顺序为 品牌→按钮→导航`,
+  toggleProblems.length === 0, toggleProblems.slice(0, 6).join(' | ') || '全部合规（zh/en 文案各自正确）');
+
 /* N6 陈旧字符串：旧品牌与过时硬编码数量（历史报告不在扫描范围） */
 let stale = [];
 for (const file of pages) {
