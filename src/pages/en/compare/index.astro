@@ -1,0 +1,74 @@
+---
+/**
+ * 手写页（迁移自 en/compare/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+import { cmpStatsHtmlEn } from '../../../lib/render.mjs';
+---
+
+<Layout title={"Model Comparison - Two LLMs, Prices and Specs Side by Side | Reflex Hub"}
+  desc={"Pick any two mainstream LLMs and compare input/output/cache prices, time-based pricing, context windows, supported modalities and a fixed-assumption monthly cost, line by line. Every pairwise combination of the catalog has its own comparison page; cross-currency figures are converted at the reference rate and labeled."}
+  ogDescription={"Compare any two models line by line: prices, cache, time-based pricing, context, modalities and example monthly cost."}
+  canonicalPath="/en/compare/"
+  crumb={"/ Model Comparison"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>\n  <script src=\"../../assets/labels-en.js\"></script>\n  <script>\n  Promise.all([\n    fetch('../../assets/data/models.json').then(function (res) { return res.json(); }),\n    fetch('../../assets/data/compare-pairs.json').then(function (res) { return res.json(); })\n  ]).then(function (res) {\n    var models = res[0];\n    var L = window.EnLabels || { vendor: {} };\n    var pairSet = {};\n    (res[1].pairs || []).forEach(function (p) { pairSet[p[0] + '/' + p[1]] = true; });\n    var selA = document.getElementById('selA');\n    var selB = document.getElementById('selB');\n    models.forEach(function (m) {\n      var label = m.name + ' (' + (L.vendor[m.vendor] || m.vendor) + ')';\n      selA.add(new Option(label, m.id));\n      selB.add(new Option(label, m.id));\n    });\n    if (models.length > 1) selB.selectedIndex = 1;\n    var qa = /[?&]a=([a-z0-9\\-]+)/i.exec(location.search);\n    if (qa) selA.value = qa[1];\n\n    document.getElementById('btnGo').addEventListener('click', function () {\n      var a = selA.value, b = selB.value;\n      if (a === b) {\n        document.getElementById('cmpHint').textContent = 'Please choose two different models';\n        return;\n      }\n      var ids = [a, b].sort();\n      if (!pairSet[ids[0] + '/' + ids[1]]) {\n        document.getElementById('cmpHint').textContent = 'This pair has no comparison page yet (' + Object.keys(pairSet).length + ' pairs exist). Try the shortcuts above or the model library.';\n        return;\n      }\n      location.href = ids[0] + '/' + ids[1] + '/';\n    });\n  }).catch(function () {\n    document.getElementById('cmpHint').textContent = 'Failed to load model data — please refresh';\n  });\n  </script>"} />
+<section class="hero">
+      <h1>Model comparison</h1>
+      <p class="tagline">Two models, line by line — the winner is visible at a glance</p>
+    </section>
+
+    <p class="lede">
+      Select two LLMs to generate a line-by-line comparison: input/output/cache-hit prices, time-based pricing, context
+      windows, supported modalities and features, plus an example monthly cost using the exact formula of the
+      <a href="../cost/">cost calculator</a>. For a whole-market comparison at identical usage and how to read it, see the
+      <a href="../guides/llm-api-pricing-comparison/">pricing comparison guide</a>.
+    </p>
+
+    <section class="panel">
+      <div class="sel-compare">
+        <select id="selA" aria-label="Model A"></select>
+        <select id="selB" aria-label="Model B"></select>
+        <button class="btn btn-primary" id="btnGo" type="button">Compare</button>
+      </div>
+      <p class="s-hint" id="cmpHint" style="margin-top:10px"></p>
+    </section>
+
+    <section class="panel">
+      <h2>What each comparison fixes</h2>
+      <p style="font-size:14px;line-height:1.8">
+        Every pair compares: input price, output price, cache-hit price, time-based pricing rules, context window and
+        supported modalities, plus an example monthly cost identical to the
+        <a href="../cost/">cost calculator</a> (100 calls/day · 2,000 input / 800 output tokens per call · off-peak rates ·
+        30% cache hit rate). Prices are official published list prices (CNY or USD per 1M tokens; USD models are
+        converted to CNY at the reference rate for comparison — indicative only); models without a published cache price
+        use the miss price. The example monthly cost is an estimate at that fixed usage only — it is not a ranking of
+        capability, output quality or overall value, and does not constitute purchase advice.
+        Method and common mistakes: <a href="../guides/llm-api-cost/">How to calculate LLM API costs</a>.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Frequently compared pairs</h2>
+      <p style="font-size:14px;line-height:2">
+        · Budget lightweight tier: <a href="deepseek-v41-flash/glm-53-flash/">DeepSeek V4.1 Flash vs GLM-5.3-Flash</a>　<a href="deepseek-v41-flash/qwen38-flash/">DeepSeek V4.1 Flash vs Qwen3.8-Flash</a><br>
+        · Flagship reasoning: <a href="deepseek-v4-pro/glm-53/">DeepSeek V4 Pro vs GLM-5.3</a>　<a href="glm-53/kimi-k3/">GLM-5.3 vs Kimi K3</a><br>
+        · Long context: <a href="deepseek-v41-flash/kimi-k3/">DeepSeek V4.1 Flash vs Kimi K3</a>　<a href="kimi-k3/qwen38-flash/">Kimi K3 vs Qwen3.8-Flash</a><br>
+        · Same family, different tier: <a href="qwen35-plus/qwen37-plus/">Qwen3.5-Plus vs Qwen3.7-Plus</a>
+      </p>
+      <p style="font-size:14px;line-height:2;margin-top:10px">
+        · OpenAI, head to head: <a href="gpt-6-1-sol/gpt-6-luna/">GPT-6 Luna vs GPT-6.1 Sol</a><br>
+        · Anthropic, head to head: <a href="claude-haiku-5-5/claude-sonnet-5-5/">Claude Haiku 5.5 vs Claude Sonnet 5.5</a><br>
+        · Cross-vendor lightweight: <a href="glm-53-flash/gpt-6-luna/">GLM-5.3-Flash vs GPT-6 Luna</a>　<a href="claude-haiku-5-5/glm-53-flash/">Claude Haiku 5.5 vs GLM-5.3-Flash</a>　<a href="gemini-3-1-flash-lite/qwen38-flash/">Gemini 3.1 Flash-Lite vs Qwen3.8-Flash</a><br>
+        · Cross-vendor workhorse: <a href="deepseek-v4-pro/gpt-6-1-sol/">DeepSeek V4 Pro vs GPT-6.1 Sol</a>　<a href="claude-sonnet-5-5/deepseek-v4-pro/">Claude Sonnet 5.5 vs DeepSeek V4 Pro</a>
+      </p>
+      
+<Fragment set:html={cmpStatsHtmlEn()} />
+
+    </section>
+
+    <noscript>
+      <p class="empty-hint">The model selector requires JavaScript. You can also browse the <a href="../models/">model library</a> for per-model pricing and spec profiles, or estimate monthly costs in the <a href="../cost/">cost calculator</a>.</p>
+    </noscript>
+</Layout>

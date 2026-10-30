@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>大模型 API 月度成本案例：聊天机器人、RAG、编码 Agent | Reflex Hub</title>
+  
+    <title>大模型 API 月度成本案例：聊天机器人、RAG、编码 Agent | Reflex Hub</title>
   <meta name="description" content="三个真实业务场景（聊天机器人/客服、RAG 知识库问答、编码 Agent）的月度成本案例：明确 Token 用量、缓存命中率与错峰假设，用当前收录模型的官方刊例价逐款计算估算月成本并统一折算人民币。">
   <link rel="canonical" href="https://www.reflex-hub.com/guides/llm-api-cost-examples/">
-  <!-- HREFLANG_START -->
   <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/llm-api-cost-examples/">
   <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/llm-api-cost-examples/">
-      <!-- HREFLANG_END -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="大模型 API 月度成本案例：聊天机器人、RAG、编码 Agent | Reflex Hub">
@@ -22,7 +21,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="../../assets/style.css">
-  <script type="application/ld+json">
+    <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
@@ -30,8 +29,16 @@
     "inLanguage": "zh-CN",
     "datePublished": "2026-10-28",
     "dateModified": "2026-10-28",
-    "author": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" },
-    "publisher": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" }
+    "author": {
+      "@type": "Organization",
+      "name": "Reflex Hub",
+      "url": "https://www.reflex-hub.com/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Reflex Hub",
+      "url": "https://www.reflex-hub.com/"
+    }
   }
   </script>
   <script type="application/ld+json">
@@ -39,15 +46,29 @@
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.reflex-hub.com/" },
-      { "@type": "ListItem", "position": 2, "name": "指南", "item": "https://www.reflex-hub.com/guides/" },
-      { "@type": "ListItem", "position": 3, "name": "场景成本案例", "item": "https://www.reflex-hub.com/guides/llm-api-cost-examples/" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "首页",
+        "item": "https://www.reflex-hub.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "指南",
+        "item": "https://www.reflex-hub.com/guides/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "场景成本案例",
+        "item": "https://www.reflex-hub.com/guides/llm-api-cost-examples/"
+      }
     ]
   }
   </script>
 </head>
 <body>
-  <!-- NAV_START -->
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
@@ -66,10 +87,11 @@
       </nav>
     </div>
   </header>
-      <!-- NAV_END -->
 
   <main class="wrap" id="main">
-    <section class="hero">
+
+  
+<section class="hero">
       <h1>大模型 API 月度成本案例</h1>
       <p class="tagline">聊天机器人 · RAG 知识库 · 编码 Agent</p>
     </section>
@@ -95,7 +117,7 @@
     </section>
 
     <section class="panel">
-      <!-- CEX_SCENARIOS_START -->
+      
       <h2 id="scene-chat">场景一：聊天机器人 / 在线客服</h2>
       <p style="font-size:14px;line-height:1.9"><strong>场景假设</strong>：单轮输入含系统提示词与近期历史（约 1,200 Token），回复简短（约 300 Token）；客服类应用调用高频，取日均 2,000 次。系统提示词稳定，缓存命中率取 40%。成本结构：调用次数是被放大器，轻量低价档优势明显。</p>
       <p class="s-hint">计算假设：日均 2000 次 · 单次输入 1200 / 输出 300 Token · 缓存命中率 40% · 错峰低谷价 · 每月 30 天。月成本 = 调用 × 30 ×（输入 ÷ 1,000,000 × 有效输入价 + 输出 ÷ 1,000,000 × 输出单价）；分档模型按 1200 Token 自动选档，未公开费率的档位如实标注无法估算。</p>
@@ -183,13 +205,13 @@
           </tbody>
         </table>
       </div>
-      <!-- CEX_SCENARIOS_END -->
+
     </section>
 
     
 
-    <!-- ADSLOT:guide-mid:BEGIN -->
-      <!-- ADSLOT:guide-mid:END -->
+    
+      
     <section class="panel">
       <h2>二、场景间怎么对比（事实性观察）</h2>
       <div style="font-size:14px;line-height:1.9">
@@ -209,7 +231,7 @@
         观察同一口径下各模型估算月成本的变化。下表由构建脚本按同一公式生成——这不是行业调查或用户统计，
         而是<strong>演示"命中率"这一个变量对预算的影响量级</strong>的示例假设。
       </p>
-      <!-- CEX_SENSITIVITY_START -->
+      
       <div class="table-scroll">
         <table class="spec wide">
           <thead>
@@ -224,7 +246,7 @@
         </table>
       </div>
       <p class="s-hint">读表：缓存价越低的模型（如 DeepSeek V4.1 Flash 低谷缓存价 ¥0.02/百万），命中率提升带来的降幅越大；未公开缓存价的模型（如 MiniMax M3）输入按未命中价计，命中率变化不改变估算——这正是"先确认官方是否公开缓存价"的价值。美元模型保留 $ 原价并按参考汇率（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算。</p>
-      <!-- CEX_SENSITIVITY_END -->
+
     </section>
 
     <section class="panel">
@@ -249,12 +271,12 @@
         </p>
       </div>
     </section>
+
   </main>
 
   <footer>
     <div class="wrap" id="site-footer">
-      <!-- FOOTER_START -->
-    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+      <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
     <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
@@ -264,9 +286,10 @@
     <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
   </nav>
     <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
-      <!-- FOOTER_END -->
     </div>
   </footer>
+
+  
 
   <script>window.ASSETS_BASE = '../../assets';</script>
   <script src="../../assets/app.js"></script>

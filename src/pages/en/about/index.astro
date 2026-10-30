@@ -1,0 +1,83 @@
+---
+/**
+ * 手写页（迁移自 en/about/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+---
+
+<Layout title={"About Reflex Hub - Data Sources, Method and Independence | Reflex Hub"}
+  desc={"Reflex Hub is an independently maintained project of LLM API cost and model-selection tools: where the data comes from, how cost estimation works, our independence and commercial-relationship policy, privacy and feedback channels."}
+  ogDescription={"Data sources and verification, cost-estimation method, independence and commercial-relationship policy, privacy and feedback."}
+  canonicalPath="/en/about/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"About Reflex Hub","url":"https://www.reflex-hub.com/en/about/","inLanguage":"en","mainEntity":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/","description":"Independently maintained LLM API cost estimation and model comparison tools: cost calculator, model library, model comparison and more."}}]}
+  crumb={"/ About"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>About Reflex Hub</h1>
+      <p class="tagline">An independently maintained toolkit for AI developers</p>
+    </section>
+
+    <section class="panel">
+      <h2>What this site is</h2>
+      <p style="font-size:14px;line-height:1.8">
+        Reflex Hub is an independently maintained project of developer tools focused on LLM API cost estimation,
+        model-spec comparison and AI tool selection. We want developers to understand published model pricing,
+        the conditions behind cost calculations, and usage limits — with verifiable sources behind every decision.
+      </p>
+      <p style="font-size:14px;line-height:1.8;margin-top:8px">
+        The site currently offers: an <a href="../cost/">LLM API cost calculator</a>, a
+        <a href="../models/">model pricing &amp; spec library</a>, a
+        <a href="../compare/">model comparison tool</a>, an <a href="../tools/">AI tool directory</a>,
+        a <a href="../prompts/">prompt library</a> (Chinese prompts) and an
+        <a href="../quiz/">AI literacy rank test</a>. All tools are free and need no account.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Data sources and calculation method</h2>
+      <p style="font-size:14px;line-height:1.8">
+        · Model prices, specs and related product information reference vendors' public materials wherever possible; each record carries a source link and a verification date, as shown on the corresponding page;<br>
+        · The cost calculator estimates charges from call volume, input/output tokens, cache hit rate and billing assumptions; estimates do not equal a provider's actual invoice and do not constitute purchase advice;<br>
+        · Where a source cannot be verified or is not yet updated, the limitation is stated explicitly instead of presenting unknowns as facts; prices follow the vendors' official pages and may change;<br>
+        · The full data rules (billing units, tiers, reference rates, verification-date semantics, unknown-value handling) are documented in the <a href="../pricing-methodology/">pricing methodology</a>.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Independence and commercial relationships</h2>
+      <p style="font-size:14px;line-height:1.8">
+        Reflex Hub is an independent product and does not represent any model vendor or third-party tool provider.
+        Third-party names and trademarks (DeepSeek, GLM, Kimi, Qwen, etc.) belong to their respective owners;
+        this site is a third-party data compilation with no vendor affiliation.
+        If pages ever contain affiliate or sponsored links, the commercial relationship will be disclosed next to the
+        recommendation, and official information, verifiable data and editorial judgment will be kept distinct.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Privacy and usage</h2>
+      <p style="font-size:14px;line-height:1.8">
+        No account is required; every tool computes locally in your browser. Analytics (Cloudflare Web Analytics —
+        cookieless, no personally identifiable information) is currently not enabled on the pages; if it is ever enabled
+        in the deployment configuration, it will be used for anonymous traffic statistics only and this statement will
+        be updated. See the <a href="../privacy/">privacy policy</a> for local storage, third-party links and affiliate
+        handling, the <a href="../affiliate-disclosure/">affiliate disclosure</a> for promotion principles, and the
+        <a href="../terms/">terms of use</a> for usage limits.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Feedback and corrections</h2>
+      <p style="font-size:14px;line-height:1.8">
+        If you find an issue with a model price, spec, source link or calculation, please open a GitHub Issue:<br>
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">github.com/cheneychen2000/ai-station-tools/issues</a><br>
+        Please include the page URL, a concrete description and a verifiable official source. Do not submit API keys,
+        credentials or other sensitive information in public issues.
+      </p>
+      <p style="font-size:14px;line-height:1.8;margin-top:8px">
+        Reflex Hub is maintained with a focus on data accuracy, calculation transparency and practical value.
+      </p>
+    </section>
+</Layout>

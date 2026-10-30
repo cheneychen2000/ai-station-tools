@@ -1,0 +1,101 @@
+---
+/**
+ * 手写页（迁移自 guides/llm-api-cost-examples/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+import { cexScenariosHtml, cexSensitivityHtml } from '../../../lib/render.mjs';
+---
+
+<Layout title={"大模型 API 月度成本案例：聊天机器人、RAG、编码 Agent | Reflex Hub"}
+  desc={"三个真实业务场景（聊天机器人/客服、RAG 知识库问答、编码 Agent）的月度成本案例：明确 Token 用量、缓存命中率与错峰假设，用当前收录模型的官方刊例价逐款计算估算月成本并统一折算人民币。"}
+  ogDescription={"聊天机器人、RAG、编码 Agent 三个场景的月度成本案例：用量假设、公式与全模型估算表，数据可逐步核验。"}
+  ogType="article"
+  canonicalPath="/guides/llm-api-cost-examples/"
+  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"大模型 API 月度成本案例：聊天机器人、RAG、编码 Agent","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-28","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"},{"@type":"ListItem","position":3,"name":"场景成本案例","item":"https://www.reflex-hub.com/guides/llm-api-cost-examples/"}]}]}
+  active="guides"
+  crumb={"/ <a href=\"../../guides/\" style=\"color:inherit\">指南</a> / 场景成本案例"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>大模型 API 月度成本案例</h1>
+      <p class="tagline">聊天机器人 · RAG 知识库 · 编码 Agent</p>
+    </section>
+
+    <p class="lede">
+      <strong>问题</strong>：单价表看不出"我的业务一个月花多少钱"——成本由场景参数决定。
+      <strong>结论</strong>：同样的模型阵容，在三个典型场景下月成本结构完全不同——高频短交互（客服）看调用次数，
+      长上下文注入（RAG）看输入与缓存，长输出（编码 Agent）看输出单价。下面每个场景都给出明确的 Token 用量假设，
+      并用当前收录模型的官方刊例价逐款计算，你可以直接核对或替换参数。
+    </p>
+
+    <section class="panel">
+      <h2>一、估算方法（三个场景共用）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · 月成本 = 日均调用 × 30 天 ×（单次输入 ÷ 1,000,000 × 有效输入价 + 单次输出 ÷ 1,000,000 × 输出单价）；<br>
+          · 有效输入价 = 缓存命中率 × 缓存命中价 +（1 − 命中率）× 未命中价；官方未公开缓存价的模型按未命中价计；<br>
+          · 分时段模型按低谷价（错峰）口径；按输入长度分档的模型按场景的单次输入自动选档；<br>
+          · 美元模型保留 $ 原价，月成本按参考汇率折算人民币显示，折算仅供参考；<br>
+          · 公式逐步推导见 <a href="../llm-api-cost/">《如何计算 LLM API 成本》</a>。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      
+<Fragment set:html={cexScenariosHtml()} />
+
+    </section>
+
+    
+
+    <!-- ADSLOT:guide-mid:BEGIN -->
+      <!-- ADSLOT:guide-mid:END -->
+    <section class="panel">
+      <h2>二、场景间怎么对比（事实性观察）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>RAG 的账单在输入侧</strong>：单次 1 万 Token 的注入使输入项占月成本约 70%~90%，此时缓存命中价与命中率是决定性变量——把系统提示词与知识库前缀做成稳定前缀，命中部分按缓存价计费；<br>
+          · <strong>编码 Agent 的账单在输出侧</strong>：长补丁与解释推高输出 Token，输出单价权重上升；这类场景换"输出单价更低"的模型比换"输入便宜"的模型更有效；<br>
+          · <strong>客服场景的总成本被调用次数放大</strong>：单价最低的轻量档在高频调用下仍然便宜一个数量级，但前提是你的单次输入保持在低档区间内；<br>
+          · 三个场景的共性：分时段模型的低谷口径都可再砍半——可延后的任务（夜间批处理、异步 RAG 重建）移到低谷时段是确定性收益。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>三、敏感性示例：缓存命中率如何改变 RAG 账单</h2>
+      <p style="font-size:14px;line-height:1.9">
+        以场景二（RAG，日均 300 次、输入 10,000 / 输出 500 Token、错峰低谷价）为例，保持其余假设不变，只调整缓存命中率，
+        观察同一口径下各模型估算月成本的变化。下表由构建脚本按同一公式生成——这不是行业调查或用户统计，
+        而是<strong>演示"命中率"这一个变量对预算的影响量级</strong>的示例假设。
+      </p>
+      
+<Fragment set:html={cexSensitivityHtml()} />
+
+    </section>
+
+    <section class="panel">
+      <h2>四、数据来源与限制</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · 所有单价来自本站唯一数据源 models.json（官方刊例原价，逐条标注来源链接），核验日期见各表"核验日期"列；价格核验时间 ≠ 页面内容更新时间，仅核验而价格未变时不更新页面日期（见 <a href="../../pricing-methodology/">定价方法论</a>）；<br>
+          · 场景参数（调用次数、Token 量、命中率）是<strong>典型假设而非实测统计</strong>，用于演示计算结构；请用你自己的日志数据替换后重算；<br>
+          · 估算未计入免费额度、资源包、套餐折扣与限时活动，不等于实际账单；官方未公开费率的档位如实显示"无法估算"。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、下一步</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · 替换参数重算：<a href="../../cost/">成本计算器</a>（支持任意用量与命中率组合）；<br>
+          · 看固定假设下的全模型价差：<a href="../llm-api-pricing-comparison/">定价比较指南</a>；<br>
+          · 查模型完整档案与官方来源：<a href="../../models/">模型库</a>；两款候选用 <a href="../../compare/">模型对比</a>；<br>
+          · 回到 <a href="../">计算指南目录</a>。
+        </p>
+      </div>
+    </section>
+</Layout>

@@ -1,0 +1,29 @@
+---
+/**
+ * 中文模型详情页（/models/<id>/）：数据源 models.json，模板 modelDetail（与旧构建同一函数）。
+ */
+import Layout from '../../../components/Layout.astro';
+import { models } from '../../../lib/site.mjs';
+import { modelDetail } from '../../../lib/render.mjs';
+
+export function getStaticPaths() {
+  return models.map(m => ({ params: { id: m.id }, props: { id: m.id } }));
+}
+
+const m = models.find(x => x.id === Astro.props.id);
+if (!m) throw new Error(`model not found: ${Astro.props.id}`);
+const p = modelDetail(m);
+---
+
+<Layout
+  title={p.title}
+  desc={p.desc}
+  canonicalPath={p.canonicalPath}
+  robots={p.robots}
+  jsonld={p.jsonld}
+  active={p.active}
+  crumb={p.crumb}
+  inlineScript={p.inlineScript}
+>
+  <Fragment set:html={p.main} />
+</Layout>

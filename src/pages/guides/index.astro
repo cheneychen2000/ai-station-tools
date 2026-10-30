@@ -1,0 +1,79 @@
+---
+/**
+ * 手写页（迁移自 guides/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../components/Layout.astro';
+---
+
+<Layout title={"LLM API 成本与模型选型指南 | Reflex Hub"}
+  desc={"LLM API 成本与模型选型指南中心：API 成本计算原理与公式、国内外模型同用量定价比较、聊天机器人/RAG/编码 Agent 场景月成本案例；数据来自厂商官方刊例，可逐步复算。"}
+  ogDescription={"API 成本计算、模型定价比较与场景成本案例三篇已发布指南的聚合入口，数据可核验、可复算。"}
+  canonicalPath="/guides/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"LLM API 成本与模型选型指南","url":"https://www.reflex-hub.com/guides/","description":"LLM API 成本计算、模型定价比较与场景成本案例指南中心。"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"}]}]}
+  active="guides"
+  crumb={"/ 指南"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>LLM API 成本与模型选型指南</h1>
+      <p class="tagline">算得明白 · 比得公平 · 估得准</p>
+    </section>
+
+    <p class="lede">
+      三篇已发布指南共用同一份可核验的数据源（models.json）与同一套计算口径，从"会算"到"会比"再到"会估"：
+      公式与逐步算例见成本计算篇，固定假设下的全模型价差见定价比较篇，按业务场景代入参数见场景案例篇。
+    </p>
+
+    <h2 class="group-title">API 成本计算</h2>
+    <nav class="module-grid" aria-label="API 成本计算">
+      <a class="module-card active" href="llm-api-cost/">
+        <h3>如何计算 LLM API 成本</h3>
+        <p>输入/输出 Token、缓存读写与命中价、上下文长度分档、峰谷定价的处理、价格单位与多币种口径、月度用量假设与可复核算例，以及未知价格、跨厂商口径等常见误区。</p>
+        <span class="go">阅读指南 →</span>
+      </a>
+    </nav>
+
+    <h2 class="group-title">模型定价与对比</h2>
+    <nav class="module-grid" aria-label="模型定价与对比">
+      <a class="module-card active" href="llm-api-pricing-comparison/">
+        <h3>国内外模型定价比较</h3>
+        <p>同一用量假设下 17 款主流模型的估算月成本对比：官方原币单价、缓存价、上下文窗口与统一折算人民币排序，以及选型分析视角的读表方法。</p>
+        <span class="go">阅读指南 →</span>
+      </a>
+    </nav>
+
+    <h2 class="group-title">应用场景案例</h2>
+    <nav class="module-grid" aria-label="应用场景案例">
+      <a class="module-card active" href="llm-api-cost-examples/">
+        <h3>场景成本案例</h3>
+        <p>聊天机器人/客服、RAG 知识库问答、编码 Agent 三个场景的月度成本：明确标记的示例假设、逐款模型估算、缓存命中率敏感性与可替换参数重算。</p>
+        <span class="go">阅读指南 →</span>
+      </a>
+    </nav>
+
+    <h2 class="group-title">AI 自动化工作流</h2>
+    <nav class="module-grid" aria-label="AI 自动化工作流">
+      <a class="module-card active" href="make-llm-workflow/">
+        <h3>用 Make 搭建大模型自动化工作流</h3>
+        <p>触发器→模块→HTTP 调用模型 API 的五段架构、概念级步骤与失败处理；附按官方刊例价实算的每千次运行成本表与重试成本放大分析（文档研究，未实测）。</p>
+        <span class="go">阅读指南 →</span>
+      </a>
+      <a class="module-card active" href="workflow-automation-choose/">
+        <h3>Make、n8n 与自建 API 怎么选</h3>
+        <p>三种工作流方案的六维度决策框架：部署、数据驻留、成本结构、运维与锁定；两侧定价未核验如实标注，不预设任何产品获胜。</p>
+        <span class="go">阅读指南 →</span>
+      </a>
+    </nav>
+
+    <section class="panel">
+      <h2>配套工具与口径说明</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · <a href="../cost/">成本计算器</a>：代入你的真实用量，任意勾选模型并排估算；<br>
+          · <a href="../models/">模型库</a>：每款模型的价格档案与官方来源；<a href="../compare/">模型对比</a>：两款模型逐项比较；<br>
+          · <a href="../pricing-methodology/">定价方法论</a>：数据来源、计价单位、核验时间与未知值处理的完整规则。
+        </p>
+      </div>
+    </section>
+</Layout>

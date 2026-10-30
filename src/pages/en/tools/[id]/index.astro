@@ -1,0 +1,29 @@
+---
+/**
+ * 英文工具详情页（/en/tools/<id>/）：索引策略与中文页严格一致（noindex 原样保留，不放宽）。
+ */
+import Layout from '../../../../components/Layout.astro';
+import { tools } from '../../../../lib/site.mjs';
+import { toolDetailEn } from '../../../../lib/render.mjs';
+
+export function getStaticPaths() {
+  return tools.filter(t => !t.own).map(t => ({ params: { id: t.id }, props: { id: t.id } }));
+}
+
+const t = tools.find(x => x.id === Astro.props.id);
+if (!t) throw new Error(`tool not found: ${Astro.props.id}`);
+const p = toolDetailEn(t);
+---
+
+<Layout
+  title={p.title}
+  desc={p.desc}
+  canonicalPath={p.canonicalPath}
+  robots={p.robots}
+  jsonld={p.jsonld}
+  active={p.active}
+  crumb={p.crumb}
+  inlineScript={p.inlineScript}
+>
+  <Fragment set:html={p.main} />
+</Layout>

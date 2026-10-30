@@ -1,0 +1,87 @@
+---
+/**
+ * 手写页（迁移自 privacy/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../components/Layout.astro';
+---
+
+<Layout title={"隐私政策 | Reflex Hub"}
+  desc={"Reflex Hub 隐私政策：本站不注册、不收集个人信息，工具在浏览器本地完成计算；本地存储用途、访问统计启用状态、第三方链接与联盟处理方式说明。"}
+  ogDescription={"本站不注册、不收集个人信息；本地存储用途、统计启用状态、第三方链接与联盟处理方式。"}
+  canonicalPath="/privacy/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"隐私政策","url":"https://www.reflex-hub.com/privacy/","description":"Reflex Hub 隐私政策：数据收集、本地存储、访问统计与第三方链接说明。"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"隐私政策","item":"https://www.reflex-hub.com/privacy/"}]}]}
+  crumb={"/ 隐私政策"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>隐私政策</h1>
+      <p class="tagline">我们收集什么、不收集什么、统计功能处于什么状态</p>
+    </section>
+
+    <p class="lede">
+      Reflex Hub 是免注册的静态工具站。本页如实说明当前部署中真实存在的数据处理行为；
+      没有启用的服务不会被描述为已启用。最近更新：2026-10-28。
+    </p>
+
+    <section class="panel">
+      <h2>一、我们不收集的信息</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 本站没有账号体系，不索取微信授权、手机号、邮箱或任何个人资料；<br>
+        · 你在计算器中输入的调用量、Token 用量等参数全部在浏览器本地完成计算，不会上传到本站；<br>
+        · 本站不运行任何表单数据收集，也不出售数据（没有任何可出售的数据）。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>二、浏览器本地存储</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 为记住你的计算偏好（如已选模型、错峰开关、缓存命中率），计算器使用浏览器 localStorage 在<strong>你的设备本地</strong>保存设置，数据不出本机；<br>
+        · 你可以随时通过浏览器"清除站点数据"删除；清除后再次使用会回到默认参数；<br>
+        · 本站不使用 Cookie（没有任何服务端会话需要维持）。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>三、访问统计（当前状态：未启用）</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 我们计划使用 Cloudflare Web Analytics 做匿名访问统计（无 Cookie、不采集可识别个人的信息、不跨站追踪）；<br>
+        · <strong>当前部署中该功能未启用</strong>：页面未加载统计 beacon，你的访问不会被统计脚本记录；<br>
+        · 未来如在 Cloudflare 部署配置中启用，仅用于了解页面访问情况，且会在本页更新"启用状态"段落，不会另行弹窗索取同意（该统计本身不采集个人信息）。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>四、托管与服务器日志</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 本站托管于 Cloudflare Pages。作为托管与 CDN 服务商，Cloudflare 可能按其隐私政策处理标准的访问日志（如 IP 地址、访问时间、请求路径），用于安全与流量分发；<br>
+        · 本站没有自建后端、无法查看这些日志，也不将其用于任何用户分析。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>五、第三方链接</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 模型档案与工具页中的"官方来源""官网"链接会跳转到厂商或第三方工具网站；点击后你的访问受对方隐私政策约束，与本站无关；<br>
+        · 本站对外链不做跳转跟踪、不附加推广参数；GitHub Issues 反馈链接同样指向第三方站点。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>六、广告与联盟推广</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · <strong>当前状态：本站未接入任何广告</strong>——没有广告账户、没有 Publisher ID、不加载任何广告脚本（含 Google AdSense）、不生成 ads.txt、不使用广告 Cookie 或广告标识符；<br>
+        · 联盟推广同样为零：没有任何联盟链接，候选合作仅处于评估阶段，详见<a href="../affiliate-disclosure/">联盟推广披露</a>；<br>
+        · <strong>未来如接入 Google AdSense</strong>：广告可能使用 Cookie / 设备标识符进行频次控制与欺诈防护；如向欧洲经济区、英国或瑞士用户投放个性化广告，将按 Google 要求部署 Google 认证的同意管理工具（CMP）收集并传递同意信号——<strong>自制 Cookie 横幅不构成合规替代</strong>；启用前会在本页如实更新所使用的广告与测量技术清单；<br>
+        · 无论广告与否，模型价格数据仅来自厂商公开刊例，展示与排序不受商业关系影响。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>七、政策变更与反馈</h2>
+      <p style="font-size:14px;line-height:1.9">
+        本页内容随站点实际行为更新，更新时会在第一段标注日期。如有隐私相关问题，请通过
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub Issues</a> 反馈。
+      </p>
+    </section>
+</Layout>

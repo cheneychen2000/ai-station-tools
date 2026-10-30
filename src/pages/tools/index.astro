@@ -1,0 +1,34 @@
+---
+/**
+ * 手写页（迁移自 tools/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../components/Layout.astro';
+import { toolGroupsHtml } from '../../lib/render.mjs';
+import { pairs } from '../../lib/site.mjs';
+---
+
+<Layout title={"AI 工具库 - 主流 AI 工具盘点与直达 | Reflex Hub"}
+  desc={"对话、绘图、视频、编程、办公五大类主流 AI 工具盘点：收费模式、适用场景与官网直达，信息定期核验。"}
+  canonicalPath="/tools/"
+  active="tools"
+  crumb={"/ 工具库"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>\n  <script>\n  /* 卡片内容由 build.mjs 静态生成；此处仅保留与静态内容无关的点击埋点委托 */\n  document.addEventListener('click', function (e) {\n    var a = e.target.closest && e.target.closest('a[data-tool]');\n    if (a) window.track('tool_outbound', { id: a.getAttribute('data-tool') });\n  });\n  </script>"} />
+<section class="hero">
+      <h1>AI 工具库</h1>
+      <p class="tagline">按场景选对工具，比追新工具更重要</p>
+    </section>
+
+    <p class="lede">
+      顶部是本站自研的免费工具（成本计算器、模型库、对比器、段位测试、Prompt 库），下面按 对话 / 绘图 / 视频 / 编程 / 办公
+      五类收录主流外部 AI 工具，每款标注收费模式、适用场景与官网直达，信息定期核验。
+      把工具接入业务的实操教程与成本分析见 <a href="../guides/">开发指南</a>（含自动化工作流与场景成本案例）。
+    </p>
+
+    <div id="toolGroups">
+      
+<Fragment set:html={toolGroupsHtml(pairs.length)} />
+
+    </div>
+</Layout>

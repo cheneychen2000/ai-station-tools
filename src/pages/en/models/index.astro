@@ -1,0 +1,61 @@
+---
+/**
+ * 手写页（迁移自 en/models/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+import { modelCardsHtmlEn, modelToolbarMetaHtmlEn } from '../../../lib/render.mjs';
+---
+
+<Layout title={"AI Model Library — API Pricing, Context Windows and Specs | Reflex Hub"}
+  desc={"Browse LLM API pricing, context windows and supported modalities for major models. Official list prices in the original billing currency, with source links and verification dates."}
+  ogDescription={"Browse LLM API pricing, context windows and supported modalities for major models, with official sources and verification dates."}
+  canonicalPath="/en/models/"
+  jsonld={[{"@context":"https://schema.org","@type":"CollectionPage","name":"AI Model Library","url":"https://www.reflex-hub.com/en/models/","inLanguage":"en","description":"LLM API pricing, context windows and supported modalities with official sources and verification dates"}]}
+  active="model"
+  crumb={"/ Model Library"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>\n  <script src=\"../../assets/lib-filter.js\"></script>\n  <script>\n  /* 与中文模型库共用 assets/lib-filter.js（同一套筛选/排序逻辑），仅计数文案为英文 */\n  window.initLibFilter({ countText: function (visible, total) { return 'Showing ' + visible + ' of ' + total + ' models'; } });\n  </script>"} />
+<section class="hero">
+      <h1>AI model library</h1>
+      <p class="tagline">Prices · context windows · modalities · features — one profile per model</p>
+    </section>
+
+    <p class="lede">
+      This library records API profiles of major LLMs (including internationally priced models in USD):
+      vendor, context window, supported modalities, input/output/cache-hit prices and verification dates,
+      each with a clickable source link. Open a card for the full model profile, estimate a monthly cost in the
+      <a href="../cost/">cost calculator</a>, or compare two models line by line in the
+      <a href="../compare/">model comparison</a>.
+      All prices are official published list prices in the vendor's original billing currency
+      (some models are tiered by input length as noted); the vendor's console prevails.
+    </p>
+
+    <div class="lib-toolbar" role="search" aria-label="Model filtering and sorting">
+      <input type="search" id="libSearch" placeholder="Search model name / ID / vendor" aria-label="Search model name, model ID or vendor">
+      <select id="libVendor" aria-label="Filter by vendor or channel"><option value="">All vendors / channels</option></select>
+      <select id="libCur" aria-label="Filter by billing currency">
+        <option value="">All currencies</option>
+        <option value="CNY">CNY (Chinese yuan)</option>
+        <option value="USD">USD (US dollar)</option>
+      </select>
+      <select id="libSort" aria-label="Sort order">
+        <option value="">Default order</option>
+        <option value="cost-asc">Est. monthly cost: low to high (CNY-converted)</option>
+        <option value="ctx-desc">Context window: largest first</option>
+        <option value="date-desc">Verification date: newest first</option>
+      </select>
+    </div>
+    
+<Fragment set:html={modelToolbarMetaHtmlEn()} />
+
+    <p class="lib-count" id="libCount" aria-live="polite"></p>
+
+    <div class="module-grid" id="modelList">
+      
+<Fragment set:html={modelCardsHtmlEn()} />
+
+    </div>
+
+    <p class="empty-hint" id="libEmpty" hidden>No matching models. Try a different keyword or adjust the filters.<br><button type="button" class="btn btn-ghost btn-s" id="libClear" style="margin-top:10px">Clear all filters</button></p>
+</Layout>

@@ -1,0 +1,147 @@
+---
+/**
+ * 手写页（迁移自 en/guides/workflow-automation-choose/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../../components/Layout.astro';
+---
+
+<Layout title={"Make, n8n or a Custom API: Choosing an AI Workflow Platform | Reflex Hub"}
+  desc={"A six-dimension decision framework for connecting LLMs to business processes: visual iPaaS (Make), self-hostable fair-code automation (n8n) or a custom API. Deployment, data residency, cost structure, operations and lock-in — with unverified pricing labeled as such and no product declared the winner."}
+  ogDescription={"A six-dimension decision framework; no product declared the winner."}
+  canonicalPath="/en/guides/workflow-automation-choose/"
+  crumb={"/ <a href=\"../../\" style=\"color:inherit\">Guides</a> / Choosing a platform"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../../assets';</script>\n  <script src=\"../../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>Make, n8n or a custom API: choosing an AI workflow platform</h1>
+      <p class="tagline">Deployment · control · cost structure · operations · lock-in</p>
+    </section>
+
+    <p class="lede">
+      <strong>The problem</strong>: to wire LLMs into business processes, should you pick a visual platform (Make), a
+      self-hostable open-source tool (n8n), or write your own integration? <strong>The short answer</strong>: all three
+      call the <strong>same model APIs at the same prices</strong> — the difference is not "AI cost" but deployment
+      shape, data boundary, platform fees and operational responsibility. This article gives a decision framework and
+      declares no product the winner.
+    </p>
+
+    <section class="panel">
+      <h2>1. What the three options are</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Make (cloud iPaaS)</strong>: a fully managed visual platform where a Scenario is a trigger plus a
+          sequence of modules; it offers a REST-style open API and a custom-app mechanism, and most administrative
+          endpoints require a paid subscription (see the
+          <a href="https://developers.make.com/api-documentation" target="_blank" rel="noopener">Make developer documentation</a>,
+          verified 2026-10-28);<br>
+          · <strong>n8n (fair-code automation tool)</strong>: defined in its official documentation as a "fair-code
+          licensed workflow automation tool"; you can install it yourself (the documentation lists Docker Compose and
+          other deployment options) or use its cloud service (see the
+          <a href="https://docs.n8n.io/" target="_blank" rel="noopener">n8n documentation</a>, verified 2026-10-28);<br>
+          · <strong>Custom API</strong>: orchestrate model calls directly in code (queue + functions + scheduled jobs),
+          with no platform layer — all the control and all the responsibility.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. A six-dimension comparison framework</h2>
+      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>Dimension</th><th>Make (cloud iPaaS)</th><th>n8n (fair-code / self-hostable)</th><th>Custom API</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>Deployment</th><td>Fully managed SaaS, zero ops</td><td>Self-hosted (Docker etc.) or official cloud</td><td>Your own environment, full control</td></tr>
+            <tr><th>Data residency</th><td>Data flows through platform servers</td><td>Data stays in your network when self-hosted</td><td>Data stays in your network</td></tr>
+            <tr><th>Time to first workflow</th><td>Fast: visual assembly</td><td>Fast: visual assembly</td><td>Slow: development and debugging</td></tr>
+            <tr><th>Customization ceiling</th><td>Limited by platform modules and API</td><td>Custom code nodes possible</td><td>Unlimited</td></tr>
+            <tr><th>Cost structure</th><td>Platform per operation + LLM API</td><td>Self-host = server cost / cloud = subscription + LLM API</td><td>Infrastructure only + LLM API</td></tr>
+            <tr><th>Operational burden</th><td>Borne by the platform</td><td>Self-host: yours (upgrades, availability)</td><td>Entirely yours</td></tr>
+            <tr><th>Vendor lock-in</th><td>High: workflow assets live on the platform</td><td>Medium: can migrate to self-hosting</td><td>Low</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">The table deliberately compares structure, not prices; both vendors' pricing was verified and appears in the next section. LLM API costs are identical across all three — estimate them on one basis with the <a href="../../cost/">cost calculator</a>.</p>
+    </section>
+
+    <section class="panel">
+      <h2>3. Platform pricing and billing units (verified 2026-10-28)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>Make (USD, page list prices)</strong>: Free $0/month (explicitly including 1,000 credits/month); Core $9 / Pro $16 / Teams $29 per month (these numbers are shown in a "Save 15%" context, and the page <strong>does not state whether they are monthly or annual billing</strong>; side-by-side monthly/annual pricing is not given); Enterprise is contact-sales. <strong>When credits run out</strong>: scenarios stop running; you can upgrade, buy add-ons (only 1,000/10,000 bundles at "a fixed price defined in the subscription" — the number is not public) or enable auto-purchase of 10,000 credits on Core/Pro/Teams; credits expire each cycle and do not roll over. <strong>What a credit counts</strong>: most module actions in a scenario count as 1 credit each (read/search/create/update/transform/aggregate/iterate all count); error handlers and Router modules do not; Make Code is billed separately at 2 credits/second; the vendor says a single scenario run consumes "from 2 credits to thousands". Source: <a href="https://www.make.com/en/pricing" target="_blank" rel="noopener">Make official pricing page</a> (second verification 2026-10-28).</p>
+        <p><strong>n8n (EUR, page list prices)</strong>: Starter €20/month (annual, includes 2,500 workflow executions/month); Pro €50/month (annual, 10,000 executions/month); Business €667/month (annual, 40,000 executions/month, <strong>self-hosted only</strong>); Community edition is free and self-hosted (via GitHub). <strong>What an execution counts</strong>: one execution = the whole workflow completing once, <strong>regardless of how many steps or how much data it processes</strong>. Source: <a href="https://n8n.io/pricing/" target="_blank" rel="noopener">n8n official pricing page</a>.</p>
+        <p class="s-hint"><strong>The two units are not interchangeable</strong>: one Make credit ≈ one module action, while one n8n execution = one full run (which may contain dozens of modules). Comparing "10,000 credits" with "10,000 executions" directly is wrong — the same flow can consume an order of magnitude differently on each platform. Items not published (not guessed): how many credits each Make paid tier includes, monthly billing prices and add-on bundle prices; n8n monthly billing prices, overage rates and the cloud Business launch date.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>4. Three cost layers and one example workflow</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>Three layers</strong>: ① platform subscription/usage (Make credits or n8n cloud executions; with self-hosting, ② infrastructure — servers and ops labor); ③ LLM API fees (<strong>identical across all three</strong> — see list prices in the <a href="../../models/">model library</a>). Compute the layers separately instead of asking "which total is lowest".</p>
+        <p><strong>Example workflow (illustrative assumptions, not measured statistics)</strong>: 500 runs/day of "form → AI tagging → write to sheet", each with one model call (2,000 input / 800 output tokens, 30% cache hit rate). 15,000 runs a month:</p>
+        <p>
+          · <strong>Make side</strong> (assuming 5 credits per run: trigger + fetch + trim + HTTP + write): 15,000 × 5 = <strong>75,000 credits/month</strong>. Included quotas per tier are not public, so no official plan combination can be priced — the following is a <strong>model estimate (not an official quote)</strong>: linear extrapolation at the publicly shown Pro unit price of $1.60 per 1,000 credits gives 75,000 × $1.60 ÷ 1,000 ≈ <strong>$120/month</strong>. Basis and limits: ① subscription-included quotas not counted (not public); ② the official path is "subscription + 1,000/10,000 add-on bundles" at non-public fixed prices, so linear extrapolation exceeds the official bundling rules; ③ the actual monthly fee must follow Make's official quote/console.<br>
+          · <strong>n8n cloud route</strong>: 1 run = 1 execution → 15,000 executions/month. Pro at €50/month (annual) includes only 10K, so it is exceeded; the vendor says over-quota usage <strong>does not stop service</strong>, but Starter/Pro overage rates are listed only as "Capped" with <strong>numbers not public</strong> — the exact cloud monthly fee <strong>cannot be determined from public pages</strong>; cloud Business is not yet available (waitlist only).<br>
+          · <strong>n8n self-hosting route</strong>: Business at €667/month annual (40K executions/month; the license key must connect to n8n's license server daily) + <strong>your own server and operations cost</strong> (sizing undecided, not estimated). Note €667 is a <strong>self-hosted</strong> plan price, not a cloud price — the two are not interchangeable.<br>
+          · <strong>LLM API side</strong> (identical for all three): at DeepSeek V4.1 Flash off-peak rates ≈ <strong>¥7/month</strong> (15,000 runs × ≈¥0.00046 per run; list-price estimate from models.json, verified 2026-10-28);<br>
+          · <strong>How to read it</strong>: at this volume, platform/infrastructure cost (tens to hundreds of USD, with the Make side estimable only) dwarfs the API fee (single-digit CNY) — optimize "flow complexity and run count" before obsessing over model unit prices. One order of magnitude smaller, Make's free tier (1,000 credits/month) or n8n's trial may be enough outright.
+        </p>
+        <p class="s-hint">Limitations (labeled item by item): 5 credits/run is an illustrative assumption (official range: 2 to thousands per run); Make's per-tier included quotas, add-on fixed prices and monthly billing prices are not public; n8n monthly billing prices and overage numbers are not public; self-hosting infrastructure is not estimated. These are worked examples from documentation research — not industry averages, not measured bills; pricing follows official sites, verified 2026-10-28.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>5. Choosing by scenario (including when not to choose)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Small team validating fast</strong>: a visual platform is quicker; prefer fully managed when business data is not sensitive (one less ops chore);<br>
+          · <strong>Data must not leave the intranet</strong>: self-hosted n8n or a custom API; neither hands business data to a third-party platform;<br>
+          · <strong>High volume with ops capability</strong>: self-hosting is usually cheapest overall (no per-operation fees), but rate limiting, retries, monitoring and alerting become your own job — they come built-in on platforms;<br>
+          · <strong>Flows change frequently</strong>: visual tools rewire links; custom APIs need code changes plus redeployment;<br>
+          · <strong>Not sure yet</strong>: trial at low volume on a platform and measure real token consumption (the architecture section of the <a href="../make-llm-workflow/">Make workflow cost guide</a> generalizes to all three options), then decide whether to migrate.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>6. An often-overlooked fact</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          Model APIs are the shared raw material of all three options, priced by the vendors (the list prices in this
+          site's models.json, each individually verifiable). What a platform decision should really compare: platform
+          fees, operations labor, data boundary and lock-in cost — not "which option gets cheaper model calls": none does.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>7. Affiliate status and data sources</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · Commercial relationship: Make's official affiliate program is in <strong>candidate evaluation</strong> on this
+          site — not applied for, not approved — and this article <strong>contains no promotional links</strong>; n8n and
+          the custom-API option have no commercial relationship with this site. If Make is ever approved, the CTA will
+          appear only near this section with the commission relationship disclosed, and conclusions will not change;<br>
+          · Sources: conceptual descriptions of n8n and Make quote their official documentation (verified 2026-10-28,
+          links above); both vendors' pricing was verified and unverified items are labeled;<br>
+          · This article is documentation research with no hands-on conclusions; no click or conversion data exists (this
+          site configures no such analytics).
+        </p>
+      </div>
+      <!-- AFFILIATE:make:BEGIN -->
+      <!-- AFFILIATE:make:END -->
+    </section>
+
+    <section class="panel">
+      <h2>8. Next steps</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · Estimate the shared LLM cost for all three options: <a href="../../cost/">cost calculator</a>;<br>
+          · Platform workflow cost structure: <a href="../make-llm-workflow/">Make workflow cost guide</a>;<br>
+          · Model prices and comparisons: <a href="../../models/">model library</a> / <a href="../../compare/">model comparison</a>;<br>
+          · Back to the <a href="../">guide directory</a>.
+        </p>
+      </div>
+    </section>
+</Layout>

@@ -1,0 +1,30 @@
+---
+/**
+ * 英文对比页（/en/compare/<a>/<b>/）：与中文页完全同一数据源、同一组合与同一公式，仅文案为英文。
+ */
+import Layout from '../../../../../components/Layout.astro';
+import { models, pairs } from '../../../../../lib/site.mjs';
+import { compareDetailEn } from '../../../../../lib/render.mjs';
+
+export function getStaticPaths() {
+  return pairs.map(([a, b]) => ({ params: { a, b }, props: { a, b } }));
+}
+
+const ma = models.find(x => x.id === Astro.props.a);
+const mb = models.find(x => x.id === Astro.props.b);
+if (!ma || !mb) throw new Error(`compare models not found: ${Astro.props.a}/${Astro.props.b}`);
+const p = compareDetailEn(ma, mb);
+---
+
+<Layout
+  title={p.title}
+  desc={p.desc}
+  canonicalPath={p.canonicalPath}
+  robots={p.robots}
+  jsonld={p.jsonld}
+  active={p.active}
+  crumb={p.crumb}
+  inlineScript={p.inlineScript}
+>
+  <Fragment set:html={p.main} />
+</Layout>

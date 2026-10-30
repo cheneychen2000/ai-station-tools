@@ -1,0 +1,57 @@
+---
+/**
+ * 手写页（迁移自 models/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../components/Layout.astro';
+import { modelCardsHtml, modelToolbarMetaHtml } from '../../lib/render.mjs';
+---
+
+<Layout title={"大模型库 - 国内外主流模型价格与参数档案 | Reflex Hub"}
+  desc={"国内外主流大模型的上下文窗口、支持模态、API 价格与特点档案（含美元官方原价与人民币折算），数据定期核验、来源可点击查验。"}
+  canonicalPath="/models/"
+  active="models"
+  crumb={"/ 模型库"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>\n  <script src=\"../assets/lib-filter.js\"></script>\n  <script>\n  /* 筛选/排序逻辑共享 assets/lib-filter.js（与 /en/models/ 同一份实现），仅计数文案随语言传入 */\n  window.initLibFilter();\n  </script>"} />
+<section class="hero">
+      <h1>大模型库</h1>
+      <p class="tagline">价格 · 上下文 · 模态 · 特点，一页一档</p>
+    </section>
+
+    <p class="lede">
+      本库收录国内外主流大模型（含美元定价的国际模型）的 API 档案：厂商、上下文窗口、支持模态、输入/输出/缓存命中价格与核验日期，
+      全部标注来源链接。点击卡片查看单模型完整档案，或用 <a href="../compare/">模型对比器</a> 两款逐项对比、
+      在 <a href="../cost/">成本计算器</a> 按你的实际用量估算月成本；计费规则与读表方法见
+      <a href="../guides/">开发指南</a>（含<a href="../guides/llm-api-pricing-comparison/">定价比较</a>与<a href="../guides/llm-api-cost-examples/">场景案例</a>）。
+      价格均为厂商公开刊例原价（部分模型按标注的输入长度档位），实际以官方页面与控制台为准；档案页注明每项数据的不确定性与使用限制。
+    </p>
+
+    <div class="lib-toolbar" role="search" aria-label="模型筛选与排序">
+      <input type="search" id="libSearch" placeholder="搜索模型名称 / ID / 厂商" aria-label="搜索模型名称、模型 ID 或厂商">
+      <select id="libVendor" aria-label="按厂商或渠道筛选"><option value="">全部厂商 / 渠道</option></select>
+      <select id="libCur" aria-label="按计价币种筛选">
+        <option value="">全部币种</option>
+        <option value="CNY">人民币（CNY）</option>
+        <option value="USD">美元（USD）</option>
+      </select>
+      <select id="libSort" aria-label="排序方式">
+        <option value="">默认排序</option>
+        <option value="cost-asc">估算月成本：低到高（人民币折算）</option>
+        <option value="ctx-desc">上下文窗口：大到小</option>
+        <option value="date-desc">核验日期：新到旧</option>
+      </select>
+    </div>
+    
+<Fragment set:html={modelToolbarMetaHtml()} />
+
+    <p class="lib-count" id="libCount" aria-live="polite"></p>
+
+    <div class="module-grid" id="modelList">
+      
+<Fragment set:html={modelCardsHtml()} />
+
+    </div>
+
+    <p class="empty-hint" id="libEmpty" hidden>没有匹配的模型，请调整关键词或筛选条件。<br><button type="button" class="btn btn-ghost btn-s" id="libClear" style="margin-top:10px">清除全部筛选</button></p>
+</Layout>

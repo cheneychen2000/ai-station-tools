@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本 | Reflex Hub</title>
+  
+    <title>用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本 | Reflex Hub</title>
   <meta name="description" content="用 Make 类 iPaaS 把重复性文本任务自动化：触发器→模块→HTTP 调用大模型 API 的架构与概念级步骤，并用已核验的模型价格计算每次/每千次运行的 API 成本，含重试成本放大分析与 Make、n8n、自建方案的衔接。">
   <link rel="canonical" href="https://www.reflex-hub.com/guides/make-llm-workflow/">
-  <!-- HREFLANG_START -->
   <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/guides/make-llm-workflow/">
   <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/guides/make-llm-workflow/">
-      <!-- HREFLANG_END -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="用 Make 搭建大模型 API 自动化工作流：架构、步骤与运行成本 | Reflex Hub">
@@ -22,7 +21,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="../../assets/style.css">
-  <script type="application/ld+json">
+    <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
@@ -30,8 +29,16 @@
     "inLanguage": "zh-CN",
     "datePublished": "2026-10-28",
     "dateModified": "2026-10-28",
-    "author": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" },
-    "publisher": { "@type": "Organization", "name": "Reflex Hub", "url": "https://www.reflex-hub.com/" }
+    "author": {
+      "@type": "Organization",
+      "name": "Reflex Hub",
+      "url": "https://www.reflex-hub.com/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Reflex Hub",
+      "url": "https://www.reflex-hub.com/"
+    }
   }
   </script>
   <script type="application/ld+json">
@@ -39,15 +46,29 @@
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://www.reflex-hub.com/" },
-      { "@type": "ListItem", "position": 2, "name": "指南", "item": "https://www.reflex-hub.com/guides/" },
-      { "@type": "ListItem", "position": 3, "name": "Make 工作流", "item": "https://www.reflex-hub.com/guides/make-llm-workflow/" }
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "首页",
+        "item": "https://www.reflex-hub.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "指南",
+        "item": "https://www.reflex-hub.com/guides/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Make 工作流",
+        "item": "https://www.reflex-hub.com/guides/make-llm-workflow/"
+      }
     ]
   }
   </script>
 </head>
 <body>
-  <!-- NAV_START -->
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
@@ -66,10 +87,11 @@
       </nav>
     </div>
   </header>
-      <!-- NAV_END -->
 
   <main class="wrap" id="main">
-    <section class="hero">
+
+  
+<section class="hero">
       <h1>用 Make 搭建大模型 API 自动化工作流</h1>
       <p class="tagline">架构 · 概念级步骤 · 每千次运行成本</p>
     </section>
@@ -116,7 +138,7 @@
         假设工作流每次运行调用 1 次模型（输入 2,000 / 输出 800 Token、缓存命中率 30%、错峰低谷价），
         下表为<strong>每 1,000 次运行的 LLM API 成本</strong>，由本站构建脚本按官方刊例价实算：
       </p>
-      <!-- WF_COST_START -->
+      
       <div class="table-scroll">
         <table class="spec wide">
           <thead>
@@ -131,7 +153,7 @@
         </table>
       </div>
       <p class="s-hint">口径：每次运行 = 1 次模型调用（输入 2,000 / 输出 800 Token · 缓存命中率 30% · 错峰低谷价）；美元模型按参考汇率（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算，仅供参考。每日运行 N 次的月成本 = 表中值 × N ÷ 1,000。官方未公开缓存价的模型按未命中价计。</p>
-      <!-- WF_COST_END -->
+
       <p class="s-hint">把"每次输入/输出 Token"换成你试运行统计到的真实值，到 <a href="../../cost/">成本计算器</a> 重算；注意这是 API 侧成本，平台侧按模块操作数计费的部分未包含在内（见下节）。</p>
     </section>
 
@@ -182,12 +204,12 @@
         </p>
       </div>
     </section>
+
   </main>
 
   <footer>
     <div class="wrap" id="site-footer">
-      <!-- FOOTER_START -->
-    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+      <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
     <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
@@ -197,9 +219,10 @@
     <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
   </nav>
     <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
-      <!-- FOOTER_END -->
     </div>
   </footer>
+
+  
 
   <script>window.ASSETS_BASE = '../../assets';</script>
   <script src="../../assets/app.js"></script>

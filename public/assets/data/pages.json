@@ -1,0 +1,23 @@
+{
+  "description": "手写页面的路由与内容元数据（sitemap lastmod 与双语路由映射的事实来源）。id/type/path 为中文路由；en 为该页真实存在的英文版本 URL（未翻译不得填写，禁止伪造）。contentUpdatedAt = 中文手写正文最后一次真实内容修改日期；enContentUpdatedAt = 英文版本内容日期。dependsOnModels / dependsOnTools 标记页面嵌入了数据驱动内容，lastmod 取手写日期与所依赖数据更新日的较大者。新增手写页面必须在此登记，否则不进入路由映射与 sitemap。",
+  "pages": [
+    { "id": "home", "type": "home", "path": "/", "en": "/en/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "cost", "type": "cost", "path": "/cost/", "en": "/en/cost/", "contentUpdatedAt": "2026-10-29", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "models", "type": "model-index", "path": "/models/", "en": "/en/models/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "compare", "type": "compare", "path": "/compare/", "en": "/en/compare/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "quiz", "type": "quiz", "path": "/quiz/", "en": "/en/quiz/", "contentUpdatedAt": "2026-09-19", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "tools", "type": "tools", "path": "/tools/", "en": "/en/tools/", "contentUpdatedAt": "2026-09-18", "enContentUpdatedAt": "2026-10-29", "dependsOnTools": true },
+    { "id": "prompts", "type": "prompts", "path": "/prompts/", "en": "/en/prompts/", "contentUpdatedAt": "2026-09-18", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "about", "type": "about", "path": "/about/", "en": "/en/about/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "guides", "type": "guides", "path": "/guides/", "en": "/en/guides/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "guide-llm-api-cost", "type": "guide", "path": "/guides/llm-api-cost/", "en": "/en/guides/llm-api-cost/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "guide-pricing-comparison", "type": "guide", "path": "/guides/llm-api-pricing-comparison/", "en": "/en/guides/llm-api-pricing-comparison/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "guide-cost-examples", "type": "guide", "path": "/guides/llm-api-cost-examples/", "en": "/en/guides/llm-api-cost-examples/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "guide-make-workflow", "type": "guide", "path": "/guides/make-llm-workflow/", "en": "/en/guides/make-llm-workflow/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29", "dependsOnModels": true },
+    { "id": "guide-workflow-choose", "type": "guide", "path": "/guides/workflow-automation-choose/", "en": "/en/guides/workflow-automation-choose/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "pricing-methodology", "type": "trust", "path": "/pricing-methodology/", "en": "/en/pricing-methodology/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "privacy", "type": "trust", "path": "/privacy/", "en": "/en/privacy/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "affiliate-disclosure", "type": "trust", "path": "/affiliate-disclosure/", "en": "/en/affiliate-disclosure/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" },
+    { "id": "terms", "type": "trust", "path": "/terms/", "en": "/en/terms/", "contentUpdatedAt": "2026-10-28", "enContentUpdatedAt": "2026-10-29" }
+  ]
+}

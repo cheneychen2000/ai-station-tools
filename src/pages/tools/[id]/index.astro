@@ -1,0 +1,30 @@
+---
+/**
+ * 中文工具详情页（/tools/<id>/）：仅第三方工具生成薄页（自研工具的"详情页"就是功能模块本身）。
+ * 索引策略严格继承 tools.json 的 indexable 布尔审核结论（11 个薄页 noindex,follow）。
+ */
+import Layout from '../../../components/Layout.astro';
+import { tools } from '../../../lib/site.mjs';
+import { toolDetail } from '../../../lib/render.mjs';
+
+export function getStaticPaths() {
+  return tools.filter(t => !t.own).map(t => ({ params: { id: t.id }, props: { id: t.id } }));
+}
+
+const t = tools.find(x => x.id === Astro.props.id);
+if (!t) throw new Error(`tool not found: ${Astro.props.id}`);
+const p = toolDetail(t);
+---
+
+<Layout
+  title={p.title}
+  desc={p.desc}
+  canonicalPath={p.canonicalPath}
+  robots={p.robots}
+  jsonld={p.jsonld}
+  active={p.active}
+  crumb={p.crumb}
+  inlineScript={p.inlineScript}
+>
+  <Fragment set:html={p.main} />
+</Layout>

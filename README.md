@@ -72,6 +72,28 @@ Reflex Hub 独立维护，不代表任何模型厂商或第三方工具供应商
 
 Reflex Hub 使用静态网页技术构建，并托管于 Cloudflare Pages。项目包含模型资料、互动计算工具和相关辅助资源。
 
+### 技术栈与本地开发
+
+站点使用 **Astro 7（静态输出）** 构建，页面为纯静态 HTML，交互仍是原生 JavaScript（不引入任何前端 UI 框架）。
+
+```bash
+npm ci              # 安装依赖（Node ≥ 22.23.4）
+npm run dev         # 本地预览（Astro dev server）
+npm run build       # 构建到 dist/（发布目录）
+npm run check       # 运行既有 17 个构建产物检查脚本
+npm run check:migrate  # 迁移回归：URL 集合、产物对拍、资产契约、交互验证
+```
+
+目录约定：
+
+- `src/pages/`：全部页面路由（手写页 + `[id]` 动态路由），`src/components/`：布局与页头页脚，`src/lib/`：数据、双语路由映射、文案字典、片段模板。
+- `src/integrations/post-build.mjs`：构建后统一生成 sitemap、浏览器端字典资产，并推进联盟/广告位占位状态机。
+- `public/`：原样承接 `assets/**`、`robots.txt`、`_headers`、favicon 等公开静态资源（URL 不变）。
+- `dist/`：构建输出（Cloudflare Pages 直接发布该目录，随源码一起提交）。
+- 模型价格、参数等事实数据只有一份：`public/assets/data/models.json`（构建期读取，同时作为公开 JSON 端点对外提供）。
+
+部署方式保持不变：Cloudflare Pages 采用 Git 集成发布，**提交前必须先 `npm run build`** 并让检查通过（发布目录 `dist/`）。
+
 仓库中的代码与网站部署内容并不等同于保密数据存储。不要将 API 密钥、账号凭证、私人合同或其他敏感信息提交到公开仓库或部署目录。
 
 如仓库提供明确的许可证，请以该许可证规定的使用权限为准。公开可查看代码本身不代表自动获得无限制的复制、修改和再分发授权。

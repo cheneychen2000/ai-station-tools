@@ -1,0 +1,36 @@
+---
+/**
+ * 手写页（迁移自 en/tools/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+import { toolGroupsHtmlEn } from '../../../lib/render.mjs';
+import { pairs } from '../../../lib/site.mjs';
+---
+
+<Layout title={"AI Tool Directory - Curated AI Tools by Scenario | Reflex Hub"}
+  desc={"Mainstream AI tools across chat, image, video, coding and office categories: pricing model, typical use cases and direct official-site links, plus Reflex Hub's own free tools (cost calculator, model library, comparison, quiz, prompt library). Information periodically verified."}
+  ogDescription={"Chat, image, video, coding and office AI tools with pricing models, use cases and official-site links, periodically verified."}
+  canonicalPath="/en/tools/"
+  crumb={"/ AI Tool Directory"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>AI tool directory</h1>
+      <p class="tagline">Picking the right tool for the scenario beats chasing every new release</p>
+    </section>
+
+    <p class="lede">
+      At the top are this site's own free tools (cost calculator, model library, comparison tool, rank test and prompt
+      library). Below, mainstream third-party AI tools are grouped into chat / image / video / coding / office categories,
+      each with its pricing model, typical use cases and a direct official-site link, verified periodically.
+      Hands-on guides for wiring tools into business workflows — including automation and cost analysis — are in the
+      <a href="../guides/">guides</a>.
+    </p>
+
+    <div id="toolGroups">
+      
+<Fragment set:html={toolGroupsHtmlEn(pairs.length)} />
+
+    </div>
+</Layout>

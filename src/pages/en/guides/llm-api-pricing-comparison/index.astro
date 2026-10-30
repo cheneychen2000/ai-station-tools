@@ -1,0 +1,92 @@
+---
+/**
+ * 手写页（迁移自 en/guides/llm-api-pricing-comparison/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../../components/Layout.astro';
+import { pcompTableHtmlEn } from '../../../../lib/render.mjs';
+---
+
+<Layout title={"LLM API Pricing Comparison | Reflex Hub"}
+  desc={"Estimated monthly costs of 17 mainstream LLMs under identical usage assumptions, ranked after CNY conversion: official list prices per 1M tokens in the original currency, cache prices, context windows and verification dates — reproducible from one data source."}
+  ogDescription={"Same usage assumptions, 17 models, CNY-converted ranking, reproducible numbers."}
+  canonicalPath="/en/guides/llm-api-pricing-comparison/"
+  crumb={"/ <a href=\"../../\" style=\"color:inherit\">Guides</a> / Pricing comparison"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../../assets';</script>\n  <script src=\"../../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>LLM API pricing comparison</h1>
+      <p class="tagline">Identical usage assumptions · 17 models · ranked after CNY conversion</p>
+    </section>
+
+    <p class="lede">
+      <strong>The problem</strong>: vendors quote different units, currencies and discount bases, so "which model is
+      cheaper" cannot be answered by reading the price lists side by side. <strong>The answer</strong>: fix the usage
+      assumptions and convert to one basis, and the estimated monthly costs of the current catalog spread from about
+      ¥10 to ¥300+ — tens of times apart. The low-price lightweight tier and the flagship long-document tier serve
+      completely different scenarios; the spread comes mainly from output prices, cache prices and time-based pricing,
+      not from "who discounts harder". Every number below is computed by the build script from this site's single data
+      source (models.json) and the reference rate (fx.json), and can be reproduced step by step.
+    </p>
+
+    <section class="panel">
+      <h2>1. Method (normalize the basis before comparing numbers)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Fixed usage</strong>: 100 calls/day · 2,000 input / 800 output tokens per call · 30-day month;<br>
+          · <strong>Off-peak basis</strong>: time-based models are priced at the off-peak rate (DeepSeek off-peak ≈ half of peak; peak window weekdays 9:00–12:00, 14:00–18:00);<br>
+          · <strong>Cache</strong>: 30% hit rate, effective input price = 30% × cache-hit price + 70% × miss price; models without a published cache price use the miss price;<br>
+          · <strong>Tiers</strong>: input-length-tiered models are priced at the tier a 2,000-token input falls into;<br>
+          · <strong>Currencies</strong>: unit prices keep the official currency (CNY or USD per 1M tokens); monthly costs are converted to CNY at the reference rate for ranking — indicative only;<br>
+          · Step-by-step derivation in <a href="../llm-api-cost/">How to calculate LLM API costs</a>; conventions in the <a href="../../pricing-methodology/">pricing methodology</a>.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Whole-market cost table at identical usage</h2>
+      
+<Fragment set:html={pcompTableHtmlEn()} />
+
+      <p class="s-hint">Unit prices are vendors' published list prices per 1M tokens; USD models keep their $ list price, and monthly costs are converted to CNY for ranking. Vendor price changes, rate movements or a different hit rate will reshuffle the ranking — plug your real parameters into the <a href="../../cost/">cost calculator</a> to reach your own conclusion.</p>
+    </section>
+
+    <!-- ADSLOT:guide-mid:BEGIN -->
+      <!-- ADSLOT:guide-mid:END -->
+    <section class="panel">
+      <h2>3. How to read this table (four factual observations)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Output price dominates the bill</strong>: at the example usage, output contributes about 55–65% of the monthly cost (800 output tokens × output price); comparing input prices alone systematically underestimates;<br>
+          · <strong>Cache prices differ by orders of magnitude</strong>: the two DeepSeek models' cache-hit prices (¥0.02/1M off-peak) are about 50× lower than their miss input price (¥1/1M off-peak) — at high hit rates, input cost approaches the cache price;<br>
+          · <strong>Off-peak half price is a predictable gain</strong>: time-based models are estimated at the off-peak rate; moving batch jobs off-peak halves the cost by billing rule, not by assumption;<br>
+          · <strong>Long-context tiers are never back-filled</strong>: GPT-6 series &gt;272K rates are unpublished, so estimates in that range show "cannot estimate" instead of borrowing the lower tier's price.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>4. Data sources and limitations</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · Data comes from this site's single source models.json; every record carries an official source link; verification dates appear in the table and on each model profile;<br>
+          · The footer aggregates all official sources; <strong>price-verification time ≠ page-content update time</strong>: re-verification without price changes does not update page or sitemap dates (methodology §6);<br>
+          · Cross-currency conversion uses the CFETS central parity rate (a static reference rate, not a trading rate);<br>
+          · Estimates exclude free tiers, resource packs, subscription discounts and limited-time promotions; they are not provider invoices and do not constitute purchase advice.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>5. Next steps</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · Recompute with your real usage: <a href="../../cost/">cost calculator</a> (any combination of models side by side);<br>
+          · Full pricing profile per model: <a href="../../models/">model library</a>;<br>
+          · Two candidates line by line: <a href="../../compare/">model comparison</a>, e.g. <a href="../../compare/glm-53-flash/gpt-6-luna/">GLM-5.3-Flash vs GPT-6 Luna</a> (cross-vendor lightweight);<br>
+          · Scenario-based monthly costs: <a href="../llm-api-cost-examples/">cost scenarios guide</a>;<br>
+          · Back to the <a href="../">guide directory</a>.
+        </p>
+      </div>
+    </section>
+</Layout>

@@ -1,0 +1,33 @@
+---
+/**
+ * 英文模型详情页（/en/models/<id>/）：白名单 = locales.mjs 的 EN_MODELS（未翻译不伪造 URL）。
+ * 事实字段与中文页同源 models.json，英文文案统一取自 i18n.mjs 字典。
+ */
+import Layout from '../../../../components/Layout.astro';
+import { models } from '../../../../lib/site.mjs';
+import { modelDetailEn } from '../../../../lib/render.mjs';
+import { EN_MODELS } from '../../../../lib/locales.mjs';
+
+export function getStaticPaths() {
+  return EN_MODELS
+    .filter(id => models.some(m => m.id === id))
+    .map(id => ({ params: { id }, props: { id } }));
+}
+
+const m = models.find(x => x.id === Astro.props.id);
+if (!m) throw new Error(`model not found: ${Astro.props.id}`);
+const p = modelDetailEn(m);
+---
+
+<Layout
+  title={p.title}
+  desc={p.desc}
+  canonicalPath={p.canonicalPath}
+  robots={p.robots}
+  jsonld={p.jsonld}
+  active={p.active}
+  crumb={p.crumb}
+  inlineScript={p.inlineScript}
+>
+  <Fragment set:html={p.main} />
+</Layout>

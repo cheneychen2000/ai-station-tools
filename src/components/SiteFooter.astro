@@ -1,0 +1,15 @@
+---
+/**
+ * 全站页脚：复用 src/lib/render.mjs 的 footerHtml / footerHtmlEn（合规文字必须存在于原始 HTML）。
+ * 与旧版一致：数据来源链接、最近核验日期、免责声明、页脚导航、版权行全部服务端静态输出。
+ */
+import { footerHtml, footerHtmlEn } from '../lib/render.mjs';
+
+interface Props {
+  base: string;
+  en?: boolean;
+}
+const { base, en = false } = Astro.props;
+const html = en ? footerHtmlEn(base) : footerHtml(base);
+---
+<Fragment set:html={html} />

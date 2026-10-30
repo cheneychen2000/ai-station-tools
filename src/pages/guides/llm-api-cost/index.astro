@@ -1,0 +1,146 @@
+---
+/**
+ * 手写页（迁移自 guides/llm-api-cost/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+import { guideExampleHtml } from '../../../lib/render.mjs';
+---
+
+<Layout title={"如何计算 LLM API 成本：输入/输出 Token、缓存与月度用量 | Reflex Hub"}
+  desc={"LLM API 成本计算原理与步骤：输入/输出 Token 分开计价、缓存命中价与峰谷定价的处理、月度用量假设与可复核算例，以及未知价格、跨厂商口径等常见误区。数据均标注官方来源与核验日期。"}
+  ogDescription={"LLM API 成本计算原理与步骤：输入/输出 Token 分开计价、缓存与峰谷定价处理、月度用量假设与可复核算例、常见误区。数据标注官方来源与核验日期。"}
+  ogType="article"
+  canonicalPath="/guides/llm-api-cost/"
+  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"如何计算 LLM API 成本：输入 Token、输出 Token、缓存与月度用量","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-28","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/llm-api-cost/"},{"@type":"ListItem","position":3,"name":"如何计算 LLM API 成本","item":"https://www.reflex-hub.com/guides/llm-api-cost/"}]}]}
+  active="guides"
+  crumb={"/ <a href=\"../../guides/\" style=\"color:inherit\">指南</a> / 成本计算"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>如何计算 LLM API 成本</h1>
+      <p class="tagline">输入 Token · 输出 Token · 缓存 · 月度用量</p>
+    </section>
+
+    <p class="lede">
+      <a href="../../cost/">成本计算器</a>帮你直接得出结果，本指南负责讲清背后的原理、计算步骤与常见误区，
+      让你拿到任何厂商的价目表都能自己复算。文中算例的数据全部来自 Reflex Hub 唯一数据源（models.json），
+      标注官方来源与核验日期，你可以逐步核对。本站整理与呈现价格数据的完整规则另见
+      <a href="../../pricing-methodology/">定价方法论</a>。
+    </p>
+
+    <section class="panel">
+      <h2>一、API 成本由什么决定</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>主流大模型 API 按 <strong>Token 用量</strong>计费，一个月度账单的构成可以拆成四项：</p>
+        <p>
+          · <strong>调用次数</strong>：每天发起多少次请求；<br>
+          · <strong>输入 Token</strong>：每次请求发送的内容量（系统提示词、历史对话、用户输入都算）；<br>
+          · <strong>输出 Token</strong>：模型每次生成的内容量；<br>
+          · <strong>单价</strong>：输入与输出各自按每百万 Token 计价，且价格不同；部分厂商还有缓存命中价与峰谷价。
+        </p>
+        <p><strong>适用范围</strong>：本文适用于按 Token 后付费的对话/推理类 API。订阅制套餐、按次计费（如部分生图/视频接口）、预留算力等模式不在本文公式范围内，需按各自计费文档计算。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>二、价格单位与多币种处理</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>价格一律以<strong>每百万 Token</strong>为计价单位，与厂商官方定价页一致。Token 是模型处理文本的最小单位：1 个汉字约 1~2 个 Token，1 个英文单词约 1 个 Token，具体以各厂商分词器为准。注意换算：厂商给出的是"每百万 Token 的价格"，单次请求的 Token 数通常远小于百万，计算时要先除以 1,000,000。</p>
+        <p><strong>原币种必须保留</strong>：国内厂商（DeepSeek、GLM、Kimi、Qwen、混元、MiniMax、MiMo、Step）以人民币（CNY）刊例，OpenAI / Anthropic / Google 的模型以美元（USD）刊例。比较与估算时美元价格按<strong>参考汇率</strong>（中国外汇交易中心人民币汇率中间价，标注汇率日期）折算人民币，折算值仅供参考——页面不会把 $ 原价伪装成 ¥，也不在不同币种的原始数字间直接比大小。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>三、计算公式</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>输入与输出<strong>分开计算再相加</strong>：</p>
+        <p>
+          · 输入成本 = 调用次数 × 单次输入 Token ÷ 1,000,000 × 输入单价<br>
+          · 输出成本 = 调用次数 × 单次输出 Token ÷ 1,000,000 × 输出单价<br>
+          · 总成本 = 输入成本 + 输出成本
+        </p>
+        <p>其中输入单价可能不是单一值：命中上下文缓存的部分按更低的<strong>缓存命中价</strong>计费，于是：</p>
+        <p>· 输入有效单价 = 缓存命中率 × 缓存命中价 +（1 − 缓存命中率）× 未命中价</p>
+        <p>分时段定价的模型（如 DeepSeek）还需先确定请求落在高峰还是低谷时段，两者单价不同。未公开缓存价的模型没有"缓存命中价"可用，只能按未命中价计—— unknown 不是 0。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>四、上下文长度分档</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>部分模型按<strong>单次输入长度</strong>分档计价：例如 MiniMax M3 输入 ≤512K 适用低档（输入 ¥2.1 / 输出 ¥8.4 每百万 Token），&gt;512K 跳到高档（¥4.2 / ¥16.8）；Claude Haiku 5.5 以提示词 ≤100K 为界分 0.1 / 0.5 美元两档。计算时要先用你的单次输入长度选对档位，再代入公式。</p>
+        <p><strong>未公开档位不补价</strong>：GPT-6 Luna 与 GPT-6.1 Sol 的 &gt;272K 长上下文档费率官方定价页未公布数值——该范围内估算必须如实返回"无法估算"，套用低档价格会得到偏低的虚假数字。本站计算器和对比页遇到未公开档位一律拒绝估算。</p>
+        <p>在你的单次输入不超过低档上限的常见业务里（多数对话、RAG、Agent 场景远低于 100K~512K），分档不影响结果；只有超长文档整本注入时才需要先检查档位边界。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、一个可复核的算例</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>下面用一个数据完整（含公开缓存价）的真实模型演示全部步骤。所有取值来自本站唯一数据源 models.json，模型页附官方来源与核验日期：</p>
+      </div>
+      
+<Fragment set:html={guideExampleHtml()} />
+
+      <p class="s-hint">复算方法：把上表取值代入第三节公式即可手工验证；也可以到 <a href="../../cost/">成本计算器</a> 选中同一模型、使用相同参数（日均 100 次 · 输入 2000 · 输出 800 · 命中率 30%）对照结果。</p>
+    </section>
+
+    <section class="panel">
+      <h2>六、缓存读写与峰谷价</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>缓存命中价</strong>：当请求的输入与历史请求有相同前缀时，厂商允许命中上下文缓存，命中部分按明显低于标准输入价的缓存价计费。保持稳定的系统提示词与文档前缀能提高命中率。只有官方公布了缓存命中价的模型才能享受这项折算；本站对未公开的模型一律按未命中价计，不假设存在缓存折扣。</p>
+        <p><strong>缓存写入费</strong>是另一项容易被忽略的计费项：部分厂商对"写入缓存"单独收费（如 GPT-6 Luna 30 分钟档 $0.125 / 百万 Token、Claude 系列 5 分钟档 $0.125 起）。写入费与缓存保留时长相关、和调用量假设耦合，本站示例月成本未计入，各模型档案页已单独注明。</p>
+        <p><strong>峰谷定价</strong>：以 DeepSeek 为例，高峰时段（工作日 9:00-12:00、14:00-18:00，北京时间）按标准价计费，其余时间（夜间、午间、周末与法定节假日全天）按约为高峰一半的低谷价计费。把可延后的批量任务调度到低谷时段，是确定性的降本手段。本站成本计算器与对比页的"示例月成本"统一按低谷价（错峰）口径计算，并在页面明示。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>七、从单次成本到月度估算</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>月度估算 = 日均调用次数 × 30 天 × 单次成本。三个假设需要你按真实业务取值：</p>
+        <p>
+          · <strong>调用次数</strong>：用日志统计日均请求量，而非峰值；<br>
+          · <strong>单次输入</strong>：把系统提示词、历史对话与本次输入一起估算——多轮对话场景下输入会随轮数增长；<br>
+          · <strong>单次输出</strong>：长文生成场景输出可能远超输入，而输出单价通常更高。
+        </p>
+        <p>本站对比页的"示例月成本"固定使用日均 100 次、单次输入 2000 / 输出 800 Token、错峰低谷价、缓存命中率 30% 的假设，只用于横向对比，不代表你的实际账单。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>八、常见误区</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>误区 1：输入输出同一个价</strong>。输出单价通常是输入的 2~4 倍，只按输入估价会严重低估；<br>
+          · <strong>误区 2：未知价格当 0</strong>。官方未公开缓存价不等于缓存免费，按 0 计算会得到虚假的低成本；<br>
+          · <strong>误区 3：跨厂商口径直接比数字</strong>。不同厂商的档位划分（按输入长度分档）、优惠策略（限时折扣、Token Plan）不同，比较时必须先统一口径：刊例原价、同档位、同用量假设；<br>
+          · <strong>误区 4：忽略输出占比</strong>。摘要、写作类应用输出 Token 常占大头，估算时输出项权重要上调；<br>
+          · <strong>误区 5：把估算当账单</strong>。免费额度、资源包、阶梯价格都会使实际账单低于刊例估算；反之超出免费额度后可能更高。估算只用于预算与选型对比。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>九、数据来源与核验</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          Reflex Hub 的模型价格与参数维护在唯一数据源 models.json 中，每条数据标注官方来源链接与"最后核验日期"（verifiedAt），页面页脚汇总全部来源。<strong>价格核验时间 ≠ 页面内容更新时间</strong>：仅重新核验而价格未变时，页面与 sitemap 的更新日期保持不变（完整时间语义见<a href="../../pricing-methodology/">定价方法论</a>）。本站尽可能逐项复核，但仍存在两类限制：一是官方未公布的数值（如个别模型的上下文窗口）只能标记未决，不会编造；二是价格会随厂商调整而变化，引用本文算例时请回到对应官方页面确认最新价格。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>十、下一步</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · 代入你的真实用量，用 <a href="../../cost/">成本计算器</a> 估算各模型月成本；<br>
+          · 查阅模型库收录各模型的价格与参数档案（<a href="../../models/">模型库</a>，示例模型见上表链接；美元定价模型示例见 <a href="../../models/gpt-6-luna/">GPT-6 Luna 档案</a>）；<br>
+          · 两款候选模型难以取舍时，用 <a href="../../compare/">模型对比</a> 做逐项比较，例如 <a href="../../compare/deepseek-v41-flash/glm-53-flash/">DeepSeek V4.1 Flash 对比 GLM-5.3-Flash</a> 或 <a href="../../compare/deepseek-v4-pro/kimi-k3/">DeepSeek V4 Pro 对比 Kimi K3</a>；<br>
+          · 想看固定用量下全部模型的横向价差，读 <a href="../llm-api-pricing-comparison/">定价比较指南</a>；<br>
+          · 想按业务场景（聊天机器人 / RAG / 编码 Agent）估算，读 <a href="../llm-api-cost-examples/">场景成本案例</a>；<br>
+          · 全部教程见 <a href="../">计算指南目录</a>。
+        </p>
+      </div>
+    </section>
+</Layout>

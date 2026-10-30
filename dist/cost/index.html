@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 大模型 API 成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub</title>
+  
+    <title>AI 大模型 API 成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub</title>
   <meta name="description" content="输入日均调用量与 Token 用量，一键估算 DeepSeek、GLM、Kimi、Qwen、GPT、Claude、Gemini 等国内外大模型 API 的每月成本，支持错峰低谷价与缓存命中率加权，数据定期核验。">
   <link rel="canonical" href="https://www.reflex-hub.com/cost/">
-  <!-- HREFLANG_START -->
   <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/cost/">
   <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
-      <!-- HREFLANG_END -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="AI大模型API成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub">
@@ -22,7 +21,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="../assets/style.css">
-  <script type="application/ld+json">
+    <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -30,7 +29,11 @@
     "url": "https://www.reflex-hub.com/cost/",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Web",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CNY"
+    },
     "description": "按厂商公开价目估算大模型 API 月成本，支持错峰低谷价与缓存命中率加权。"
   }
   </script>
@@ -68,7 +71,6 @@
   </script>
 </head>
 <body>
-  <!-- NAV_START -->
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
@@ -87,10 +89,11 @@
       </nav>
     </div>
   </header>
-      <!-- NAV_END -->
 
   <main class="wrap" id="main">
-    <section class="hero">
+
+  
+<section class="hero">
       <h1>AI 大模型 API 成本计算器</h1>
       <p class="tagline">国内外主流模型 · 错峰低谷价 · 缓存命中率加权 · 美元按中间价折算</p>
     </section>
@@ -148,7 +151,7 @@
     <section class="panel">
       <h2>默认用量下的模型月成本参考</h2>
       <p class="s-hint">估算口径：日均调用 100 次 · 单次平均输入 2000 Token · 单次平均输出 800 Token · 错峰（低谷价）启用 · 缓存命中率 30% · 月度按 30 天估算 · 金额以人民币计。结果仅为估算，不构成采购建议。</p>
-      <!-- COST_TABLE_START -->
+      
       <div class="table-scroll">
         <table class="spec wide">
           <thead>
@@ -176,7 +179,7 @@
         </table>
       </div>
       <p class="s-hint" style="margin-top:8px">缓存价未公开的模型按未命中价计（不假设缓存折扣）；分时段模型按低谷价计（与上方"错峰"开关一致）；分档模型按示例输入 2000 Token 落入的档位计价。估算月成本列与下方交互计算器使用完全相同的公式、默认参数与参考汇率。美元为官方原始币种；估算月成本按中国外汇交易中心中间价（1 USD = 6.718 CNY（中国外汇交易中心中间价 2026-10-23））折算为人民币，仅供参考。两款模型逐项对比请用 <a href="../compare/">模型对比</a>。</p>
-      <!-- COST_TABLE_END -->
+
     </section>
 
     <section id="resultArea" aria-live="polite"></section>
@@ -189,7 +192,7 @@
         <p><strong>错峰（峰谷定价）</strong>：部分厂商（如 DeepSeek）分时段计价，高峰时段外（夜间、午间、周末与法定节假日全天）按约为高峰一半的低谷价计费。</p>
         <p><strong>计算公式</strong>：月成本 = 日均调用 × 30 天 ×（单次输入 Token ÷ 1,000,000 × 输入有效单价 + 单次输出 Token ÷ 1,000,000 × 输出单价），其中输入有效单价 = 命中率 × 缓存命中价 +（1 − 命中率）× 未命中价。价格单位为各厂商官方原币种（人民币或美元 / 百万 Token），跨币种比价时按参考汇率折算为人民币，折算值仅供参考。</p>
       </div>
-      <!-- COST_EXAMPLE_START -->
+      
       <div class="table-scroll">
         <table class="spec">
           <tbody>
@@ -201,7 +204,7 @@
           </tbody>
         </table>
       </div>
-      <!-- COST_EXAMPLE_END -->
+
       <p class="s-hint">不适用情形：估算基于上述固定假设，未计入免费额度、资源包、套餐折扣与限免活动；分档计价模型按页面标注档位估算；估算不等于服务商实际账单，不构成采购建议。</p>
     </section>
 
@@ -222,8 +225,7 @@
 
   <footer>
     <div class="wrap" id="site-footer">
-      <!-- FOOTER_START -->
-    <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
+      <p>数据来源：<a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">腾讯云 TokenHub 定价</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">阿里云百炼定价</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">腾讯云混元计费</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">阿里云百炼计费页</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">阿里云百炼模型页</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API 定价</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic 官方定价</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI 定价</a></p>
     <p>模型价格最近核验日期：<span class="num">2026-10-28</span>（各模型、各工具的核验日期以对应页面标注为准）</p>
     <p>价格数据以厂商官方页面为准，不构成任何采购建议</p>
     <p>DeepSeek、GLM、Kimi、Qwen 等名称与商标归各厂商所有，本站为第三方数据整理，与厂商无隶属关系</p>
@@ -233,9 +235,10 @@
     <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub 反馈</a></p>
   </nav>
     <p>© 2026 Reflex Hub · 免费 · 免注册 · 打开即用</p>
-      <!-- FOOTER_END -->
     </div>
   </footer>
+
+  
 
   <script>
     window.ASSETS_BASE = '../assets';

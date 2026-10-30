@@ -103,10 +103,18 @@ R.check(`B13a 工具页索引策略：11 个薄页仍 noindex,follow 且不在 s
   !noindexed.includes('doubao') && locs.includes(`${SITE}/tools/doubao/`));
 const HANDWRITTEN = ['index.html', 'cost/index.html', 'models/index.html', 'compare/index.html',
   'quiz/index.html', 'tools/index.html', 'prompts/index.html', 'about/index.html'];
-R.check('B13b 静态注入标记区完好（模型卡片/工具分组/成本表/8 个手写页 FOOTER 标记）',
-  read('models/index.html').includes('<!-- MODEL_CARDS_START -->') && read('models/index.html').includes('GLM-5.3-Flash') &&
-  read('tools/index.html').includes('<!-- TOOL_GROUPS_START -->') && read('tools/index.html').includes('本站自研工具') &&
-  read('cost/index.html').includes('<!-- COST_TABLE_START -->') && read('cost/index.html').includes('估算月成本') &&
-  HANDWRITTEN.every(rel => read(rel).includes('<!-- FOOTER_START -->')));
+/* 迁移等价改写（提示词 §9.0 / §3.3）：数据表类标记区已由 Astro 组件接管，产物中不再残留
+   `<!-- XXX_START -->` 注释，因此本项断言从"标记存在"改为"原标记区的内容仍在静态 HTML 中"，
+   覆盖范围不降级，并新增"全站零残留注入标记"这一条更严格的断言。 */
+const pageHtmlAll = walk(DIST).map(p => ({ rel: p.slice(DIST.length + 1), txt: readFileSync(p, 'utf8') }));
+const residualMarkers = pageHtmlAll
+  .filter(({ txt }) => /<!--\s*(NAV|FOOTER|HREFLANG|MODEL_CARDS|MODEL_TOOLBAR_META|TOOL_GROUPS|COST_TABLE|COST_EXAMPLE|GUIDE_EXAMPLE|PCOMP_TABLE|CEX_SCENARIOS|CEX_SENSITIVITY|WF_COST|CMP_STATS|HOME_CMP)_(START|END)\s*-->/.test(txt))
+  .map(({ rel }) => rel);
+R.check('B13b 静态注入内容完好（模型卡片/工具分组/成本表/8 个手写页页脚合规区），且全站零残留注入标记',
+  read('models/index.html').includes('GLM-5.3-Flash') && read('models/index.html').includes('查看档案') &&
+  read('tools/index.html').includes('本站自研工具') && read('cost/index.html').includes('估算月成本') &&
+  HANDWRITTEN.every(rel => read(rel).includes('关于本站') && read(rel).includes('不构成任何采购建议')) &&
+  residualMarkers.length === 0,
+  residualMarkers.slice(0, 5).join(', ') || '内容齐全、标记零残留');
 
 R.summary();

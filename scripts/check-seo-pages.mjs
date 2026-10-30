@@ -119,9 +119,10 @@ R.check('P7b /tools/ 全部工具卡片静态存在', tools.every(t => toolsInde
 R.check('P7c /cost/ 静态参考表含全部模型名称与官方来源链接',
   models.every(m => costHtml.includes(m.name) && costHtml.includes(m.sourceUrl)));
 
-/* 转义机制结构性断言：build.mjs 的元数据插值必须经 esc() */
-const buildSrc = readFileSync(join(ROOT, 'scripts/build.mjs'), 'utf8');
-R.check('P8 build.mjs 元数据插值经 esc() 转义',
-  buildSrc.includes('<title>${esc(title)}</title>') && buildSrc.includes('content="${esc(desc)}"'));
+/* 转义机制结构性断言：SEO 元数据插值必须经 esc()。
+   迁移等价改写（提示词 §9.0）：旧断言读 scripts/build.mjs 的 page()，现读 Astro 布局组件的 headSeo 拼接。 */
+const headSrc = readFileSync(join(ROOT, 'src/components/Layout.astro'), 'utf8');
+R.check('P8 元数据插值经 esc() 转义（src/components/Layout.astro 的 headSeo）',
+  headSrc.includes('<title>${esc(title)}</title>') && headSrc.includes('content="${esc(desc)}"'));
 
 R.summary();

@@ -1,7 +1,13 @@
+# 依赖
 node_modules/
+
+# Astro 本地缓存/产物
+.astro/
+dist-astro/
+
+# 临时日志
 *.log
 .DS_Store
 Thumbs.db
-*提示词.md
 reports/
 docs/

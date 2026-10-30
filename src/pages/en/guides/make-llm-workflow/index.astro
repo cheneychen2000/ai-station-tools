@@ -1,0 +1,135 @@
+---
+/**
+ * 手写页（迁移自 en/guides/make-llm-workflow/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../../components/Layout.astro';
+import { wfCostHtmlEn } from '../../../../lib/render.mjs';
+---
+
+<Layout title={"Build an LLM Automation Workflow with Make | Reflex Hub"}
+  desc={"A generic five-part architecture for calling LLM APIs from a visual iPaaS like Make (trigger → data prep → HTTP call → validation → follow-up actions), concept-level steps, failure handling, and a per-1,000-runs API cost table computed from official list prices. Documentation research, no hands-on testing."}
+  ogDescription={"Architecture, concept-level steps and per-1,000-runs API costs for LLM workflows on Make."}
+  canonicalPath="/en/guides/make-llm-workflow/"
+  crumb={"/ <a href=\"../../\" style=\"color:inherit\">Guides</a> / Make workflows"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../../assets';</script>\n  <script src=\"../../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>Build an LLM automation workflow with Make</h1>
+      <p class="tagline">Architecture · concept-level steps · cost per 1,000 runs</p>
+    </section>
+
+    <p class="lede">
+      <strong>The problem</strong>: repetitive weekly text tasks (summarizing form feedback, tagging new articles,
+      drafting replies) deserve automation, but "how much will the API cost per month afterwards" is often overlooked.
+      <strong>What this article is</strong>: a generic architecture and concept-level steps for calling LLM APIs from a
+      Make-style visual iPaaS, plus a clear per-run cost computed from this site's verified model prices.
+      This article is <strong>documentation research</strong> (interface details follow Make's official documentation);
+      no hands-on interface testing was performed.
+    </p>
+
+    <section class="panel">
+      <h2>1. Workflow architecture (five parts)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          1. <strong>Trigger</strong>: a schedule (cron) or an event (new email, new form row, webhook) starts one execution;<br>
+          2. <strong>Data preparation</strong>: fetch the content to process and trim it to the length the model needs — this step directly determines input-token cost;<br>
+          3. <strong>Call the LLM API</strong>: send a request to the model endpoint through the platform's HTTP module (Bearer key authentication, JSON body); Make offers a REST-style open API and a custom-app mechanism, and most administrative endpoints require a paid subscription (per official documentation);<br>
+          4. <strong>Parse and validate</strong>: check the response is usable (timeouts, rate limits, empty responses) and decide retry or fallback;<br>
+          5. <strong>Follow-up actions</strong>: write back to a sheet, send a notification, update a ticket.
+        </p>
+        <p>Cost control lives in steps 2 and 4: longer inputs and more retries mean higher bills. Unit and cache prices per model are in the table below.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Concept-level steps (not a click-by-click tutorial)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          1. Create a new Scenario on the platform and configure the trigger's schedule;<br>
+          2. Add a data-fetching module (read the form / email / file) and trim fields with length truncation;<br>
+          3. Add an HTTP module: POST to the model endpoint, authentication in the headers, body = {'{'}model, input, parameters{'}'};<br>
+          4. Configure error handling: bounded retries with backoff for 429/5xx, and defaults for empty responses;<br>
+          5. Trial with a small volume first, record the actual input/output tokens per execution, then estimate the monthly bill with the cost table below;<br>
+          6. Set platform-side alerts (consecutive failures) so a broken flow fails loudly instead of silently burning quota.
+        </p>
+        <p class="s-hint">Buttons, module names and billing details change with platform versions; this article deliberately stays at the concept level. Follow Make's official documentation and your actual console.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>3. What each run costs: the API cost table</h2>
+      <p style="font-size:14px;line-height:1.9">
+        Assume each workflow run makes one model call (2,000 input / 800 output tokens, 30% cache hit rate, off-peak
+        rates). The table below shows the <strong>LLM API cost per 1,000 runs</strong>, computed from official list prices
+        by this site's build script:
+      </p>
+      
+<Fragment set:html={wfCostHtmlEn()} />
+
+      <p class="s-hint">Replace the per-call input/output tokens with the real values from your trial and recompute in the <a href="../../cost/">cost calculator</a>; note this is the API-side cost only — platform-side charges by operation count are covered in the next section.</p>
+    </section>
+
+    <section class="panel">
+      <h2>4. Platform-side cost and retry amplification (run the numbers twice)</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Two bills</strong>: total cost = platform operation fees + LLM API fees. The former depends on the
+          platform plan and modules consumed per execution — <strong>current Make and n8n pricing has not been verified
+          by this site</strong>; check each vendor's official site. This article cites no unverified price numbers;<br>
+          · <strong>Retry amplification</strong>: if each task retries 0.5 times on average, real API consumption ×1.5;
+          under heavy rate limiting it is worse. Write retry caps, backoff and "fail to manual review" into the flow
+          before shopping for a cheaper model;<br>
+          · <strong>Input trimming</strong>: cutting a 20,000-token source to 2,000 tokens at step 2 cuts input cost by
+          an order of magnitude — the most certain optimization in automation scenarios.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>5. When not to choose Make</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          If data must not leave your intranet, choose a self-hostable option such as n8n — a fair-code licensed tool
+          with Docker self-hosting support (see the <a href="https://docs.n8n.io/" target="_blank" rel="noopener">n8n documentation</a>);
+          if the flow is highly customized and needs code-level control, build a custom API; at very high execution
+          volumes with an ops team, self-hosting is usually cheapest — but rate limiting, retries and monitoring become
+          your own job. The comparison framework across the three options is in
+          <a href="../workflow-automation-choose/">Make, n8n or a custom API</a> — <strong>neither article contains any
+          promotional links</strong>.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>6. Affiliate status and data sources</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · Commercial relationship: Make's official affiliate program is in <strong>candidate evaluation</strong> on this
+          site — not applied for, not approved — and this article <strong>contains no promotional links</strong>. If it is
+          ever approved, the CTA will appear only near this section with the commission relationship disclosed
+          (rel="sponsored nofollow noopener"), and recommendations will not change because of the partnership;<br>
+          · Data sources: model prices in the cost table come from this site's single source models.json (official list
+          prices, each with a source link and verification date — 2026-10-28 basis for this page); USD models are
+          converted at the reference rate (CFETS central parity), indicative only;<br>
+          · Unverified items: Make's per-scenario/operation billing figures and n8n pricing are not verified and are
+          labeled as such instead of guessed;<br>
+          · This article is documentation research with no hands-on conclusions; price-verification time ≠ page-content update time.
+        </p>
+      </div>
+      <!-- AFFILIATE:make:BEGIN -->
+      <!-- AFFILIATE:make:END -->
+    </section>
+
+    <section class="panel">
+      <h2>7. Next steps</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · Recompute with your real token usage: <a href="../../cost/">cost calculator</a>;<br>
+          · Full pricing profiles: <a href="../../models/">model library</a>; two candidates via <a href="../../compare/">model comparison</a>;<br>
+          · Choosing a platform: <a href="../workflow-automation-choose/">Make, n8n or a custom API</a>;<br>
+          · Back to the <a href="../">guide directory</a>.
+        </p>
+      </div>
+    </section>
+</Layout>

@@ -1,0 +1,98 @@
+---
+/**
+ * 手写页（迁移自 pricing-methodology/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../components/Layout.astro';
+---
+
+<Layout title={"定价方法论 - 数据来源、计价口径与核验规则 | Reflex Hub"}
+  desc={"Reflex Hub 模型价格数据的完整方法论：官方来源与核验日期、计价单位与原币种、输入/输出/缓存价、上下文分档、分时段、参考汇率与折算、计算假设、未知值处理与纠错途径。"}
+  ogDescription={"模型价格数据的来源、计价单位、分档与分时段口径、参考汇率、核验时间语义、计算假设与纠错途径。"}
+  canonicalPath="/pricing-methodology/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"定价方法论","url":"https://www.reflex-hub.com/pricing-methodology/","description":"Reflex Hub 模型价格数据的来源、计价口径、核验规则与纠错途径。"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"定价方法论","item":"https://www.reflex-hub.com/pricing-methodology/"}]}]}
+  crumb={"/ 定价方法论"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>定价方法论</h1>
+      <p class="tagline">数据来源 · 计价口径 · 核验规则 · 纠错途径</p>
+    </section>
+
+    <p class="lede">
+      本页解释 Reflex Hub 模型价格数据"从哪里来、按什么口径记录、多久核验、错了怎么办"。
+      它与<a href="../guides/llm-api-cost/">《如何计算 LLM API 成本》</a>互补：指南教你自己复算，本页说明我们整理与呈现数据的规则。
+    </p>
+
+    <section class="panel">
+      <h2>一、数据来源与采集原则</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 唯一数据源：站内模型数据集中维护于 models.json，模型库、成本计算器、对比页与 sitemap 均由构建脚本从同一份数据生成；<br>
+        · 只记录厂商公开刊例原价，来源为官方定价页或官方文档（如阿里云百炼模型页、腾讯云计费文档、OpenAI/Anthropic/Google 官方定价页），每款模型标注来源名称、来源链接与核验日期，可点击查验；<br>
+        · 不使用经销商报价、二手转载或社区整理的价格作为依据；厂商调整价格后，在官方页面核验通过才会更新；<br>
+        · 本站为第三方数据整理，与所有厂商无隶属或背书关系。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>二、计价单位与原币种</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 价格一律按<strong>每百万 Token</strong>记录，输入与输出分开计价；<br>
+        · 以厂商<strong>官方原币种</strong>呈现：国内厂商为人民币（CNY），OpenAI / Anthropic / Google 为美元（USD）。页面不会把美元原价伪装成人民币；<br>
+        · 跨币种比较与估算使用静态参考汇率（中国外汇交易中心人民币汇率中间价），同时标注汇率日期与"折算仅供参考"。参考汇率未核实时，页面明确提示无法折算，不做静默换算；<br>
+        · 示例月成本为固定假设下的估算（日均 100 次调用、单次输入 2000 / 输出 800 Token、错峰低谷价、缓存命中率 30%、每月 30 天），与<a href="../cost/">成本计算器</a>默认参数一致，可代入你的真实用量重算。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>三、输入 / 输出 / 缓存价</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 输入价与输出价均为"未命中缓存"口径的刊例原价；<br>
+        · 缓存命中价单独记录；官方未公开的模型按未命中价参与估算（不假设缓存折扣）；<br>
+        · 缓存写入费（如 OpenAI 30 分钟档、Anthropic 5 分钟档）在对应模型档案中注明，但因与调用量假设耦合，未计入示例月成本。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>四、上下文分档与未公开费率</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 部分模型按输入长度分档计价（如 MiniMax M3 ≤512K / &gt;512K 两档、Claude Haiku 5.5 ≤100K / &gt;100K 两档），计算器按你的单次输入长度自动选档，页面标注当前所处档位；<br>
+        · 官方未公布数值的档位标记为"未公开"：该输入长度下估算返回"无法估算"，<strong>不套用低档价格充数</strong>（例如 GPT-6 系列 &gt;272K 长上下文档费率未公开，长输入估算会明确失败而不是给出偏低的数字）。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>五、分时段定价</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · DeepSeek 系列（经腾讯云渠道）采用高峰 / 低谷分时段计价，低谷价约为高峰价的一半，高峰窗口为工作日 9:00-12:00 与 14:00-18:00；<br>
+        · 示例月成本默认按低谷价（错峰）计算，与成本计算器的"错峰"开关一致；切换为高峰价即可看到两种口径的差异。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>六、核验时间语义</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · <strong>verifiedAt</strong>：该模型价格与规格全部核验通过的日期；仅部分核验的模型保持较早的 verifiedAt，不伪装成"全部核验"；<br>
+        · <strong>priceVerifiedAt / specVerifiedAt</strong>：价格、规格各自独立的最近核验日期，可早于 verifiedAt；<br>
+        · <strong>contentUpdatedAt</strong>：页面可见内容（价格、来源、规格、文案）最后实质变更日期，驱动 sitemap 的 lastmod；仅重新核验而内容未变时，不更新 lastmod。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>七、未知值与估算限制</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 未公开的价格、费率与规格一律标注"未公开"，不以猜测值填充；<br>
+        · 估算未计入免费额度、资源包、套餐折扣与限时活动（如 Qwen3.7-Plus 官方刊例标注限时 8 折，本站按原价展示并注明，不臆测活动结束时间）；<br>
+        · 估算结果不等同于服务商实际账单，不构成采购建议，也不用于推断模型能力或质量排名。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>八、纠错途径</h2>
+      <p style="font-size:14px;line-height:1.9">
+        发现价格、参数、来源链接或计算结果与官方页面不符，请在 GitHub Issues 提交：<br>
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">github.com/cheneychen2000/ai-station-tools/issues</a><br>
+        建议附上问题页面 URL、具体字段与可核验的官方来源链接；请勿在公开 Issue 中提交 API 密钥等敏感信息。核验通过后数据与核验日期会同步更新。
+      </p>
+    </section>
+</Layout>

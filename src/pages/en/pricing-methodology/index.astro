@@ -1,0 +1,124 @@
+---
+/**
+ * 手写页（迁移自 en/pricing-methodology/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../components/Layout.astro';
+---
+
+<Layout title={"Pricing Methodology - Sources, Conventions and Verification | Reflex Hub"}
+  desc={"The complete methodology behind Reflex Hub's model pricing data: official sources and verification dates, billing units and original currencies, input/output/cache prices, context tiers, time-based pricing, reference-rate conversion, estimation assumptions, unknown-value handling and how to report corrections."}
+  ogDescription={"Where model pricing data comes from, how it is recorded, how often it is verified, and what to do when something looks wrong."}
+  canonicalPath="/en/pricing-methodology/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"Pricing Methodology","url":"https://www.reflex-hub.com/en/pricing-methodology/","inLanguage":"en","description":"Sources, billing conventions, verification rules and correction workflow for Reflex Hub model pricing data."},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.reflex-hub.com/en/"},{"@type":"ListItem","position":2,"name":"Pricing Methodology","item":"https://www.reflex-hub.com/en/pricing-methodology/"}]}]}
+  crumb={"/ Pricing Methodology"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../../assets';</script>\n  <script src=\"../../assets/app.js\"></script>"} />
+<section class="hero">
+      <h1>Pricing methodology</h1>
+      <p class="tagline">Sources · billing conventions · verification rules · corrections</p>
+    </section>
+
+    <p class="lede">
+      This page explains where Reflex Hub's model pricing data comes from, under what conventions it is recorded,
+      how often it is verified, and what happens when something is wrong. It complements the guide
+      <a href="../guides/llm-api-cost/">How to calculate LLM API costs</a>: the guide teaches you to recompute
+      numbers yourself, while this page documents the rules we use to compile and present the data.
+    </p>
+
+    <section class="panel">
+      <h2>1. Sources and collection principles</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · Single source of truth: all model data lives in one models.json file; the model library, cost calculator,
+        comparison pages and sitemap are all generated from that same file by the build script;<br>
+        · Only official published list prices are recorded, sourced from official pricing pages or documentation
+        (e.g. Alibaba Cloud Model Studio model pages, Tencent Cloud billing docs, OpenAI/Anthropic/Google official
+        pricing pages). Every model carries a source name, a source link and a verification date, all clickable;<br>
+        · Reseller quotes, second-hand reposts and community compilations are never used as a basis; after a vendor
+        changes prices, the record is updated only after verification against the official page;<br>
+        · This site is a third-party data compilation with no affiliation or endorsement from any vendor.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>2. Billing units and original currencies</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · Prices are recorded <strong>per 1M tokens</strong>, with input and output billed separately;<br>
+        · Prices are presented in each vendor's <strong>original billing currency</strong>: CNY for Chinese vendors,
+        USD for OpenAI / Anthropic / Google. A USD list price is never disguised as CNY;<br>
+        · Cross-currency comparison and estimation use a static reference rate (the CFETS central parity rate),
+        with the rate date shown and "indicative only" stated. When the reference rate is unverified, pages say
+        conversion is unavailable instead of converting silently;<br>
+        · Example monthly costs use fixed assumptions (100 calls/day, 2,000 input / 800 output tokens per call,
+        off-peak rates, 30% cache hit rate, 30-day month), identical to the
+        <a href="../cost/">cost calculator</a> defaults — recompute with your own usage anytime.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>3. Input / output / cache prices</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · Input and output prices are list prices on a cache-miss basis;<br>
+        · Cache-hit prices are recorded separately; models without a published cache price are estimated at the
+        standard input price (no cache discount is assumed);<br>
+        · Cache write fees (e.g. OpenAI's 30-minute tier, Anthropic's 5-minute tier) are noted on the corresponding
+        model pages but excluded from example monthly costs because they couple with retention duration and usage
+        assumptions.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>4. Context-length tiers and unpublished rates</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · Some models bill by <strong>input-length tier</strong> (e.g. MiniMax M3 at ≤512K / &gt;512K, Claude Haiku 5.5
+        at ≤100K / &gt;100K). The calculator picks the tier from your per-call input length and labels it on the page;<br>
+        · Tiers whose values the vendor has not published are marked "not published": estimates in that range return
+        "cannot estimate" and <strong>never borrow the lower tier's price</strong> (e.g. GPT-6 series &gt;272K long-context
+        rates are unpublished — long-input estimation fails explicitly instead of returning a deceptively low number).
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>5. Time-based pricing</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · DeepSeek models (via Tencent Cloud) bill peak/off-peak: the off-peak rate is about half the peak rate, with
+        peak on weekdays 9:00–12:00 and 14:00–18:00;<br>
+        · Example monthly costs default to the off-peak basis, matching the "Off-peak" toggle in the cost calculator;
+        switch to peak to see both bases.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>6. Verification-date semantics</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · <strong>verifiedAt</strong>: the date both pricing and specs passed full verification; partially verified
+        models keep an earlier verifiedAt rather than pretending to be "fully verified";<br>
+        · <strong>priceVerifiedAt / specVerifiedAt</strong>: independent verification dates for prices and specs,
+        which may be earlier than verifiedAt;<br>
+        · <strong>contentUpdatedAt</strong>: the last substantive change to visible page content (prices, sources,
+        specs, copy); it drives the sitemap lastmod. Re-verification without content changes does not update lastmod.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>7. Unknown values and estimation limits</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · Unpublished prices, rates and specs are always labeled "not published" and never filled with guesses;<br>
+        · Estimates exclude free tiers, resource packs, subscription discounts and limited-time promotions (e.g.
+        Qwen3.7-Plus shows a limited-time 20% discount on the official page; this site records the list price and
+        notes the promotion without assuming an end date);<br>
+        · Estimates are not provider invoices, do not constitute purchase advice, and are not used to infer model
+        capability or quality rankings.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>8. Reporting corrections</h2>
+      <p style="font-size:14px;line-height:1.9">
+        If a price, spec, source link or calculation disagrees with the official page, please open an issue:<br>
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">github.com/cheneychen2000/ai-station-tools/issues</a><br>
+        Include the page URL, the specific field and a verifiable official source link. Do not submit API keys or
+        other sensitive data in public issues. Once verified, the data and its verification date are updated together.
+      </p>
+    </section>
+</Layout>

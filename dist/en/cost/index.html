@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Model API Cost Calculator — Estimate Monthly Token Costs | Reflex Hub</title>
+  
+    <title>AI Model API Cost Calculator — Estimate Monthly Token Costs | Reflex Hub</title>
   <meta name="description" content="Estimate monthly LLM API costs from official list prices. Enter daily calls and token usage, weight by cache hit rate and off-peak rates, and compare DeepSeek, GLM, Kimi, Qwen, GPT, Claude and Gemini side by side.">
   <link rel="canonical" href="https://www.reflex-hub.com/en/cost/">
-  <!-- HREFLANG_START -->
   <link rel="alternate" hreflang="zh-CN" href="https://www.reflex-hub.com/cost/">
   <link rel="alternate" hreflang="en" href="https://www.reflex-hub.com/en/cost/">
-      <!-- HREFLANG_END -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Reflex Hub">
   <meta property="og:title" content="AI Model API Cost Calculator — Estimate Monthly Token Costs | Reflex Hub">
@@ -22,7 +21,7 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="../../assets/style.css">
-  <script type="application/ld+json">
+    <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -30,7 +29,11 @@
     "url": "https://www.reflex-hub.com/en/cost/",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Web",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "CNY"
+    },
     "description": "Estimate monthly LLM API costs from vendors' published price lists, with cache-hit weighting and off-peak rates."
   }
   </script>
@@ -68,7 +71,6 @@
   </script>
 </head>
 <body>
-  <!-- NAV_START -->
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <div class="wrap topbar-row">
@@ -84,10 +86,11 @@
       </nav>
     </div>
   </header>
-      <!-- NAV_END -->
 
   <main class="wrap" id="main">
-    <section class="hero">
+
+  
+<section class="hero">
       <h1>AI Model API Cost Calculator</h1>
       <p class="tagline">Official list prices · off-peak rates · cache-hit weighting · USD converted at a verified reference rate</p>
     </section>
@@ -146,7 +149,7 @@
     <section class="panel">
       <h2>Reference: estimated monthly cost at default usage</h2>
       <p class="s-hint">Assumptions: 100 calls/day · 2,000 input tokens per call · 800 output tokens per call · off-peak rates on · 30% cache hit rate · 30-day month · amounts in the original billing currency (CNY). Results are estimates, not purchase advice.</p>
-      <!-- COST_TABLE_START -->
+      
       <div class="table-scroll">
         <table class="spec wide">
           <thead>
@@ -174,7 +177,7 @@
         </table>
       </div>
       <p class="s-hint" style="margin-top:8px">Models without a published cache price are estimated at the standard input price (no cache discount assumed); time-based priced models use the off-peak rate (matching the "Off-peak" toggle above); tiered models are priced at the tier an example input of 2,000 tokens falls into. The estimate column uses exactly the same formula, default parameters and reference rate as the interactive calculator below. USD is the official billing currency for those models; estimated monthly costs are converted to CNY (1 USD = 6.718 CNY, CFETS central parity rate 2026-10-23), indicative only. For a two-model, line-by-line comparison use the <a href="../compare/">model comparison</a>.</p>
-      <!-- COST_TABLE_END -->
+
     </section>
 
     <section id="resultArea" aria-live="polite"></section>
@@ -187,7 +190,7 @@
         <p><strong>Off-peak (time-based pricing)</strong>: some vendors (e.g. DeepSeek) price by time of day. Outside peak hours — nights, lunch hours, weekends and public holidays — the off-peak rate is about half the peak rate.</p>
         <p><strong>Formula</strong>: monthly cost = calls/day × 30 days × (input tokens ÷ 1,000,000 × effective input price + output tokens ÷ 1,000,000 × output price), where effective input price = hit rate × cache-hit price + (1 − hit rate) × standard price. Prices are in each vendor's original currency (CNY or USD per 1M tokens); cross-currency comparison converts USD to CNY at a reference rate, which is indicative only.</p>
       </div>
-      <!-- COST_EXAMPLE_START -->
+      
       <div class="table-scroll">
         <table class="spec">
           <tbody>
@@ -199,7 +202,7 @@
           </tbody>
         </table>
       </div>
-      <!-- COST_EXAMPLE_END -->
+
       <p class="s-hint">Not covered: free tiers, resource packs, subscription discounts and limited-time promos are not included; tiered models are estimated at the tier your input length falls into; an estimate is not a vendor's actual invoice and does not constitute purchase advice.</p>
     </section>
 
@@ -220,8 +223,7 @@
 
   <footer>
     <div class="wrap" id="site-footer">
-      <!-- FOOTER_START -->
-    <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
+      <p>Price sources: <a href="https://cloud.tencent.com/document/product/1823/130055" target="_blank" rel="noopener">Tencent Cloud TokenHub pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/glm-5-3-flash-by-zhipu" target="_blank" rel="noopener">Alibaba Cloud Model Studio — GLM-5.3-Flash model page</a> · <a href="https://help.aliyun.com/zh/model-studio/kimi-k3-by-moonshot" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Kimi K3 model page</a> · <a href="https://help.aliyun.com/zh/model-studio/models" target="_blank" rel="noopener">Alibaba Cloud Model Studio pricing</a> · <a href="https://help.aliyun.com/zh/model-studio/qwen3-8-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Qwen3.8-Flash model page</a> · <a href="https://cloud.tencent.com/document/product/1729/97731" target="_blank" rel="noopener">Tencent Cloud Hunyuan billing</a> · <a href="https://help.aliyun.com/zh/model-studio/billing-for-model-studio" target="_blank" rel="noopener">Alibaba Cloud Model Studio billing</a> · <a href="https://help.aliyun.com/zh/model-studio/step-3-7-flash" target="_blank" rel="noopener">Alibaba Cloud Model Studio — Step 3.7 Flash model page</a> · <a href="https://platform.openai.com/docs/pricing" target="_blank" rel="noopener">OpenAI API pricing</a> · <a href="https://docs.anthropic.com/en/docs/about-claude/pricing" target="_blank" rel="noopener">Anthropic official pricing</a> · <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">Google AI pricing</a></p>
     <p>Most recent model price verification: <span class="num">2026-10-28</span> (each page shows its own verification date)</p>
     <p>Prices follow the vendors' official pages and do not constitute any purchase advice</p>
     <p>DeepSeek, GLM, Kimi, Qwen and other names and trademarks belong to their respective owners. This site is an independent third-party data compilation with no vendor affiliation.</p>
@@ -231,9 +233,10 @@
       <p><a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">Feedback on GitHub</a></p>
     </nav>
     <p>© 2026 Reflex Hub · Free · No sign-up · Runs entirely in your browser</p>
-      <!-- FOOTER_END -->
     </div>
   </footer>
+
+  
 
   <script>
     window.ASSETS_BASE = '../../assets';
