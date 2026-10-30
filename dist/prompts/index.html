@@ -130,9 +130,9 @@
         '</div>' +
         '<pre class="prompt-text"></pre>' +
         '<span class="m-tags">' + (p.tags || []).map(function (t) { return '<span class="tag tag-feat">' + t + '</span>'; }).join('') + '</span>';
-      card.querySelector('.prompt-text').textContent = p.prompt;
+      card.querySelector('.prompt-text').textContent = p.prompt.zh;
       card.querySelector('.copy-btn').addEventListener('click', function () {
-        copyText(p.prompt, function () {
+        copyText(p.prompt.zh, function () {
           showToast('已复制');
           window.track('prompt_copy', { id: p.id });
         });

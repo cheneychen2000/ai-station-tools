@@ -136,9 +136,9 @@
         '</div>' +
         '<pre class="prompt-text"></pre>' +
         '<span class="m-tags">' + (p.tags || []).map(function (t) { return '<span class="tag tag-feat">' + (TAG_EN[t] || t) + '</span>'; }).join('') + '</span>';
-      card.querySelector('.prompt-text').textContent = p.prompt;
+      card.querySelector('.prompt-text').textContent = p.prompt.en;
       card.querySelector('.copy-btn').addEventListener('click', function () {
-        copyText(p.prompt, function () {
+        copyText(p.prompt.en, function () {
           showToast('Copied');
           window.track('prompt_copy', { id: p.id, lang: 'en' });
         });

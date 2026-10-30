@@ -23,7 +23,8 @@ const SCRIPTS = [
   ['audit-compare-pages', 'scripts/audit-compare-pages.mjs'],
   ['check-affiliates', 'scripts/check-affiliates.mjs'],
   ['test-placement-transitions', 'scripts/test-placement-transitions.mjs'],
-  ['check-build', 'scripts/check-build.mjs']
+  ['check-build', 'scripts/check-build.mjs'],
+  ['check-prompts', 'scripts/check-prompts.mjs']
 ];
 
 const only = process.argv[2];

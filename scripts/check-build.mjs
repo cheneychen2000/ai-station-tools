@@ -74,8 +74,10 @@ R.check(`B7 tools.json 字段合法（外部 ${T} 条 / 自研 ${tools.length - 
 
 const prompts = JSON.parse(readFileSync(join(DIST, 'assets/data/prompts.json'), 'utf8'));
 const promptsOk = prompts.length >= 10 && prompts.every(p =>
-  p.id && p.title && p.scene && typeof p.prompt === 'string' && p.prompt.length > 30 && Array.isArray(p.tags));
-R.check(`B8 prompts.json 字段合法且 ≥10 条（${prompts.length} 条）`, promptsOk);
+  p.id && p.title && p.scene && p.prompt && typeof p.prompt === 'object' &&
+  typeof p.prompt.zh === 'string' && p.prompt.zh.length > 30 &&
+  typeof p.prompt.en === 'string' && p.prompt.en.length > 30 && Array.isArray(p.tags));
+R.check(`B8 prompts.json 字段合法（${prompts.length} 条，prompt 为 {zh,en} 双语结构）`, promptsOk);
 
 /* B5 价格传播：动态取样（不再写死模型 ID），预期值由 models.json 计算 */
 const sample = models.find(m => !m.peakOffpeak && m.priceIn != null) || models[0];
