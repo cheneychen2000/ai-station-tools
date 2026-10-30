@@ -58,8 +58,15 @@ a:hover { text-decoration: underline; }
 }
 .brand:hover { text-decoration: none; color: var(--primary-dark); }
 /* 面包屑：独立于顶部导航的第二层（在 .topbar-row 之后单独一行），
-   不再参与 flex 横向分配，因此英文长导航不会因为它而换排。 */
-.crumb-row { padding-bottom: 10px; }
+   不再参与 flex 横向分配，因此英文长导航不会因为它而换排。
+   上边框 = 第一层全局导航与第二层面包屑之间的分隔线：挂在 .crumb-row（即 .wrap）上，
+   所以它横跨整个内容容器、与 Header 左右边缘对齐；没有面包屑的页面不输出该容器，
+   因此也不会出现多余的分隔线或空白。 */
+.crumb-row {
+  padding-top: 8px;
+  padding-bottom: 10px;
+  border-top: 1px solid var(--border);
+}
 .topbar .crumb {
   display: block;
   color: var(--muted);
