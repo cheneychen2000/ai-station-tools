@@ -100,15 +100,15 @@ export function navHeaderHtml(base, active = null, crumb = '', switchHref = null
   return `<a class="skip-link" href="#main">跳到正文</a>
   <header class="topbar">
     <div class="wrap topbar-row">
-      <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
-      <span class="crumb">${crumb}</span>` : ''}
+      <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>
       ${navToggleHtml(NAV_TOGGLE_UI.zh)}
       <nav class="site-nav" aria-label="主导航">
         <ul id="siteMenu">
 ${items.join('\n')}
         </ul>
       </nav>
-    </div>
+    </div>${crumb ? `
+    <div class="wrap crumb-row"><span class="crumb">${crumb}</span></div>` : ''}
   </header>`;
 }
 
@@ -134,15 +134,15 @@ export function navHeaderHtmlEn(base, active = null, crumb = '', switchHref = nu
   return `<a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <div class="wrap topbar-row">
-      <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>${crumb ? `
-      <span class="crumb">${crumb}</span>` : ''}
+      <a class="brand" href="${brandHref}"${homeCur}><img class="brand-logo" src="${base}assets/logo.png" alt="${esc(BRAND)}" width="160" height="39"></a>
       ${navToggleHtml(NAV_TOGGLE_UI.en)}
       <nav class="site-nav" aria-label="Main navigation">
         <ul id="siteMenu">
 ${lis.join('\n')}
         </ul>
       </nav>
-    </div>
+    </div>${crumb ? `
+    <div class="wrap crumb-row"><span class="crumb">${crumb}</span></div>` : ''}
   </header>`;
 }
 

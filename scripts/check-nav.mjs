@@ -261,6 +261,44 @@ for (const file of pages) {
 R.check(`N17b 移动端汉堡按钮：${pages.length} 页各 1 个，aria-controls 指向真实 #siteMenu，DOM 顺序为 品牌→按钮→导航`,
   toggleProblems.length === 0, toggleProblems.slice(0, 6).join(' | ') || '全部合规（zh/en 文案各自正确）');
 
+/* ---------- N19 全站 Header 分层 + 英文导航内部换行 ----------
+   结构：第一层 .topbar-row 只放 品牌 + 汉堡按钮 + 主导航；面包屑下移到独立 .crumb-row，
+   因此不再与导航争抢横向空间。英文导航允许在单词边界折成两行（不缩字号、不拆词、不裁切），
+   但导航项本身必须 flex-wrap: nowrap —— 整个菜单不允许掉到第二排。 */
+const headerProblems = [];
+for (const file of pages) {
+  const rel = relative(DIST, file).replace(/\\/g, '/');
+  const txt = readFileSync(file, 'utf8');
+  const iCrumbRow = txt.indexOf('class="wrap crumb-row"');
+  const iNavEnd = txt.indexOf('</nav>');
+  const hasCrumb = txt.includes('class="crumb"');
+  if (hasCrumb) {
+    if (iCrumbRow < 0) headerProblems.push(`${rel}（面包屑未移入 .crumb-row）`);
+    else {
+      if (iCrumbRow < iNavEnd) headerProblems.push(`${rel}（面包屑仍在主导航行内）`);
+      if ((txt.match(/class="wrap crumb-row"/g) || []).length !== 1) headerProblems.push(`${rel}（.crumb-row 重复）`);
+      if (!/<div class="wrap crumb-row"><span class="crumb">/.test(txt)) headerProblems.push(`${rel}（面包屑结构不符）`);
+    }
+  } else if (iCrumbRow >= 0) headerProblems.push(`${rel}（无面包屑却输出空 .crumb-row）`);
+}
+R.check(`N19a Header 分层：${pages.length} 页面包屑均移出主导航行到独立 .crumb-row，无面包屑页面不产生空白占位`,
+  headerProblems.length === 0, headerProblems.slice(0, 5).join(' | ') || '全部合规');
+
+const cssProblems = [];
+const deskStart = css.indexOf('@media (min-width: 769px)');
+const deskBlock = deskStart >= 0 ? css.slice(deskStart, deskStart + 900) : '';
+if (deskStart < 0) cssProblems.push('缺少 @media (min-width: 769px) 桌面导航块');
+if (deskBlock && !/\.site-nav ul\s*\{[^}]*flex-wrap:\s*nowrap/.test(deskBlock)) cssProblems.push('导航未锁定 flex-wrap: nowrap（可能整体掉排）');
+if (deskBlock && !/\.site-nav a\s*\{[^}]*white-space:\s*normal/.test(deskBlock)) cssProblems.push('导航文字未允许换行');
+if (deskBlock && !/\.site-nav a\s*\{[^}]*word-break:\s*normal/.test(deskBlock)) cssProblems.push('导航文字缺 word-break: normal');
+if (deskBlock && !/\.site-nav a\s*\{[^}]*overflow-wrap:\s*normal/.test(deskBlock)) cssProblems.push('导航文字缺 overflow-wrap: normal');
+if (!/html\[lang="en"\]\s*\.site-nav a\s*\{[^}]*max-width:/.test(css)) cssProblems.push('英文导航缺菜单项最大宽度（无法控制在单词边界折行）');
+const enNavRule = (css.match(/html\[lang="en"\]\s*\.site-nav a\s*\{[^}]*\}/) || [''])[0];
+if (/font-size/.test(enNavRule)) cssProblems.push('英文导航被缩了字号');
+if (/word-break:\s*break-all|overflow-wrap:\s*anywhere|word-break:\s*break-word/.test(css)) cssProblems.push('出现拆词设置（break-all / anywhere）');
+R.check('N19b 英文导航换行规则：nowrap 外层 + 单词边界折行 + em 级 max-width，未缩字号、未拆词',
+  cssProblems.length === 0, cssProblems.join(' | ') || '全部合规');
+
 /* N6 陈旧字符串：旧品牌与过时硬编码数量（历史报告不在扫描范围） */
 let stale = [];
 for (const file of pages) {
