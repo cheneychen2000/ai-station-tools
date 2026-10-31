@@ -1,0 +1,96 @@
+---
+/**
+ * 手写页（迁移自 guides/llm-api-pricing-comparison/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../layouts/SiteLayout.astro';
+import AdSlot from '../../../components/placements/AdSlot.astro';
+import { getSiteData } from '../../../lib/data';
+import PricingCompareTable from '../../../components/guide/PricingCompareTable.astro';
+
+const { models, fx } = await getSiteData();
+---
+
+<Layout title={"大模型 API 定价比较：同用量下国内外模型月成本对比 | Reflex Hub"}
+  desc={"固定同一用量假设（日均 100 次、输入 2000 / 输出 800 Token、错峰低谷价、缓存命中率 30%），对收录的国内外主流模型计算估算月成本并统一折算人民币排序，保留美元模型官方原币价格，标注来源与核验日期。"}
+  ogDescription={"同一用量假设下 17 款主流模型的估算月成本对比：官方原币单价、缓存价、上下文窗口与折算人民币排序，数据可逐步核验。"}
+  ogType="article"
+  canonicalPath="/guides/llm-api-pricing-comparison/"
+  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"大模型 API 定价比较：同用量下国内外模型月成本对比","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-28","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"},{"@type":"ListItem","position":3,"name":"定价比较","item":"https://www.reflex-hub.com/guides/llm-api-pricing-comparison/"}]}]}
+  active="guides"
+  crumb={"/ <a href=\"../../guides/\" style=\"color:inherit\">指南</a> / 定价比较"}>
+<section class="hero">
+      <h1>大模型 API 定价比较</h1>
+      <p class="tagline">同一用量假设 · 17 款模型 · 统一折算人民币排序</p>
+    </section>
+
+    <p class="lede">
+      <strong>问题</strong>：厂商各自报价的单位、币种与优惠口径不同，"哪个模型更便宜"没法直接比。
+      <strong>结论</strong>：把用量假设固定后统一折算，当前收录模型的估算月成本从约 ¥10 到 ¥300+ 不等，相差数十倍；
+      低价轻量档与旗舰长文档档服务的是完全不同的场景，价差主要来自输出单价、缓存价与分时段，而不是"谁打折狠"。
+      下表全部数值由构建脚本从本站唯一数据源（models.json）与参考汇率（fx.json）计算生成，可逐步复算。
+    </p>
+
+    <section class="panel">
+      <h2>一、比较方法（先统一口径，再比数字）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>固定用量</strong>：日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 每月 30 天；<br>
+          · <strong>错峰口径</strong>：分时段模型按低谷价计（DeepSeek 低谷约为高峰一半，高峰窗口为工作日 9:00-12:00、14:00-18:00）；<br>
+          · <strong>缓存</strong>：命中率 30%，输入有效单价 = 30% × 缓存命中价 + 70% × 未命中价；官方未公开缓存价的模型按未命中价计；<br>
+          · <strong>分档</strong>：按输入长度分档的模型，2000 Token 落入其低档；<br>
+          · <strong>币种</strong>：单价保留官方原币种（人民币或美元 / 百万 Token）；月成本统一按参考汇率折算人民币后排序，折算仅供参考；<br>
+          · 公式逐步推导见 <a href="../llm-api-cost/">《如何计算 LLM API 成本》</a>，口径规则见 <a href="../../pricing-methodology/">定价方法论</a>。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>二、同用量成本总表</h2>
+      
+<PricingCompareTable models={models} fx={fx} />
+
+      <p class="s-hint">表内单价为厂商公开刊例原价（每百万 Token），美元模型保留 $ 原价；估算月成本统一折算人民币用于排序。厂商调价、汇率变化或缓存命中率不同都会改变排名——把你的真实参数代入 <a href="../../cost/">成本计算器</a> 得到自己的结论。</p>
+    </section>
+
+    
+
+    <AdSlot name="guide-mid" />
+    <section class="panel">
+      <h2>三、怎么读这张表（四个事实性观察）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>输出单价主导账单</strong>：示例用量下输出项约占月成本 55%~65%（输出 800 Token × 输出单价），只比输入价会系统性低估；<br>
+          · <strong>缓存价是数量级差异</strong>：DeepSeek 两款的缓存命中价（低谷 ¥0.02/百万）比其未命中输入价（低谷 ¥1/百万）低约 50 倍，高命中率场景下输入成本趋近缓存价；<br>
+          · <strong>低谷半价是可预期收益</strong>：分时段模型按低谷口径估算，批量任务移到低谷时段成本直接减半，这不是假设性优化而是计费规则；<br>
+          · <strong>长上下文档位不"补价"</strong>：GPT-6 系列 &gt;272K 档费率官方未公开，该范围估算会显示"无法估算"，本站不按低档价格填充。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>四、数据来源与限制</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · 数据来自本站唯一数据源 models.json，每条记录标注官方来源链接；价格核验日期见表内"核验日期"列与各模型档案页（/models/ 目录）；<br>
+          · 页脚汇总全部官方来源；<strong>价格核验时间 ≠ 页面内容更新时间</strong>：仅重新核验而价格未变时，页面与 sitemap 的更新日期保持不变（规则见定价方法论第六节）；<br>
+          · 跨币种折算使用中国外汇交易中心人民币汇率中间价（静态参考汇率，非交易汇率）；<br>
+          · 估算未计入免费额度、资源包、套餐折扣与限时活动，不等于服务商实际账单，不构成采购建议。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、下一步</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · 代入真实用量重算：<a href="../../cost/">成本计算器</a>（可勾选任意多款模型并排比较）；<br>
+          · 查单款模型的完整价格档案：<a href="../../models/">模型库</a>；<br>
+          · 两款候选逐项对比：<a href="../../compare/">模型对比</a>，例如 <a href="../../compare/glm-53-flash/gpt-6-luna/">GLM-5.3-Flash 对比 GPT-6 Luna</a>（低价轻量跨厂商）；<br>
+          · 按业务场景估月成本：<a href="../llm-api-cost-examples/">场景成本案例</a>；<br>
+          · 回到 <a href="../">计算指南目录</a>。
+        </p>
+      </div>
+    </section>
+</Layout>

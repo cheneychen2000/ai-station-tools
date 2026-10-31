@@ -1,0 +1,70 @@
+---
+/**
+ * 中文工具详情页（/tools/<id>/）：数据源 tools.json（Content Collection），
+ * 索引策略（自研无详情页、第三方默认 noindex）与迁移前一致。
+ */
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { getTools } from '../../../lib/data';
+import { buildToolDetail } from '../../../lib/domain/tool-view';
+
+export async function getStaticPaths() {
+  const tools = await getTools();
+  return tools.filter(t => !t.own).map(t => ({ params: { id: t.id }, props: { id: t.id } }));
+}
+
+const tools = await getTools();
+const t = tools.find(x => x.id === Astro.props.id);
+if (!t) throw new Error(`tool not found: ${Astro.props.id}`);
+const view = buildToolDetail(t, tools, false);
+---
+
+<SiteLayout
+  title={view.title}
+  desc={view.desc}
+  canonicalPath={view.canonicalPath}
+  robots={view.robots}
+  jsonld={view.jsonld}
+  active={view.active}
+  crumb={view.crumb}
+>
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">{view.name}<span class={`free-badge ${view.badgeClass}`}>{view.freeLabel}</span></h1>
+      <p class="tagline">{view.tagline}</p>
+    </section>
+
+    <p class="lede">{view.lede}</p>
+
+    <section class="panel">
+      <h2>速览</h2>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>类别</th><td>{view.category}</td></tr>
+            <tr><th>收费模式</th><td>{view.freeLabel}</td></tr>
+            <tr><th>适用场景</th><td>{view.scene}</td></tr>
+            <tr><th>官网</th><td>{view.officialUrl ? <a href={view.officialUrl} target="_blank" rel="noopener">{view.officialUrl}</a> : '未收录'}</td></tr>
+            <tr><th>核验日期</th><td class="num">{t.verifiedAt}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      {view.related.length > 0 && (
+        <p class="lib-meta">同类工具：{view.related.map((r, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={`../${r.id}/`}>{r.name}</a></Fragment>))}</p>
+      )}
+    </section>
+    {view.detailSections.length > 0 && view.detailSections.map((sec) => (
+      <section class="panel">
+        <h2>{sec.h}</h2>
+        <div style="font-size:14px;line-height:1.9" set:html={sec.body.replace(/\n/g, '<br>')}></div>
+      </section>
+    ))}
+    {view.detailSources.length > 0 && (
+      <section class="panel">
+        <h2>信息来源与核验</h2>
+        <p class="lib-meta">来源：{view.detailSources.map((s2, i) => (<Fragment>{i > 0 ? ' · ' : ''}{s2.url ? <a href={s2.url} target="_blank" rel="noopener">{s2.label}</a> : s2.label}（{s2.verifiedAt} 核实）</Fragment>))}。工具功能与定价迭代较快，以官网实际为准。</p>
+      </section>
+    )}
+    <div class="cta-row">
+      {view.officialUrl && <a class="btn btn-primary" href={view.officialUrl} target="_blank" rel="noopener" onclick={`window.track('tool_outbound', { id: '${t.id}' })`}>访问官网 →</a>}
+      <a class="btn btn-ghost" href="../">返回工具库</a>
+    </div>
+</SiteLayout>

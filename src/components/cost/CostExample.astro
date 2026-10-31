@@ -1,0 +1,63 @@
+---
+/**
+ * 成本页"计算变量、公式与示例"算例表：
+ * 示例模型 = 首个分时段定价模型（无则首个），步骤与 domain/pricing 公式一致。
+ */
+import { price, money, SAMPLE_PARAMS as P } from '../../lib/domain/pricing';
+import { round2 } from '../../lib/domain/price-cells';
+import { safeUrl } from '../../lib/utils/escape';
+import { enModelName, enVendorLabel } from '../../lib/i18n/helpers';
+import type { Model } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; en?: boolean }
+const { models, en = false } = Astro.props;
+
+const m = models.find(x => x.peakOffpeak) || models[0];
+const b = m.peakOffpeak
+  ? { i: m.peakOffpeak.offIn, c: m.peakOffpeak.offCache, o: m.peakOffpeak.offOut, label: en ? 'off-peak rate' : '低谷价（错峰）' }
+  : { i: m.priceIn, c: m.priceCacheHit, o: m.priceOut, label: en ? 'standard rate' : '标准价' };
+const effIn = b.c == null ? b.i : P.hit * b.c + (1 - P.hit) * b.i;
+const inCost = P.calls * 30 * (P.inTok / 1e6) * effIn;
+const outCost = P.calls * 30 * (P.outTok / 1e6) * b.o;
+const src = safeUrl(m.sourceUrl);
+const name = en ? enModelName(m) : m.name;
+const vendor = en ? enVendorLabel(m) : m.vendor;
+
+const cacheLine = b.c == null
+  ? (en ? `This model has no published cache price; input is billed at ${price(b.i)}.` : `该模型未公开缓存价，输入按未命中价 ${price(b.i)} 计。`)
+  : (en
+      ? `Effective input price = 30% × ${price(b.c)} (cache hit) + 70% × ${price(b.i)} (standard) = ${round2(effIn)} CNY/1M tokens.`
+      : `输入有效单价 = 30% × ${price(b.c)}（缓存命中）+ 70% × ${price(b.i)}（未命中）= ${round2(effIn)} 元/百万 Token。`);
+const inLine = en
+  ? `${P.calls} × 30 × (${P.inTok} ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost))}`
+  : `${P.calls} 次 × 30 天 × (${P.inTok} ÷ 1,000,000) × ${round2(effIn)} = ${money(round2(inCost))}`;
+const outLine = en
+  ? `${P.calls} × 30 × (${P.outTok} ÷ 1,000,000) × ${price(b.o)} = ${money(round2(outCost))}`
+  : `${P.calls} 次 × 30 天 × (${P.outTok} ÷ 1,000,000) × ${price(b.o)} = ${money(round2(outCost))}`;
+---
+
+<div class="table-scroll">
+  <table class="spec">
+    <tbody>
+      <tr>
+        <th>{en ? 'Example model' : '示例模型'}</th>
+        <td>
+          <a href={`../models/${m.id}/`}>{name}</a>
+          {en
+            ? <Fragment> ({vendor}, {b.label}, verified {m.verifiedAt}, <a href={src || '#'} target="_blank" rel="noopener">official source</a>)</Fragment>
+            : <Fragment>（{vendor}，{b.label}，数据核验 {m.verifiedAt}，<a href={src || '#'} target="_blank" rel="noopener">官方来源</a>）</Fragment>}
+        </td>
+      </tr>
+      <tr><th>{en ? 'Effective input price' : '输入有效单价'}</th><td class="num">{cacheLine}</td></tr>
+      <tr><th>{en ? 'Input cost' : '输入成本'}</th><td class="num">{inLine}</td></tr>
+      <tr><th>{en ? 'Output cost' : '输出成本'}</th><td class="num">{outLine}</td></tr>
+      <tr>
+        <th>{en ? 'Estimated monthly cost' : '估算月成本'}</th>
+        <td class="num">
+          <strong>{money(round2(inCost + outCost))}</strong>
+          {en ? ' (a fixed-assumption estimate, not purchase advice)' : '（示例仅为固定假设下的估算，不构成采购建议）'}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

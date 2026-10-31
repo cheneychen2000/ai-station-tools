@@ -1,0 +1,27 @@
+---
+/** 对比表单格：来源链接 / 分时段图标 / 纯文本（含折算注记与持平标记）。 */
+import YesNo from '../common/YesNo.astro';
+import type { CompareRow } from '../../lib/domain/compare-view';
+
+interface Props { row: CompareRow; side: 'a' | 'b'; en?: boolean }
+const { row, side, en = false } = Astro.props;
+
+const link = side === 'a' ? row.aSrc : row.bSrc;
+const peak = side === 'a' ? row.aPeak : row.bPeak;
+const text = side === 'a' ? row.a : row.b;
+const cny = side === 'a' ? row.aCny : row.bCny;
+---
+
+{link ? (
+  link.url ? <a href={link.url} target="_blank" rel="noopener">{link.label}</a> : link.label
+) : peak !== undefined ? (
+  peak
+    ? <Fragment><YesNo value /> {en ? `Off-peak ≈ half of peak (peak=${peak.window})` : `低谷价约为高峰一半（高峰=${peak.window}）`}</Fragment>
+    : <YesNo value={false} />
+) : (
+  <Fragment>
+    {text}
+    {row.cost && cny && <Fragment><br /><span class="lib-meta">{cny}</span></Fragment>}
+    {row.cost && row.costTie && (en ? ' (tied)' : '（持平）')}
+  </Fragment>
+)}

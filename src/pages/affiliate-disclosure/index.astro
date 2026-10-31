@@ -1,0 +1,75 @@
+---
+/**
+ * 手写页（迁移自 affiliate-disclosure/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"联盟推广披露 | Reflex Hub"}
+  desc={"Reflex Hub 联盟推广披露：当前未签署任何联盟或赞助合作、页面无任何推广链接；说明未来引入合作时的标注原则与识别方式。"}
+  ogDescription={"当前无任何联盟合作与推广链接；未来引入合作时的标注原则与识别方式。"}
+  canonicalPath="/affiliate-disclosure/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"联盟推广披露","url":"https://www.reflex-hub.com/affiliate-disclosure/","description":"Reflex Hub 联盟推广披露：当前无合作，说明未来引入合作时的标注原则。"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"联盟推广披露","item":"https://www.reflex-hub.com/affiliate-disclosure/"}]}]}
+  crumb={"/ 联盟推广披露"}>
+<section class="hero">
+      <h1>联盟推广披露</h1>
+      <p class="tagline">当前状态 · 未来原则 · 如何识别</p>
+    </section>
+
+    <p class="lede">
+      本页说明 Reflex Hub 对推广与商业合作的立场。截至最近更新（2026-10-28），
+      <strong>本站未签署任何联盟推广或赞助合作，所有页面均不含推广链接</strong>。
+    </p>
+
+    <section class="panel">
+      <h2>零、观察中的候选（均未申请、未展示）</h2>
+      <p style="font-size:14px;line-height:1.9">
+        以下官方联盟计划页面已进入我们的候选台账（partners.json），仅供评估，<strong>尚未提交申请、未获批、
+        未在任何页面展示</strong>；申请前会重新核实条款，获批前 status 不会变为 active：<br>
+        · <a href="https://elevenlabs.io/affiliates" target="_blank" rel="noopener">ElevenLabs 联盟计划</a>（2026-10-28 核实：公开页称新付费订阅前 12 个月付款的 22% 循环佣金，PartnerStack 结算）；<br>
+        · <a href="https://www.make.com/en/affiliate" target="_blank" rel="noopener">Make 联盟计划</a>（2026-10-28 核实：公开页称订阅付款 35%，主体写 12 个月、FAQ 一处写 24 个月，申请时须核实）；<br>
+        · Writesonic 联盟页（affiliates.writesonic.com，两次访问均超时，<strong>条款未能核实</strong>，有效性待人工确认）。<br>
+        另：本站当前无实时通信 API 相关内容，腾讯 RTC 联盟计划暂不在候选内。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>一、当前状态：无合作、无推广链接</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 本站未与任何厂商、经销商或推广平台签署联盟（affiliate）或赞助协议；<br>
+        · 页面中的"官方来源""官网"链接均为普通跳转链接，不附带任何推广参数，也不会为站长带来佣金；<br>
+        · 合作数据台账（partners.json）目前为空，仅作为将来审核合作的登记结构预留。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>二、未来引入合作时的原则</h2>
+      <p style="font-size:14px;line-height:1.9">
+        如果未来引入推广或赞助合作，将遵守以下规则：<br>
+        · <strong>先审核、后展示</strong>：合作方须先通过内容审核并记录核验日期，未获批的候选合作不会出现在任何页面；<br>
+        · <strong>就近标注</strong>：推广内容旁边明确写出商业关系（如"推广""赞助合作"字样），不使用暗示客观推荐的措辞；<br>
+        · <strong>链接分离</strong>：联盟链接与官方链接分别记录、分别呈现，不混淆"官方资料"与"推广链接"，并添加 <code>rel="sponsored"</code>；<br>
+        · <strong>独立性不变</strong>：模型价格与数据仅来自厂商公开刊例并标注核验日期，任何合作关系不影响数据的收集口径与呈现方式；<br>
+        · <strong>同步披露</strong>：本页将列出合作方清单、合作形式与生效日期。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>三、如何识别推广内容</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 推广位置会带"推广 / 赞助"文字标识，且紧邻被推荐内容；<br>
+        · 官方来源链接（模型档案中的定价来源）永远不会是联盟链接；<br>
+        · 如果你在某处看到疑似未标注的商业推荐，欢迎通过下方 Issues 反馈，我们会核实并补齐披露。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>四、反馈</h2>
+      <p style="font-size:14px;line-height:1.9">
+        对商业关系披露有任何疑问，请在
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub Issues</a> 提出。
+      </p>
+    </section>
+</Layout>

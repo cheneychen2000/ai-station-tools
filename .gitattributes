@@ -1,0 +1,5 @@
+# 统一数据 JSON 与样式源文件的行尾符，避免 Windows(CRLF) 与 CI(Linux, LF) 检出差异。
+# 影响：迁移快照/资产字节契约，以及打包产物哈希（global.*.css 会继承 global.css 的 EOL，
+# 不同平台不一致会导致 /_astro 哈希漂移与 dist 无意义 Diff）。
+public/assets/data/*.json text eol=lf
+*.css text eol=lf

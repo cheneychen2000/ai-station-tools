@@ -1,0 +1,57 @@
+---
+/**
+ * 英文工具详情页（/en/tools/<id>/）：与中文页同一数据源与索引策略（noindex 原样保留，不放宽）。
+ */
+import SiteLayout from '../../../../layouts/SiteLayout.astro';
+import { getTools } from '../../../../lib/data';
+import { buildToolDetail } from '../../../../lib/domain/tool-view';
+
+export async function getStaticPaths() {
+  const tools = await getTools();
+  return tools.filter(t => !t.own).map(t => ({ params: { id: t.id }, props: { id: t.id } }));
+}
+
+const tools = await getTools();
+const t = tools.find(x => x.id === Astro.props.id);
+if (!t) throw new Error(`tool not found: ${Astro.props.id}`);
+const view = buildToolDetail(t, tools, true);
+---
+
+<SiteLayout
+  title={view.title}
+  desc={view.desc}
+  canonicalPath={view.canonicalPath}
+  robots={view.robots}
+  jsonld={view.jsonld}
+  active={view.active}
+  crumb={view.crumb}
+>
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">{view.name}<span class={`free-badge ${view.badgeClass}`}>{view.freeLabel}</span></h1>
+      <p class="tagline">{view.tagline}</p>
+    </section>
+
+    <p class="lede">{view.lede}</p>
+
+    <section class="panel">
+      <h2>At a glance</h2>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>Category</th><td>{view.category}</td></tr>
+            <tr><th>Pricing model</th><td>{view.freeLabel}</td></tr>
+            <tr><th>Typical use</th><td>{view.scene}</td></tr>
+            <tr><th>Official site</th><td>{view.officialUrl ? <a href={view.officialUrl} target="_blank" rel="noopener">{view.officialUrl}</a> : 'Not listed'}</td></tr>
+            <tr><th>Verified</th><td class="num">{t.verifiedAt}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      {view.related.length > 0 && (
+        <p class="lib-meta">Similar tools: {view.related.map((r, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={`../${r.id}/`}>{r.name}</a></Fragment>))}</p>
+      )}
+    </section>
+    <div class="cta-row">
+      {view.officialUrl && <a class="btn btn-primary" href={view.officialUrl} target="_blank" rel="noopener" onclick={`window.track('tool_outbound', { id: '${t.id}', lang: 'en' })`}>Visit official site →</a>}
+      <a class="btn btn-ghost" href="../">Back to tool directory</a>
+    </div>
+</SiteLayout>

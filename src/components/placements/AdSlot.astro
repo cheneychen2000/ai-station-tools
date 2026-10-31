@@ -1,0 +1,20 @@
+---
+/**
+ * 广告占位位：安全闸（仅 enabled===true 且 publisherId 正式格式且 slot 登记才输出容器），
+ * BEGIN/END 注释标记无条件保留（标记永不丢失）。
+ * 真正加载广告脚本的运行时闸门在浏览器端 app 模块（生产域名 + CMP 同意两道闸）。
+ */
+import { getAdsConfig } from '../../lib/data';
+import { adSlotAllowed } from '../../lib/placements/gates';
+import { esc } from '../../lib/utils/escape';
+
+interface Props { name: string }
+const { name } = Astro.props;
+
+const slot = adSlotAllowed(getAdsConfig(), name);
+const inner = slot
+  ? `<div class="ad-slot" data-ad-slot="${esc(slot.name)}" data-ad-format="${esc(slot.format)}"></div>`
+  : '';
+---
+
+<Fragment set:html={`<!-- ADSLOT:${name}:BEGIN -->${inner}\n      <!-- ADSLOT:${name}:END -->`} />

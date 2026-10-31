@@ -1,0 +1,73 @@
+---
+/** 指南《场景成本案例》敏感性示例：固定 RAG 场景假设，仅调整缓存命中率。 */
+import { monthlyFull, money, modelCurrency, toBase } from '../../lib/domain/pricing';
+import { CEX_SENS_MODELS, CEX_SENS_HITS, GUIDE_SCENARIOS, GUIDE_SCENARIOS_EN } from '../../lib/domain/guide-data';
+import { fxNote, enFxNote } from '../../lib/domain/fx-notes';
+import { enModelName } from '../../lib/i18n/helpers';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; fx: FxFile; en?: boolean }
+const { models, fx, en = false } = Astro.props;
+
+const rag = (en ? GUIDE_SCENARIOS_EN : GUIDE_SCENARIOS)[1];
+const rows = CEX_SENS_MODELS.map(id => {
+  const m = models.find(x => x.id === id);
+  if (!m) return null;
+  const cur = modelCurrency(m);
+  const calc = (hit: number) => monthlyFull(m, { off: true, hit, calls: rag.calls, inTok: rag.inTok, outTok: rag.outTok });
+  const cells = CEX_SENS_HITS.map(h => {
+    const v = calc(h);
+    if (Number.isNaN(v.t)) return null;
+    const cny = toBase(v.t, cur, fx);
+    return { cny, usd: v.t };
+  });
+  const first = calc(0), last = calc(0.9);
+  const drop = Number.isNaN(first.t) || Number.isNaN(last.t) || first.t === 0 ? null : (1 - last.t / first.t) * 100;
+  return { m, cur, cells, drop, noCache: m.priceCacheHit == null && !m.peakOffpeak };
+}).filter(Boolean) as Array<{ m: Model; cur: string; cells: Array<{ cny: number | null; usd: number } | null>; drop: number | null; noCache: boolean }>;
+
+const note = en ? (enFxNote(fx, 'USD') || 'a reference rate (unverified)') : (fxNote(fx, 'USD') || '未核实');
+const hint = en
+  ? `Reading the table: the lower a model's cache price (e.g. DeepSeek V4.1 Flash off-peak cache price ¥0.02/1M), the bigger the drop as hit rate rises. Models without a published cache price (e.g. MiniMax M3) are billed at the standard input price, so hit rate changes nothing — which is exactly why "check whether the vendor publishes a cache price" matters. USD models keep their $ list price and are converted at ${note}.`
+  : `读表：缓存价越低的模型（如 DeepSeek V4.1 Flash 低谷缓存价 ¥0.02/百万），命中率提升带来的降幅越大；未公开缓存价的模型（如 MiniMax M3）输入按未命中价计，命中率变化不改变估算——这正是"先确认官方是否公开缓存价"的价值。美元模型保留 $ 原价并按参考汇率（${note}）折算。`;
+---
+
+<div class="table-scroll">
+  <table class="spec wide">
+    <thead>
+      <tr>
+        <th>{en ? 'Model' : '模型'}</th>
+        <th>{en ? 'Hit rate 0%' : '命中率 0%'}</th>
+        <th>{en ? 'Hit rate 30%' : '命中率 30%'}</th>
+        <th>{en ? 'Hit rate 60%' : '命中率 60%'}</th>
+        <th>{en ? 'Hit rate 90%' : '命中率 90%'}</th>
+        <th>{en ? 'Drop 0% → 90%' : '0% → 90% 降幅'}</th>
+        <th>{en ? 'Verified' : '核验日期'}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(r => (
+        <tr>
+          <th>
+            <a href={`../../models/${r.m.id}/`}>{enModelName(r.m)}</a>
+            {r.noCache && <br /><span class="lib-meta">{en ? 'no published cache price' : '未公开缓存价'}</span>}
+          </th>
+          {r.cells.map((c) => (
+            <td class="num">
+              {c == null
+                ? (en ? 'Cannot estimate' : '无法估算')
+                : r.cur === 'USD'
+                  ? (c.cny != null
+                      ? (<Fragment>{en ? '≈ ' : '约 '}{money(c.cny)}<br /><span class="lib-meta">{money(c.usd, 'USD')}</span></Fragment>)
+                      : money(c.usd, 'USD'))
+                  : money(c.usd)}
+            </td>
+          ))}
+          <td class="num">{r.drop == null ? '—' : (en ? `≈ −${r.drop.toFixed(0)}%` : `约降 ${r.drop.toFixed(0)}%`)}</td>
+          <td class="num">{r.m.verifiedAt}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="s-hint">{hint}</p>

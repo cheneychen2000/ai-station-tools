@@ -1,0 +1,76 @@
+---
+/**
+ * 手写页（迁移自 en/quiz/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"AI Literacy Rank Test - 12 Questions Across Six Dimensions | Reflex Hub"}
+  desc={"A 12-question AI literacy test across six dimensions: concepts, pricing, capability limits, industry landscape, practical skills and safety. Instant right/wrong feedback with an explanation per question, a nine-rank grading scale and a shareable result poster. Free, no sign-up."}
+  ogDescription={"12 questions, six dimensions, instant explanations, nine ranks and a shareable poster."}
+  canonicalPath="/en/quiz/"
+  jsonld={[{"@context":"https://schema.org","@type":"WebApplication","name":"AI Literacy Rank Test","url":"https://www.reflex-hub.com/en/quiz/","inLanguage":"en","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"description":"A 12-question AI literacy test across concepts, pricing, capability limits, industry landscape, practical skills and safety, with instant explanations, nine ranks and a shareable poster."}]}
+  crumb={"/ Rank Test"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script>\n  /* 英文配置注入：与中文共用 assets/quiz.js（同一实现），题库/段位/文案为英文 */\n  window.QUIZ_CFG = {\n    posterUrl: 'https://www.reflex-hub.com/en/quiz/?utm_source=poster',\n    bankUrl: '../../assets/data/quiz-en.json'\n  };\n  </script>\n  <script src=\"../../assets/qr.js\"></script>\n  <script src=\"../../assets/quiz-en-cfg.js\"></script>\n  <script>\n  /* 英文 dims/tiers/weakLinks/UI 由 i18n.mjs QUIZ_EN 经构建序列化，避免第二份配置 */\n  window.QUIZ_CFG.dims = window.QUIZ_EN_CFG.dims;\n  window.QUIZ_CFG.tiers = window.QUIZ_EN_CFG.tiers;\n  window.QUIZ_CFG.weakLinks = window.QUIZ_EN_CFG.weakLinks;\n  window.QUIZ_CFG.ui = window.QUIZ_EN_UI;\n  </script>\n  <script src=\"../../assets/quiz.js\"></script>"} />
+<section class="hero">
+      <h1>AI literacy rank test</h1>
+      <p class="tagline">12 questions · six dimensions · instant explanations</p>
+    </section>
+
+    <p class="lede">
+      This 12-question test covers six dimensions: concepts, pricing, capability limits, industry landscape, practical
+      skills and safety. Every answer gets immediate right/wrong feedback with a one-line explanation (testing as
+      learning), the score maps to nine ranks (from Outsider to Pro 9-dan), and the result page shows a six-dimension
+      radar plus pointers for what to study next. For fun only.
+    </p>
+
+    <section class="panel" id="viewIntro">
+      <h2>How it works</h2>
+      <p style="font-size:14px;color:var(--muted)">
+        · 12 single-choice questions (including 2 true/false), one tap each, no going back<br>
+        · Instant feedback and explanation after each question — wrong answers are the best time to learn<br>
+        · Two questions per dimension: concepts / pricing / limits / industry / practice / safety<br>
+        · Generate a rank poster at the end and challenge your friends
+      </p>
+      <div class="quiz-actions">
+        <button class="btn btn-primary" id="btnStart" disabled>Loading questions…</button>
+      </div>
+    </section>
+
+    <section class="panel" id="viewQuiz" style="display:none">
+      <div class="quiz-progress-text" id="qProg">Question 1 / 12</div>
+      <div class="quiz-progress"><i id="qBar"></i></div>
+      <p class="quiz-q" id="qText"></p>
+      <div id="qOpts"></div>
+      <div class="quiz-fb" id="qFeedback" style="display:none"></div>
+    </section>
+
+    <section class="panel" id="viewResult" style="display:none">
+      <div style="text-align:center">
+        <div class="tier-name" id="rTier"></div>
+        <p class="tier-comment" id="rComment"></p>
+        <p class="num" id="rScore" style="font-size:20px;margin-top:10px"></p>
+        <p id="rPercent" style="font-size:13px;color:var(--muted);margin-top:4px"></p>
+      </div>
+      <div class="radar-wrap"><canvas id="rRadar"></canvas></div>
+      <p class="s-hint radar-note">Two questions per dimension; for fun only</p>
+      <div class="quiz-actions">
+        <a class="btn btn-primary" id="rWeak" href="../">Study the weak spot →</a>
+        <button class="btn btn-primary" id="btnPoster">Generate rank poster</button>
+        <button class="btn btn-ghost" id="btnCopy">Copy result text</button>
+        <button class="btn btn-ghost" id="btnRestart">Retake</button>
+      </div>
+    </section>
+
+    <section class="panel" id="viewPoster" style="display:none">
+      <img class="poster-img" id="posterImg" alt="AI literacy rank test poster">
+      <p class="s-hint" style="text-align:center;margin-top:10px">Long-press to save the image, then share it</p>
+      <div class="quiz-actions">
+        <button class="btn btn-ghost" id="btnBack">Back to result</button>
+      </div>
+    </section>
+
+    <p class="s-hint" style="text-align:center;margin:4px 0 8px">Question bank V1.0 · facts aligned with the Chinese bank, verified 2026-09-19</p>
+</Layout>

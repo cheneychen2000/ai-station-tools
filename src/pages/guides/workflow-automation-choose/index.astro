@@ -1,0 +1,133 @@
+---
+/**
+ * 手写页（迁移自 guides/workflow-automation-choose/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../layouts/SiteLayout.astro';
+import AffiliateCTA from '../../../components/placements/AffiliateCTA.astro';
+---
+
+<Layout title={"Make、n8n 与自建 API：AI 工作流方案怎么选 | Reflex Hub"}
+  desc={"Make（云 iPaaS）、n8n（fair-code、可自托管）与自建 API 三种 AI 工作流方案的决策框架：部署与控制、数据驻留、成本结构、运维负担与供应商锁定；两侧定价未核验如实标注，LLM API 成本用已核验价格数据统一口径比较。"}
+  ogDescription={"三种工作流方案的公平决策框架：不预设任何产品获胜，定价未核验双侧标注，LLM API 成本统一口径实算。"}
+  ogType="article"
+  canonicalPath="/guides/workflow-automation-choose/"
+  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"Make、n8n 与自建 API：AI 工作流方案怎么选","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-28","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"},{"@type":"ListItem","position":3,"name":"工作流方案选型","item":"https://www.reflex-hub.com/guides/workflow-automation-choose/"}]}]}
+  active="guides"
+  crumb={"/ <a href=\"../../guides/\" style=\"color:inherit\">指南</a> / 方案选型"}>
+<section class="hero">
+      <h1>Make、n8n 与自建 API：AI 工作流方案怎么选</h1>
+      <p class="tagline">部署 · 控制 · 成本结构 · 运维 · 锁定</p>
+    </section>
+
+    <p class="lede">
+      <strong>问题</strong>：把大模型接进业务流程，选可视化平台（Make）、可自托管的开源方案（n8n），
+      还是直接写代码自建？<strong>先说结论</strong>：三种方案调用的模型 API 是<strong>同一个、按同一价格计费</strong>——
+      差异不在"AI 成本"，而在部署形态、数据边界、平台费用与运维责任。本文给决策框架，不预设任何产品获胜。
+    </p>
+
+    <section class="panel">
+      <h2>一、三种方案是什么</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>Make（云 iPaaS）</strong>：全托管可视化平台，场景（Scenario）由触发器与模块序列组成；提供 REST 风格开放 API 与自定义应用机制，多数管理端点需付费订阅（见 <a href="https://developers.make.com/api-documentation" target="_blank" rel="noopener">Make 开发者文档</a>，2026-10-28 核实）；<br>
+          · <strong>n8n（fair-code 自动化工具）</strong>：官方文档定义为"fair-code licensed workflow automation tool"，可自行安装（官方文档列出 Docker Compose 等部署方式），也可使用其云服务（见 <a href="https://docs.n8n.io/" target="_blank" rel="noopener">n8n 官方文档</a>，2026-10-28 核实）；<br>
+          · <strong>自建 API</strong>：用代码（队列 + 函数 + 定时任务）直接编排模型调用，无平台层，全部控制、全部责任。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>二、对比框架（六维度）</h2>
+      <div class="table-scroll">
+        <table class="spec wide">
+          <thead>
+            <tr><th>维度</th><th>Make（云 iPaaS）</th><th>n8n（fair-code / 可自托管）</th><th>自建 API</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>部署形态</th><td>全托管 SaaS，零运维</td><td>自托管（Docker 等）或官方云</td><td>自有环境，完全自控</td></tr>
+            <tr><th>数据驻留</th><td>数据流经平台服务器</td><td>自托管时数据不出内网</td><td>数据不出内网</td></tr>
+            <tr><th>上手速度</th><td>快：可视化拼装</td><td>快：可视化拼装</td><td>慢：需开发与调试</td></tr>
+            <tr><th>定制上限</th><td>受平台模块与 API 约束</td><td>可写自定义代码节点</td><td>无上限</td></tr>
+            <tr><th>成本结构</th><td>平台按操作数计 + LLM API</td><td>自托管=服务器成本 / 云=订阅 + LLM API</td><td>仅基础设施 + LLM API</td></tr>
+            <tr><th>运维责任</th><td>平台承担</td><td>自托管自担（升级/可用性）</td><td>全部自担</td></tr>
+            <tr><th>供应商锁定</th><td>高：流程资产在平台</td><td>中：可迁移到自托管</td><td>低</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s-hint">上表刻意只比结构不比价格；两家定价已核验并见下一节。LLM API 成本三种方案完全相同——用 <a href="../../cost/">成本计算器</a> 统一口径估算。</p>
+    </section>
+
+    <section class="panel">
+      <h2>三、平台定价与计费单位（2026-10-28 核验）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>Make（美元，页面标价）</strong>：Free $0/月（明确含 1,000 credits/月）；Core $9 / Pro $16 / Teams $29 每/月（页面在"Save 15%"语境下显示这些数字，<strong>未标明当前是月付档还是年付档</strong>，月付与年付并排价目未给出）；Enterprise 联系销售。<strong>credits 用尽</strong>：场景停止运行，可升级、加购（仅 1,000/10,000 捆绑包，价格按"订阅中定义的固定价"——数字未公开）或对 Core/Pro/Teams 开启自动加购 10,000 credits；credits 按周期过期不结转。<strong>credits 的计量</strong>：场景中每个模块动作多数计 1 个 credit（读取/搜索/创建/更新/转换/聚合/迭代均计），错误处理与 Router 模块不计，Make Code 按 2 credits/秒另计；官方称单次场景运行消耗"从 2 个 credits 到数千个不等"。来源：<a href="https://www.make.com/en/pricing" target="_blank" rel="noopener">Make 官方定价页</a>（2026-10-28 二次核验）。</p>
+        <p><strong>n8n（欧元 EUR，页面标价）</strong>：Starter €20/月（年付，含 2,500 workflow executions/月）；Pro €50/月（年付，10,000 executions/月）；Business €667/月（年付，40,000 executions/月，<strong>仅自托管</strong>）；Community 版免费自托管（GitHub 提供）。<strong>executions 的计量</strong>：一次 execution = 整个工作流完整跑完一次，<strong>无论其中多少步骤、处理多少数据都只计 1 次</strong>。来源：<a href="https://n8n.io/pricing/" target="_blank" rel="noopener">n8n 官方定价页</a>。</p>
+        <p class="s-hint"><strong>两个单位不可互换</strong>：Make 的 1 credit ≈ 一个模块动作，n8n 的 1 execution = 一整次运行（可能含几十个模块）。把"10,000 credits"与"10,000 executions"直接比大小是错的——同一流程在两家消耗可能差一个数量级。未给出项（不猜测）：Make 各付费档具体含多少 credits、月付价与加购包价；n8n 月付价、超额费率、Business 云上版上线时间。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>四、成本三层分离与一个示例工作流</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>三层账</strong>：① 平台订阅/用量费（Make credits 或 n8n 云 executions；自托管则为 ② 基础设施费——服务器、运维人力）；③ LLM API 费（三种方案<strong>完全相同</strong>，见 <a href="../../models/">模型库</a> 刊例价）。决策时把三层分开算，比"总价谁低"更可靠。</p>
+        <p><strong>示例工作流（示例假设，非实测统计）</strong>：每日运行 500 次"表单→AI 打标签→写入表格"，每次含 1 次模型调用（输入 2,000 / 输出 800 Token、缓存命中率 30%）。月运行 15,000 次：</p>
+        <p>
+          · <strong>Make 侧</strong>（假设每次运行消耗 5 个 credits：触发器+取数+裁剪+HTTP+写入）：15,000 × 5 = <strong>75,000 credits/月</strong>。各档包含额度未公开，无法按官方套餐组合确定月费——以下仅为<strong>模型估算（非官方报价）</strong>：按 Pro 公开显示的单价 $1.60/千 credits 线性外推，75,000 × $1.60 ÷ 1,000 ≈ <strong>$120/月</strong>。计算依据与局限：① 未计入订阅内含额度（官方未公开各档含多少 credits）；② 官方实际路径是"订阅 + 1,000/10,000 加购包"，加购固定价数字未公开，线性外推超出官方捆绑规则；③ 实际月费须以 Make 官方报价/控制台为准。<br>
+          · <strong>n8n 云托管路线</strong>：1 次运行 = 1 execution → 15,000 executions/月。Pro 年付 €50/月仅含 10K，已超出；官方称超配额<strong>不停服</strong>但 Starter/Pro 的超额费率仅标注"Capped"、<strong>具体数字未公开</strong>——云托管的确切月费<strong>无法从公开页面确定</strong>；云版 Business 尚未提供（仅 waitlist）。<br>
+          · <strong>n8n 自托管路线</strong>：Business 年付 €667/月（含 40K executions/月，license key 需每日连接 n8n 许可证服务器）+ <strong>自购服务器与运维成本</strong>（规格未定，未估算）。注意 €667 是<strong>自托管</strong>套餐价，不是云托管价，两者不可混用。<br>
+          · <strong>LLM API 侧</strong>（三种方案相同）：以 DeepSeek V4.1 Flash 低谷口径计 ≈ <strong>¥7/月</strong>（15,000 次 × 每次约 ¥0.00046，刊例估算，来源 models.json 2026-10-28 核验）；<br>
+          · <strong>读法</strong>：这个量级下平台/基础设施费（数十到数百美元级，且 Make 侧只能估算）远大于 API 费（个位数元）——优先优化"流程复杂度与运行次数"，而不是纠结模型单价。若执行量再小一个量级，Make 免费档（1,000 credits/月）或 n8n 试用额度可能直接够用。
+        </p>
+        <p class="s-hint">局限（逐项如实标注）：5 credits/次仅为示例假设（官方口径单次 2~数千）；Make 各档含额、加购固定价、月付价均未公开；n8n 月付价、超额费率数字未公开，自托管基础设施未估算。以上均为文档研究的示例计算，非行业平均值、非实测账单；价格以官网为准，核验日期 2026-10-28。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、按场景选（含"不选"的边界）</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · <strong>小团队快速验证</strong>：可视化平台更快；业务数据不敏感时优先考虑全托管（少一件运维差事）；<br>
+          · <strong>数据不能出内网</strong>：n8n 自托管或自建；两者都不需要把业务数据交给第三方平台；<br>
+          · <strong>执行量大且有运维能力</strong>：自建通常总成本最低（无平台操作费），但要把限流、重试、监控、告警自己建好——这些在平台上是自带的；<br>
+          · <strong>流程会频繁改</strong>：可视化方案改连线即可；自建改代码 + 重新部署；<br>
+          · <strong>不确定先跑量</strong>：先用平台小流量试运行并统计真实 Token 消耗（方法见 <a href="../make-llm-workflow/">Make 工作流成本指南</a>的架构节，架构思路对三种方案通用），再决定迁移与否。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>六、一个常被忽略的事实</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          模型 API 是三种方案共同的"原材料"，价格由厂商决定（本站 models.json 收录的刊例价，逐条可核验）。
+          选型争论里真正该比的是：平台费、运维人力、数据边界与锁定成本——而不是"哪个方案调模型更便宜"：都一样。
+        </p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>七、联盟状态声明与数据来源</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>
+          · 商业关系：Make 官方联盟计划处于本站<strong>候选评估阶段（candidate）</strong>，尚未申请、未获批，本文<strong>不含任何推广链接</strong>；n8n 与自建方案无任何商业关系。若未来 Make 获批，CTA 只会在本节附近出现并就近披露佣金关系，对比结论不因合作关系改变；<br>
+          · 来源：n8n 与 Make 的概念性描述引自各自官方文档（2026-10-28 核实链接见正文）；两产品定价未核验，已逐项标注；<br>
+          · 本文为文档研究，不含实测结论；无点击或转化数据（本站未配置相关分析）。
+        </p>
+      </div>
+      <AffiliateCTA partnerId="make" />
+    </section>
+
+    <section class="panel">
+      <h2>八、下一步</h2>
+      <div style="font-size:14px;line-height:2">
+        <p>
+          · 估算三种方案共同的 LLM 成本：<a href="../../cost/">成本计算器</a>；<br>
+          · 平台工作流的成本结构：<a href="../make-llm-workflow/">Make 工作流成本指南</a>；<br>
+          · 查模型价格档案与对比：<a href="../../models/">模型库</a> / <a href="../../compare/">模型对比</a>；<br>
+          · 回到 <a href="../">指南中心</a>。
+        </p>
+      </div>
+    </section>
+</Layout>

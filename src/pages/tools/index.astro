@@ -1,0 +1,36 @@
+---
+/**
+ * 手写页（迁移自 tools/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../lib/data';
+import ToolGroups from '../../components/tools/ToolGroups.astro';
+
+const { tools, models, pairs } = await getSiteData();
+---
+
+<Layout title={"AI 工具库 - 主流 AI 工具盘点与直达 | Reflex Hub"}
+  desc={"对话、绘图、视频、编程、办公五大类主流 AI 工具盘点：收费模式、适用场景与官网直达，信息定期核验。"}
+  canonicalPath="/tools/"
+  active="tools"
+  crumb={"/ 工具库"}>
+<section class="hero">
+      <h1>AI 工具库</h1>
+      <p class="tagline">按场景选对工具，比追新工具更重要</p>
+    </section>
+
+    <p class="lede">
+      顶部是本站自研的免费工具（成本计算器、模型库、对比器、段位测试、Prompt 库），下面按 对话 / 绘图 / 视频 / 编程 / 办公
+      五类收录主流外部 AI 工具，每款标注收费模式、适用场景与官网直达，信息定期核验。
+      把工具接入业务的实操教程与成本分析见 <a href="../guides/">开发指南</a>（含自动化工作流与场景成本案例）。
+    </p>
+
+    <div id="toolGroups">
+      <ToolGroups tools={tools} modelCount={models.length} compareCount={pairs.length} />
+    </div>
+    <script>
+      import '../../scripts/tools';
+    </script>
+</Layout>

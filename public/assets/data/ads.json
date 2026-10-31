@@ -1,0 +1,13 @@
+{
+  "description": "广告配置（唯一数据源；本文件不含任何秘密）。接入条件（全部满足才会加载广告，任一不满足则零请求）：enabled=true 且 publisherId 为正式获批的 ca-pub-16位数字 格式；运行域名 = 生产域 www.reflex-hub.com（本地/预览/测试永不加载）；CMP 状态为 google-certified 且用户同意信号就绪（向 EEA/英国/瑞士投放个性化广告的前置要求，未部署认证 CMP 前不得开启）。slots 仅允许投放在长文指南页标记位（<!-- ADSLOT:name -->），禁止导航栏/计算器交互区/结果旁。当前无获批账户：enabled=false、publisherId=null，全站不加载任何广告脚本、不生成 ads.txt。",
+  "enabled": false,
+  "publisherId": null,
+  "network": "google-adsense",
+  "cmp": {
+    "status": "none",
+    "note": "向 EEA/英国/瑞士投放个性化广告须部署 Google 认证 CMP 并传递正确同意信号；不得用自制横幅替代。当前未部署。"
+  },
+  "slots": {
+    "guide-mid": { "format": "auto", "placement": "仅长文指南页中部章节间" }
+  }
+}

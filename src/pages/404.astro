@@ -1,0 +1,84 @@
+---
+/**
+ * 404 页面：独立布局（无页脚、无 app.js、自有内联样式），保持原始 URL `/404.html`。
+ * Cloudflare Pages 以产物根目录的 404.html 作为未找到响应，行为与原站点一致。
+ */
+import { BRAND } from '../lib/config';
+import { getSiteData } from '../lib/data';
+import { switchTarget } from '../lib/i18n/locales';
+import SiteHeader from '../components/common/SiteHeader.astro';
+import '../styles/global.css';
+
+const { routeMap } = await getSiteData();
+const switchHref = switchTarget(routeMap, '/404.html', 'en');
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>页面不存在 | {BRAND}</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <style is:inline>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #F5F7FC;
+      color: #1B2437;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .topbar { width: 100%; }
+    .card {
+      background: #fff;
+      border: 1px solid #E2E7F0;
+      border-radius: 12px;
+      padding: 48px 32px;
+      text-align: center;
+      max-width: 420px;
+      width: calc(100% - 48px);
+      margin: auto 0;
+    }
+    .code { font-size: 48px; font-weight: 700; color: #1F3A8A; letter-spacing: 4px; }
+    h1 { font-size: 18px; margin-top: 12px; }
+    p { font-size: 14px; color: #5C6575; margin-top: 8px; }
+    .links { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .links a {
+      display: inline-block;
+      min-height: 44px;
+      line-height: 44px;
+      padding: 0 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .links .primary { background: #1F3A8A; color: #fff; }
+    .links .ghost { border: 1px solid #1F3A8A; color: #1F3A8A; }
+  </style>
+</head>
+<body>
+  <SiteHeader base="/" active={null} crumb="" switchHref={switchHref} en={false} />
+  <div class="card" id="main">
+    <div class="code">404</div>
+    <h1>页面不存在或已被移动</h1>
+    <p>你访问的地址没有对应的内容，试试下面的入口。</p>
+    <h1 lang="en" style="margin-top:18px">Page not found or moved</h1>
+    <p lang="en">The address you visited has no content. Try the entries below.</p>
+    <div class="links">
+      <a class="primary" href="/">返回首页</a>
+      <a class="ghost" href="/cost/">成本计算器</a>
+      <a class="ghost" href="/en/">English home</a>
+      <a class="ghost" href="/en/cost/" lang="en">Cost calculator</a>
+    </div>
+  </div>
+</body>
+</html>

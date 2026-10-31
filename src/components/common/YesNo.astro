@@ -1,0 +1,9 @@
+---
+/** 对勾 / 叉号图标（价格表"分档规则/分时段"行、对比表"分时段"行共用）。 */
+interface Props { value: boolean }
+const { value } = Astro.props;
+---
+
+{value
+  ? <svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" stroke="#0E8A5F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+  : <svg class="yn" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="#B0523C" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>}

@@ -1,0 +1,75 @@
+---
+/**
+ * 成本计算器"默认用量下的模型月成本参考"静态表：
+ * 与交互计算器同一公式（domain/pricing），全模型静态渲染（无 fetch）。
+ */
+import { monthlyBase, modelCurrency, money } from '../../lib/domain/pricing';
+import { priceCellLines } from '../../lib/domain/price-cells';
+import { fxNote, enFxNote } from '../../lib/domain/fx-notes';
+import { safeUrl } from '../../lib/utils/escape';
+import { enModelName, enVendorLabel, enSrcLabel } from '../../lib/i18n/helpers';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; fx: FxFile; en?: boolean }
+const { models, fx, en = false } = Astro.props;
+
+const rows = models.map(m => {
+  const cur = modelCurrency(m);
+  const estCny = monthlyBase(m, fx);
+  const estText = estCny == null
+    ? (en ? 'Cannot estimate (tier rate not published)' : '该档位费率未公开，无法估算')
+    : (cur === 'USD' ? (en ? '≈ ' : '约 ') + money(estCny) : money(estCny));
+  return {
+    m,
+    vendor: en ? enVendorLabel(m) : m.vendor,
+    name: en ? enModelName(m) : m.name,
+    inLines: priceCellLines(m, 'in', en),
+    outLines: priceCellLines(m, 'out', en),
+    cacheLines: priceCellLines(m, 'cache', en),
+    estText,
+    srcUrl: safeUrl(m.sourceUrl),
+    srcLabel: en ? enSrcLabel(m) : m.sourceName
+  };
+});
+
+const usdNote = models.some(m => modelCurrency(m) === 'USD')
+  ? (en
+      ? `USD is the official billing currency for those models; estimated monthly costs are converted to CNY (${enFxNote(fx, 'USD') || 'reference rate unverified'}), indicative only.`
+      : `美元为官方原始币种；估算月成本按中国外汇交易中心中间价（${fxNote(fx, 'USD') || '汇率未核实'}）折算为人民币，仅供参考。`)
+  : '';
+const hint = en
+  ? `Models without a published cache price are estimated at the standard input price (no cache discount assumed); time-based priced models use the off-peak rate (matching the "Off-peak" toggle above); tiered models are priced at the tier an example input of 2,000 tokens falls into. The estimate column uses exactly the same formula, default parameters and reference rate as the interactive calculator below. ${usdNote} For a two-model, line-by-line comparison use the <a href="../compare/">model comparison</a>.`
+  : `缓存价未公开的模型按未命中价计（不假设缓存折扣）；分时段模型按低谷价计（与上方"错峰"开关一致）；分档模型按示例输入 2000 Token 落入的档位计价。估算月成本列与下方交互计算器使用完全相同的公式、默认参数与参考汇率。${usdNote}两款模型逐项对比请用 <a href="../compare/">模型对比</a>。`;
+---
+
+<div class="table-scroll">
+  <table class="spec wide">
+    <thead>
+      <tr>
+        <th>{en ? 'Model' : '模型'}</th>
+        <th>{en ? 'Vendor / channel' : '厂商 / 渠道'}</th>
+        <th>{en ? 'Input price' : '输入价'}<br>({en ? 'list price / 1M tokens' : '刊例原价/百万Token'})</th>
+        <th>{en ? 'Output price' : '输出价'}<br>({en ? 'list price / 1M tokens' : '刊例原价/百万Token'})</th>
+        <th>{en ? 'Cache-hit price' : '缓存命中价'}</th>
+        <th>{en ? 'Est. monthly cost (CNY)' : '估算月成本（元）'}</th>
+        <th>{en ? 'Verified' : '核验日期'}</th>
+        <th>{en ? 'Official price source' : '官方价格来源'}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(r => (
+        <tr>
+          <th><a href={`../models/${r.m.id}/`}>{r.name}</a></th>
+          <td>{r.vendor}</td>
+          <td class="num">{r.inLines.map((line, i) => (<Fragment>{i > 0 ? <br /> : ''}{line}</Fragment>))}</td>
+          <td class="num">{r.outLines.map((line, i) => (<Fragment>{i > 0 ? <br /> : ''}{line}</Fragment>))}</td>
+          <td class="num">{r.cacheLines.map((line, i) => (<Fragment>{i > 0 ? <br /> : ''}{line}</Fragment>))}</td>
+          <td class="num">{r.estText}</td>
+          <td class="num">{r.m.verifiedAt}</td>
+          <td>{r.srcUrl ? <a href={r.srcUrl} target="_blank" rel="noopener">{r.srcLabel}</a> : r.srcLabel}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="s-hint" style="margin-top:8px" set:html={hint}></p>

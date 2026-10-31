@@ -1,0 +1,101 @@
+---
+/**
+ * 全站 HTML 布局（原生 Astro）：head（SEOHead/JsonLd）+ SiteHeader + main + SiteFooter + 脚本位。
+ *
+ * 与原 Layout 的职责一一对应：
+ *  - depth / lang / canonicalPath 由当前路由推导（相对资源前缀 base 与 canonical 永远与页面位置一致）；
+ *  - hreflang / 语言切换目标由 lib/i18n/locales 的路由映射派生（唯一事实来源）；
+ *  - noindex 页面不输出 hreflang（沿用旧规则）。
+ * bodyend 插槽：页面注入各自脚本（打包后的模块 + 固定 URL 运行库）；
+ * 未提供时回退到默认 ASSETS_BASE + app 模块 + inlineScript。
+ */
+import { getSiteData } from '../lib/data';
+import { hreflangPairs, switchTarget } from '../lib/i18n/locales';
+import '../styles/global.css';
+import SEOHead from '../components/seo/SEOHead.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
+import SiteHeader from '../components/common/SiteHeader.astro';
+import SiteFooter from '../components/common/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  desc?: string;
+  /** 社交分享文案（历史手写页与页面 title/description 不一定相同，必须逐页保留原文） */
+  ogTitle?: string;
+  ogDescription?: string;
+  /** og:type（指南类页面历史上为 article，其余 website） */
+  ogType?: string;
+  /** canonical 路径（缺省用当前路由，含尾部斜杠） */
+  canonicalPath?: string;
+  robots?: string | null;
+  jsonld?: Array<Record<string, unknown>>;
+  active?: string | null;
+  crumb?: string;
+  /** 追加在 app 模块之后的内联脚本（生成页的埋点等） */
+  inlineScript?: string;
+}
+
+const {
+  title,
+  desc = '',
+  ogTitle = title,
+  ogDescription = desc,
+  ogType = 'website',
+  canonicalPath,
+  robots = null,
+  jsonld: lds = [],
+  active = null,
+  crumb = '',
+  inlineScript = ''
+} = Astro.props;
+
+const { routeMap, models } = await getSiteData();
+
+const pathname = canonicalPath ?? Astro.url.pathname;
+const lang = pathname === '/en/' || pathname.startsWith('/en/') ? 'en' : 'zh-CN';
+/* 相对根前缀：/models/glm-53/ → '../../'（与原模板 depth 常量等价） */
+const depth = pathname.split('/').filter(Boolean).length;
+const base = '../'.repeat(depth);
+/* noindex 页面不输出 hreflang：未索引页面无需语言对应声明 */
+const altPairs = robots && robots.includes('noindex') ? [] : hreflangPairs(routeMap, pathname);
+const switchHref = switchTarget(routeMap, pathname, lang === 'en' ? 'zh-CN' : 'en');
+
+const hasBodyEnd = Astro.slots.has('bodyend');
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <slot name="head-meta" />
+  <SEOHead title={title} desc={desc} pathname={pathname} robots={robots} ogType={ogType} ogTitle={ogTitle} ogDescription={ogDescription} altPairs={altPairs} />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <JsonLd data={lds} />
+</head>
+<body>
+  <SiteHeader base={base} active={active} crumb={crumb} switchHref={switchHref} en={lang === 'en'} />
+
+  <main class="wrap" id="main">
+<slot />
+  </main>
+
+  <footer>
+    <div class="wrap" id="site-footer">
+      <SiteFooter base={base} en={lang === 'en'} models={models} />
+    </div>
+  </footer>
+
+  <Fragment set:html={`  <script>window.ASSETS_BASE = '${base}assets';</script>`} />
+  <script>
+    import '../scripts/app';
+  </script>
+  {hasBodyEnd
+    ? <slot name="bodyend" />
+    : <Fragment set:html={inlineScript} />}
+</body>
+</html>

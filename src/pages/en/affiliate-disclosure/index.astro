@@ -1,0 +1,76 @@
+---
+/**
+ * 手写页（迁移自 en/affiliate-disclosure/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"Affiliate Disclosure | Reflex Hub"}
+  desc={"Reflex Hub's stance on affiliate promotion and commercial partnerships: current status (no partnerships, no promotional links), the principles any future partnership would follow, and how to identify sponsored content."}
+  ogDescription={"Current status, future principles and identification of promotional content."}
+  canonicalPath="/en/affiliate-disclosure/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"Affiliate Disclosure","url":"https://www.reflex-hub.com/en/affiliate-disclosure/","inLanguage":"en","description":"Reflex Hub affiliate disclosure: current status, future principles and how to identify promotional content."},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.reflex-hub.com/en/"},{"@type":"ListItem","position":2,"name":"Affiliate Disclosure","item":"https://www.reflex-hub.com/en/affiliate-disclosure/"}]}]}
+  crumb={"/ Affiliate Disclosure"}>
+<section class="hero">
+      <h1>Affiliate disclosure</h1>
+      <p class="tagline">Current status · future principles · how to identify promotions</p>
+    </section>
+
+    <p class="lede">
+      This page explains Reflex Hub's stance on promotion and commercial partnerships. As of the last update
+      (2026-10-28), <strong>the site has signed no affiliate or sponsorship deals, and no page contains promotional links</strong>.
+    </p>
+
+    <section class="panel">
+      <h2>Candidates under observation (none applied for, none displayed)</h2>
+      <p style="font-size:14px;line-height:1.9">
+        The following official affiliate-program pages are in our candidate ledger (partners.json) for evaluation only.
+        <strong>No application has been submitted, none has been approved, and none appears on any page</strong>;
+        terms will be re-verified before any application, and a candidate's status will not become active until approved:<br>
+        · <a href="https://elevenlabs.io/affiliates" target="_blank" rel="noopener">ElevenLabs affiliate program</a> (verified 2026-10-28: the public page states 22% recurring commission on payments for the first 12 months of new paid subscriptions, settled via PartnerStack);<br>
+        · <a href="https://www.make.com/en/affiliate" target="_blank" rel="noopener">Make affiliate program</a> (verified 2026-10-28: the public page states 35% of subscription payments; the main text says 12 months while one FAQ entry says 24 months — to be verified before applying);<br>
+        · Writesonic affiliate page (affiliates.writesonic.com — timed out on both visits; <strong>terms could not be verified</strong>; validity pending manual confirmation).<br>
+        Note: this site currently has no real-time-communication API content, so the Tencent RTC affiliate program is not a candidate.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>1. Current status: no partnerships, no promotional links</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · No affiliate or sponsorship agreement has been signed with any vendor, reseller or promotion platform;<br>
+        · "Official source" and "official site" links are plain outbound links with no promotional parameters and earn no commission;<br>
+        · The partnership ledger (partners.json) is currently empty — it exists only as a registration structure for future reviewed partnerships.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>2. Principles for any future partnership</h2>
+      <p style="font-size:14px;line-height:1.9">
+        If promotions or sponsorships are ever introduced, these rules apply:<br>
+        · <strong>Review first, display second</strong>: a partner must pass content review with a verification date recorded before appearing anywhere on the site;<br>
+        · <strong>Disclosure next to the content</strong>: the commercial relationship (e.g. "Sponsored") will be stated beside the recommendation, never with wording that implies independent endorsement;<br>
+        · <strong>Link separation</strong>: affiliate links are recorded and presented separately from official links, never blurring "official source" with "promotional link", and carry <code>rel="sponsored"</code>;<br>
+        · <strong>Unchanged independence</strong>: model prices and data come only from vendors' public list prices with verification dates; no partnership affects how data is collected or presented;<br>
+        · <strong>Synced disclosure</strong>: this page will list every partner, the form of the partnership and its effective date.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>3. How to identify promotional content</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · Promotional placements carry an explicit "Sponsored" label directly beside the recommended content;<br>
+        · Official source links (the pricing sources in model profiles) will never be affiliate links;<br>
+        · If you spot a suspected undisclosed commercial recommendation, please report it via the Issues link below — we will verify and complete the disclosure.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>4. Feedback</h2>
+      <p style="font-size:14px;line-height:1.9">
+        Questions about commercial-relationship disclosure? Please open an issue at
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub</a>.
+      </p>
+    </section>
+</Layout>

@@ -1,0 +1,73 @@
+---
+/**
+ * 手写页（迁移自 terms/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"使用条款 | Reflex Hub"}
+  desc={"Reflex Hub 使用条款：免费工具与信息整理的服务性质、价格与汇率折算的限制、第三方服务与商标归属、知识产权与免责说明。"}
+  ogDescription={"免费工具与信息整理的服务性质、价格与汇率折算限制、第三方服务与免责说明。"}
+  canonicalPath="/terms/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"使用条款","url":"https://www.reflex-hub.com/terms/","description":"Reflex Hub 使用条款：服务性质、数据限制、第三方服务与免责说明。"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"使用条款","item":"https://www.reflex-hub.com/terms/"}]}]}
+  crumb={"/ 使用条款"}>
+<section class="hero">
+      <h1>使用条款</h1>
+      <p class="tagline">服务性质 · 数据限制 · 第三方服务 · 免责</p>
+    </section>
+
+    <p class="lede">
+      使用 Reflex Hub 即表示你理解并接受以下条款。本站是免费工具与公开信息整理项目，不提供法律、采购或投资建议。最近更新：2026-10-28。
+    </p>
+
+    <section class="panel">
+      <h2>一、服务性质</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 本站提供大模型 API 成本估算、模型参数查询与对比等免费工具，按"现状"提供，不承诺不间断、无错误；<br>
+        · 本站内容属于信息整理与计算辅助，不构成法律意见、采购建议、投资意见或对任何模型质量的评价。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>二、价格、汇率与估算结果</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 模型价格来自厂商公开刊例并标注来源与核验日期，<strong>以厂商官方页面与控制台为准</strong>；厂商调价后本站数据可能滞后于官方页面；<br>
+        · 美元模型的折算使用参考汇率（中国外汇交易中心中间价），折算值仅供参考，不构成任何汇率承诺；<br>
+        · 成本估算基于固定假设，未计入免费额度、资源包、套餐折扣与限时活动，<strong>估算结果不等同于服务商实际账单</strong>；生产或商业采购请以服务商正式报价、合同与服务条款为准。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>三、第三方服务与商标</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · DeepSeek、GLM、Kimi、Qwen、混元、MiniMax、MiMo、Step、GPT、Claude、Gemini 等名称与商标归各自厂商所有；本站仅为第三方数据整理，与厂商无隶属或背书关系；<br>
+        · 跳转到厂商或第三方工具官网的链接，其内容、可用性与隐私实践由对方负责，与本站无关；<br>
+        · 工具目录中的收费模式、适用场景等信息标注核验日期，可能滞后于产品实际变化。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>四、知识产权</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · 本站原创的页面结构、计算口径说明与整理性文字归本站所有；价格、参数等事实数据来自厂商公开信息；<br>
+        · 引用本站内容时请注明来源；不允许以任何方式暗示本站为厂商官方渠道。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>五、责任限制</h2>
+      <p style="font-size:14px;line-height:1.9">
+        在法律允许的最大范围内，本站不对因使用或无法使用本站内容而产生的任何直接、间接或附带损失承担责任。你基于本站数据做出的任何决策，风险由你自行评估与承担。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>六、条款变更与反馈</h2>
+      <p style="font-size:14px;line-height:1.9">
+        条款可能随站点功能调整而更新，以本页标注日期为准。疑问与建议请通过
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub Issues</a> 反馈。
+      </p>
+    </section>
+</Layout>

@@ -1,0 +1,75 @@
+---
+/**
+ * 手写页（迁移自 quiz/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"AI认知段位测试 - 12 题六维认知测评 | Reflex Hub"}
+  desc={"12 题测出你的 AI 认知段位：概念、价格、能力边界、行业格局、实操技能、安全防坑六维各 2 题，每题即时对错与解析，九段制评级，生成段位海报，免费免注册。"}
+  ogDescription={"12 题测出你的 AI 认知段位：概念、价格、能力边界、行业格局、实操技能、安全防坑六维各 2 题，每题即时对错与解析，九段制评级，生成段位海报。"}
+  canonicalPath="/quiz/"
+  jsonld={[{"@context":"https://schema.org","@type":"WebApplication","name":"AI认知段位测试","url":"https://www.reflex-hub.com/quiz/","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"description":"12 题的 AI 认知段位测试，覆盖概念辨析、价格账本、能力边界、行业格局、实操技能、安全防坑六个维度，每题即时对错与解析，按答对题数评定九个段位并生成段位海报。"}]}
+  crumb={"/ 段位测试"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script src=\"../assets/qr.js\"></script>\n  <script src=\"../assets/quiz.js\"></script>"} />
+<section class="hero">
+      <h1>AI 认知段位测试</h1>
+      <p class="tagline">12 题 · 六维认知 · 每题即时解析</p>
+    </section>
+
+    <p class="lede">
+      这是一个 12 题的 AI 认知段位测试，覆盖六个维度：概念辨析、价格账本、能力边界、行业格局、实操技能、安全防坑。
+      每题作答后立即给出对错与一句话解析（测试即学习），答对题数对应九个段位（门外汉 → 职业九段），
+      结果页附六维雷达图与补课入口。结果仅供娱乐。
+    </p>
+
+    <section class="panel" id="viewIntro">
+      <h2>规则说明</h2>
+      <p style="font-size:14px;color:var(--muted)">
+        · 共 12 题单选（含 2 道判断），即点即答不可返回<br>
+        · 每题作答后立即显示对错与解析，答错正好补课<br>
+        · 六维各 2 题：概念 / 价格 / 边界 / 格局 / 实操 / 安全<br>
+        · 测完可生成段位海报，喊朋友来 PK
+      </p>
+      <div class="quiz-actions">
+        <button class="btn btn-primary" id="btnStart" disabled>题目加载中…</button>
+      </div>
+    </section>
+
+    <section class="panel" id="viewQuiz" style="display:none">
+      <div class="quiz-progress-text" id="qProg">第 1 / 12 题</div>
+      <div class="quiz-progress"><i id="qBar"></i></div>
+      <p class="quiz-q" id="qText"></p>
+      <div id="qOpts"></div>
+      <div class="quiz-fb" id="qFeedback" style="display:none"></div>
+    </section>
+
+    <section class="panel" id="viewResult" style="display:none">
+      <div style="text-align:center">
+        <div class="tier-name" id="rTier"></div>
+        <p class="tier-comment" id="rComment"></p>
+        <p class="num" id="rScore" style="font-size:20px;margin-top:10px"></p>
+        <p id="rPercent" style="font-size:13px;color:var(--muted);margin-top:4px"></p>
+      </div>
+      <div class="radar-wrap"><canvas id="rRadar"></canvas></div>
+      <p class="s-hint radar-note">六维各 2 题，仅供娱乐参考</p>
+      <div class="quiz-actions">
+        <a class="btn btn-primary" id="rWeak" href="../">去补补课 →</a>
+        <button class="btn btn-primary" id="btnPoster">生成段位海报</button>
+        <button class="btn btn-ghost" id="btnCopy">复制战绩文案</button>
+        <button class="btn btn-ghost" id="btnRestart">重新测一次</button>
+      </div>
+    </section>
+
+    <section class="panel" id="viewPoster" style="display:none">
+      <img class="poster-img" id="posterImg" alt="AI 认知段位测试海报">
+      <p class="s-hint" style="text-align:center;margin-top:10px">长按保存图片，转发给朋友</p>
+      <div class="quiz-actions">
+        <button class="btn btn-ghost" id="btnBack">返回结果</button>
+      </div>
+    </section>
+
+    <p class="s-hint" style="text-align:center;margin:4px 0 8px">题库版本 V1.0 · 2026-09-19 核验</p>
+</Layout>

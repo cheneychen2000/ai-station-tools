@@ -1,0 +1,82 @@
+---
+/**
+ * 手写页（迁移自 en/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"Reflex Hub — Compare AI Model API Pricing and Estimate Token Costs"}
+  desc={"Free tools to compare LLM API pricing and estimate monthly token costs. Official vendor price sources, verification dates, cache-hit weighting and off-peak rates. No sign-up."}
+  ogDescription={"Free tools to compare LLM API pricing and estimate monthly token costs. Official vendor price sources and verification dates. No sign-up."}
+  canonicalPath="/en/"
+  jsonld={[{"@context":"https://schema.org","@type":"WebSite","name":"Reflex Hub","url":"https://www.reflex-hub.com/en/","inLanguage":"en","description":"Free tools to compare LLM API pricing and estimate monthly token costs, with official sources and verification dates"},{"@context":"https://schema.org","@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}]}
+  active="home">
+<section class="hero">
+      <h1>Compare AI model API pricing and estimate token costs</h1>
+      <p class="tagline">Official list prices with source links and verification dates · cache-hit and off-peak aware cost estimates · free, no sign-up</p>
+    </section>
+
+    <p class="lede">
+      Reflex Hub is a free toolkit for developers choosing an LLM API. It helps you estimate monthly token costs
+      from vendors' published price lists, look up model specifications such as context window and supported modalities,
+      and trace every price back to its official source. Prices are recorded in the vendor's original currency
+      (CNY or USD per 1M tokens) with a verification date — estimates are for budgeting, not vendor bills.
+    </p>
+
+    <nav class="module-grid" aria-label="Tools">
+      <a class="module-card active" href="cost/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6.5" x2="16" y2="6.5"/><line x1="8" y1="11" x2="9.5" y2="11"/><line x1="14.5" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="9.5" y2="15"/><line x1="14.5" y1="15" x2="16" y2="15"/><line x1="8" y1="19" x2="9.5" y2="19"/><line x1="14.5" y1="19" x2="16" y2="19"/></svg></div>
+        <h3>API Cost Calculator</h3>
+        <p>Estimate monthly API costs across DeepSeek, GLM, Kimi, Qwen, GPT, Claude and Gemini — with cache-hit weighting and off-peak rates</p>
+        <span class="go">Open calculator →</span>
+      </a>
+      <a class="module-card active" href="models/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+        <h3>Model Library</h3>
+        <p>Prices, context windows, modalities and specs for major models, with verifiable sources and dates</p>
+        <span class="go">Browse library →</span>
+      </a>
+      <a class="module-card active" href="compare/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="3" x2="12" y2="21"/><line x1="5" y1="7" x2="19" y2="7"/><path d="M5 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><path d="M19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><line x1="8" y1="21" x2="16" y2="21"/></svg></div>
+        <h3>Model Comparison</h3>
+        <p>Two models, line by line: prices, cache, context and a fixed-assumption monthly cost</p>
+        <span class="go">Start comparing →</span>
+      </a>
+      <a class="module-card active" href="guides/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="17" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg></div>
+        <h3>Developer Guides &amp; Cost Examples</h3>
+        <p>Billing rules, reproducible cost examples, pricing comparisons and chatbot / RAG / agent scenario analysis</p>
+        <span class="go">Read guides →</span>
+      </a>
+      <a class="module-card active" href="tools/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <h3>AI Tools Directory</h3>
+        <p>Chat, image, video, coding and office AI tools — one entry per product with direct links</p>
+        <span class="go">Browse directory →</span>
+      </a>
+      <a class="module-card active" href="prompts/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+        <h3>Prompt Library</h3>
+        <p>Copy-ready prompts for high-frequency scenarios, one tap to copy</p>
+        <span class="go">Browse prompts →</span>
+      </a>
+      <a class="module-card active" href="quiz/">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.6 10.4L7 3h10l-1.6 7.4"/><circle cx="12" cy="15" r="5"/><path d="M12 12.6l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2-1.45-1.4 2-.3z" fill="currentColor" stroke="none"/></svg></div>
+        <h3>AI Literacy Test</h3>
+        <p>12 questions across six dimensions, each with an instant explanation — see where you stand</p>
+        <span class="go">Take the test →</span>
+      </a>
+    </nav>
+
+    <section class="panel">
+      <h2>How we handle pricing data</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>Official list prices.</strong> Prices are vendors' published list prices per 1M tokens, in the original billing currency (CNY or USD). Promotional discounts, resource packs and free tiers are not included unless a page says so.</p>
+        <p><strong>Verifiable sources.</strong> Every model page links to the official vendor page it was checked against, with a verification date. The most recent price verification across the library is <span class="num">2026-10-28</span>; each page shows its own date.</p>
+        <p><strong>Estimates, not bills.</strong> Cost estimates apply fixed usage assumptions (shown on each page). They do not equal a vendor's actual invoice and do not constitute purchase advice.</p>
+        <p><strong>Editorial independence.</strong> Reflex Hub is an independent third-party data compilation and is not affiliated with or endorsed by any vendor. Vendor names and trademarks belong to their respective owners.</p>
+      </div>
+    </section>
+</Layout>

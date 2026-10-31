@@ -1,0 +1,75 @@
+---
+/**
+ * 手写页（迁移自 about/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"关于 Reflex Hub - 数据来源、计算方法与独立性 | Reflex Hub"}
+  desc={"Reflex Hub 是独立维护的大模型 API 成本与选型工具项目：数据来源与核验口径、成本估算方法、独立性与商业关系说明、隐私与反馈通道。"}
+  ogDescription={"Reflex Hub 的数据来源与核验口径、成本估算方法、独立性与商业关系说明、隐私与反馈通道。"}
+  canonicalPath="/about/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"关于 Reflex Hub","url":"https://www.reflex-hub.com/about/","mainEntity":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/","description":"独立维护的大模型 API 成本估算与模型选型工具项目，提供成本计算器、模型库、模型对比等免费工具。"}}]}
+  crumb={"/ 关于本站"}>
+<section class="hero">
+      <h1>关于 Reflex Hub</h1>
+      <p class="tagline">独立维护的 AI 开发者工具项目</p>
+    </section>
+
+    <section class="panel">
+      <h2>本站是什么</h2>
+      <p style="font-size:14px;line-height:1.8">
+        Reflex Hub 是一个独立维护的 AI 开发者工具项目，专注于大模型 API 成本估算、模型参数比较和 AI 工具选型。
+        我们希望让开发者更容易理解模型的公开定价、计算条件和使用限制，并通过可核验的资料辅助技术决策。
+      </p>
+      <p style="font-size:14px;line-height:1.8;margin-top:8px">
+        本站目前提供：<a href="../cost/">大模型 API 成本计算器</a>、<a href="../models/">模型价格与参数库</a>、
+        <a href="../compare/">模型对比工具</a>、<a href="../tools/">AI 工具目录</a>、
+        <a href="../prompts/">Prompt 资源库</a>、<a href="../quiz/">AI 认知测试</a>。
+        所有工具均可直接使用，无需注册账号。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>数据来源与计算方法</h2>
+      <p style="font-size:14px;line-height:1.8">
+        · 模型价格、参数与相关产品信息尽可能引用厂商公开资料，每条数据标注来源链接与核验日期，以相应页面实际展示为准；<br>
+        · 成本计算器依据指定的调用次数、输入输出 Token、缓存命中率与计费假设估算费用，估算结果不等同于服务商实际账单，也不构成采购建议；<br>
+        · 如果来源无法核实或尚未更新，会明确标示相关限制，而不会把未知信息描述为确定事实；价格以厂商官方页面为准，可能随厂商调整而变化；
+        · 数据口径的完整规则（计价单位、分档、参考汇率、核验时间语义、未知值处理）见 <a href="../pricing-methodology/">定价方法论</a>。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>独立性与商业关系</h2>
+      <p style="font-size:14px;line-height:1.8">
+        Reflex Hub 是独立维护的产品项目，不代表任何模型厂商或第三方工具供应商。
+        DeepSeek、GLM、Kimi、Qwen 等第三方产品名称与商标归各自所有者所有，本站仅为数据整理，与厂商无隶属关系。
+        如果未来页面包含联盟推广或赞助链接，会在相应推荐附近明确说明商业关系，并区分官方资料、可核验的数据和编辑判断。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>隐私与使用</h2>
+      <p style="font-size:14px;line-height:1.8">
+        本站不要求注册账号，工具均在浏览器本地完成计算。访问统计功能（Cloudflare Web Analytics，无 Cookie、
+        不采集可识别个人的信息）当前未在页面中启用；如未来在部署配置中启用，仅用于匿名访问统计，届时以实际部署配置为准。
+        完整的本地存储、第三方链接与联盟处理说明见 <a href="../privacy/">隐私政策</a>，推广合作的披露原则见
+        <a href="../affiliate-disclosure/">联盟推广披露</a>，使用限制见 <a href="../terms/">使用条款</a>。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>反馈与数据纠错</h2>
+      <p style="font-size:14px;line-height:1.8">
+        如果发现模型价格、参数、来源链接或计算结果存在问题，欢迎在 GitHub Issues 提交反馈：<br>
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">github.com/cheneychen2000/ai-station-tools/issues</a><br>
+        建议提供问题页面、具体描述以及可核验的官方来源。请勿在公开 Issue 中提交 API 密钥、账号凭证或其他敏感信息。
+      </p>
+      <p style="font-size:14px;line-height:1.8;margin-top:8px">
+        Reflex Hub 以数据准确性、计算透明度和实际使用价值作为产品维护重点。
+      </p>
+    </section>
+</Layout>

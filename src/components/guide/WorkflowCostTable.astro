@@ -1,0 +1,63 @@
+---
+/** 指南《Make 工作流》成本表：每次运行 1 次模型调用（2000/800、命中 30%、错峰）的每千次运行成本。 */
+import { monthlyFull, money, price, modelCurrency, toBase } from '../../lib/domain/pricing';
+import { WF_COST_MODELS } from '../../lib/domain/guide-data';
+import { fxNote, enFxNote } from '../../lib/domain/fx-notes';
+import { enModelName } from '../../lib/i18n/helpers';
+import { EN_VENDOR } from '../../lib/i18n/dictionaries.mjs';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; fx: FxFile; en?: boolean }
+const { models, fx, en = false } = Astro.props;
+
+const rows = WF_COST_MODELS.map(id => models.find(m => m.id === id)).filter((m): m is Model => Boolean(m)).map(m => {
+  const cur = modelCurrency(m);
+  const v = monthlyFull(m, { off: true, hit: 0.3, calls: 1000, inTok: 2000, outTok: 800 });
+  const per1k = v.t / 30; /* monthlyFull 按 30 天计：calls=1000/天 → 除 30 得每千次 */
+  const cny = toBase(per1k, cur, fx);
+  const cacheText = m.priceCacheHit != null
+    ? `${en ? ' / Cache ' : ' / 缓存 '}${price(m.priceCacheHit, cur)}`
+    : (en ? ' / Cache not published' : ' / 缓存未公开');
+  const listLine = en
+    ? `Input ${price(m.priceIn, cur)} / Output ${price(m.priceOut, cur)}${cacheText}`
+    : `输入 ${price(m.priceIn, cur)} / 输出 ${price(m.priceOut, cur)}${cacheText}`;
+  return { m, cur, per1k, cny, listLine };
+});
+
+const note = en ? (enFxNote(fx, 'USD') || 'a reference rate (unverified)') : (fxNote(fx, 'USD') || '未核实');
+const hint = en
+  ? `Basis: each run = 1 model call (2,000 input / 800 output tokens · 30% cache hit rate · off-peak rates); USD models converted at ${note}, indicative only. Monthly cost for N runs/day = table value × N ÷ 1,000. Models without a published cache price are billed at the standard input price.`
+  : `口径：每次运行 = 1 次模型调用（输入 2,000 / 输出 800 Token · 缓存命中率 30% · 错峰低谷价）；美元模型按参考汇率（${note}）折算，仅供参考。每日运行 N 次的月成本 = 表中值 × N ÷ 1,000。官方未公开缓存价的模型按未命中价计。`;
+---
+
+<div class="table-scroll">
+  <table class="spec wide">
+    <thead>
+      <tr>
+        <th>{en ? 'Model' : '模型'}</th>
+        <th>{en ? 'Vendor / channel' : '厂商 / 渠道'}</th>
+        <th>{en ? 'List price (per 1M tokens)' : '刊例原价（每百万 Token）'}</th>
+        <th>{en ? 'Per 1,000 runs (CNY-converted)' : '每 1,000 次运行（人民币折算）'}</th>
+        <th>{en ? 'Verified' : '核验日期'}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map(r => (
+        <tr>
+          <th><a href={`../../models/${r.m.id}/`}>{enModelName(r.m)}</a></th>
+          <td>{en ? (EN_VENDOR[r.m.vendor] || r.m.vendor) : r.m.vendor}</td>
+          <td class="num">{r.listLine}</td>
+          <td class="num">
+            {r.cur === 'USD'
+              ? (r.cny != null
+                  ? (<Fragment>{en ? '≈ ' : '约 '}{money(r.cny)}<br /><span class="lib-meta">{money(r.per1k, 'USD')}</span></Fragment>)
+                  : money(r.per1k, 'USD'))
+              : money(r.per1k)}
+          </td>
+          <td class="num">{r.m.verifiedAt}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="s-hint">{hint}</p>

@@ -1,0 +1,75 @@
+---
+/**
+ * 手写页（迁移自 compare/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../lib/data';
+
+const { pairs, models } = await getSiteData();
+---
+
+<Layout title={"模型对比器 - 两款大模型价格与规格逐项对比 | Reflex Hub"}
+  desc={"任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本；收录模型两两全组合均有独立对比页，跨币种按参考汇率折算并如实标注。"}
+  ogDescription={"任选两款主流大模型，逐项对比输入/输出/缓存价格、分时段、上下文窗口、支持模态与示例月成本；收录模型两两全组合均有独立对比页。"}
+  canonicalPath="/compare/"
+  active="compare"
+  crumb={"/ 模型对比"}>
+<section class="hero">
+      <h1>模型对比器</h1>
+      <p class="tagline">两款模型，逐项对比，胜出一眼可见</p>
+    </section>
+
+    <p class="lede">
+      选择两款大模型，生成逐项对比：输入/输出/缓存命中价格、分时段定价、上下文窗口、支持模态、特点，
+      以及与 <a href="../cost/">成本计算器</a> 同公式的示例月成本。全部模型的同用量横向比较与读表方法见
+      <a href="../guides/llm-api-pricing-comparison/">定价比较指南</a>。
+    </p>
+
+    <section class="panel">
+      <div class="sel-compare">
+        <select id="selA" aria-label="模型 A"></select>
+        <select id="selB" aria-label="模型 B"></select>
+        <button class="btn btn-primary" id="btnGo" type="button">开始对比</button>
+      </div>
+      <p class="s-hint" id="cmpHint" style="margin-top:10px"></p>
+    </section>
+
+    <section class="panel">
+      <h2>对比口径说明</h2>
+      <p style="font-size:14px;line-height:1.8">
+        每组对比固定比较：输入价、输出价、缓存命中价、分时段规则、上下文窗口与支持模态，并给出与
+        <a href="../cost/">成本计算器</a> 完全相同的示例月成本（日均 100 次调用 · 单次输入 2000 / 输出 800 Token · 错峰低谷价 · 缓存命中率 30%）。
+        价格均为厂商公开刊例原价（人民币或美元 / 百万 Token，美元模型按参考汇率折算人民币后比较，折算仅供参考），未公开缓存价的模型按未命中价计；示例月成本只是该固定用量下的估算，
+        不代表模型能力、输出质量或综合性价比排名，不构成采购建议。
+        计算方法与常见误区详见指南 <a href="../guides/llm-api-cost/">《如何计算 LLM API 成本》</a>。
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>常用对比入口</h2>
+      <p style="font-size:14px;line-height:2">
+        · 低价轻量档：<a href="deepseek-v41-flash/glm-53-flash/">DeepSeek V4.1 Flash 对比 GLM-5.3-Flash</a>　<a href="deepseek-v41-flash/qwen38-flash/">DeepSeek V4.1 Flash 对比 Qwen3.8-Flash</a><br>
+        · 旗舰推理：<a href="deepseek-v4-pro/glm-53/">DeepSeek V4 Pro 对比 GLM-5.3</a>　<a href="glm-53/kimi-k3/">GLM-5.3 对比 Kimi K3</a><br>
+        · 长上下文：<a href="deepseek-v41-flash/kimi-k3/">DeepSeek V4.1 Flash 对比 Kimi K3</a>　<a href="kimi-k3/qwen38-flash/">Kimi K3 对比 Qwen3.8-Flash</a><br>
+        · 同系不同档：<a href="qwen35-plus/qwen37-plus/">Qwen3.5-Plus 对比 Qwen3.7-Plus</a>
+      </p>
+      <p style="font-size:14px;line-height:2;margin-top:10px">
+        · 国际·OpenAI 内部：<a href="gpt-6-1-sol/gpt-6-luna/">GPT-6 Luna 对比 GPT-6.1 Sol</a><br>
+        · 国际·Anthropic 内部：<a href="claude-haiku-5-5/claude-sonnet-5-5/">Claude Haiku 5.5 对比 Claude Sonnet 5.5</a><br>
+        · 低价轻量跨厂商：<a href="glm-53-flash/gpt-6-luna/">GLM-5.3-Flash 对比 GPT-6 Luna</a>　<a href="claude-haiku-5-5/glm-53-flash/">Claude Haiku 5.5 对比 GLM-5.3-Flash</a>　<a href="gemini-3-1-flash-lite/qwen38-flash/">Gemini 3.1 Flash-Lite 对比 Qwen3.8-Flash</a><br>
+        · 主力档跨厂商：<a href="deepseek-v4-pro/gpt-6-1-sol/">DeepSeek V4 Pro 对比 GPT-6.1 Sol</a>　<a href="claude-sonnet-5-5/deepseek-v4-pro/">Claude Sonnet 5.5 对比 DeepSeek V4 Pro</a>
+      </p>
+
+      <p class="s-hint">全部 {pairs.length} 组对比（{models.length} 款模型两两全组合）均可通过上方选择器进入；每个对比页都有固定口径摘要与双向模型档案链接。</p>
+
+    </section>
+
+    <noscript>
+      <p class="empty-hint">模型选择器需要启用 JavaScript。你也可以直接浏览 <a href="../models/">模型库</a> 查看各模型价格与参数档案，或在 <a href="../cost/">成本计算器</a> 中估算月成本。</p>
+    </noscript>
+    <script>
+      import '../../scripts/compare';
+    </script>
+</Layout>

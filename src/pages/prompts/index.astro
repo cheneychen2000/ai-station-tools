@@ -1,0 +1,37 @@
+---
+/**
+ * Prompt 库（/prompts/）：prompts.json（Content Collection）服务端静态渲染卡片，
+ * 复制交互在 src/scripts/prompts.ts（Vite 打包模块），不再浏览器 fetch + innerHTML。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+import { getPrompts } from '../../lib/data';
+import PromptCard from '../../components/prompts/PromptCard.astro';
+
+const prompts = await getPrompts();
+---
+
+<Layout title={"Prompt 库 - 高频场景提示词，一键复制 | Reflex Hub"}
+  desc={"写作、翻译、编程、总结、学习、办公高频场景的中文提示词模板，一键复制即用，把【占位符】换成你的内容即可。"}
+  canonicalPath="/prompts/"
+  active="prompts"
+  crumb={"/ Prompt库"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <div class=\"toast\" id=\"toast\"></div>"} />
+<section class="hero">
+      <h1>Prompt 库</h1>
+      <p class="tagline">高频场景提示词，一键复制即用</p>
+    </section>
+
+    <p class="lede">
+      这里收录写作、翻译、编程、总结、学习、办公等高频场景的中文提示词模板。
+      点「复制」后粘贴到任意 AI 对话工具，把【方括号占位符】换成你的内容即可。
+      好 Prompt 的共同结构：角色 + 任务 + 约束 + 输出格式。
+    </p>
+
+    <div id="promptList" data-copy-done="已复制" data-copy-fail="复制失败，请手动选择文本">
+      {prompts.map((p) => <PromptCard p={p} />)}
+    </div>
+
+    <script>
+      import '../../scripts/prompts';
+    </script>
+</Layout>

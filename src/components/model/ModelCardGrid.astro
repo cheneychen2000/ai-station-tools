@@ -1,0 +1,12 @@
+---
+/** 模型库卡片网格：#modelList 容器 + ModelCard 循环（lib-filter 的 DOM 契约）。 */
+import ModelCard from './ModelCard.astro';
+import type { Model, FxFile } from '../../lib/data/schemas';
+
+interface Props { models: Model[]; fx: FxFile; en?: boolean }
+const { models, fx, en = false } = Astro.props;
+---
+
+<div class="module-grid" id="modelList">
+  {models.map((m) => <ModelCard m={m} fx={fx} en={en} />)}
+</div>

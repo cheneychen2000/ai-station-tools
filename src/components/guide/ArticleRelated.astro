@@ -1,0 +1,28 @@
+---
+/**
+ * ArticleRelated：相关文章（调用方只传入真实存在且已发布的文章，草稿/不存在的一律不渲染）。
+ */
+import type { ArticleSummary, GuideLang } from '../../lib/data/guides';
+interface Props { items: ArticleSummary[]; lang: GuideLang; heading?: string }
+const { items, lang, heading } = Astro.props;
+const en = lang === 'en';
+const title = heading || (en ? 'Related articles' : '相关文章');
+---
+{items.length > 0 && (
+  <section class="panel" aria-label={title}>
+    <h2>{title}</h2>
+    <ul class="article-related">
+      {items.map(a => (
+        <li>
+          <a href={a.slug + '/'}>{a.title}</a>
+          <span class="lib-meta">{a.description}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .article-related { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9; }
+  .article-related .lib-meta { display: block; margin: 2px 0 10px; }
+</style>

@@ -1,0 +1,118 @@
+---
+/**
+ * 手写页（迁移自 en/cost/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../../lib/data';
+import CostTable from '../../../components/cost/CostTable.astro';
+import CostExample from '../../../components/cost/CostExample.astro';
+
+const { models, fx } = await getSiteData();
+---
+
+<Layout title={"AI Model API Cost Calculator — Estimate Monthly Token Costs | Reflex Hub"}
+  desc={"Estimate monthly LLM API costs from official list prices. Enter daily calls and token usage, weight by cache hit rate and off-peak rates, and compare DeepSeek, GLM, Kimi, Qwen, GPT, Claude and Gemini side by side."}
+  ogDescription={"Enter daily calls and token usage to estimate monthly LLM API costs from official list prices, with cache-hit weighting and off-peak rates."}
+  canonicalPath="/en/cost/"
+  jsonld={[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LLM API Cost Calculator","url":"https://www.reflex-hub.com/en/cost/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"description":"Estimate monthly LLM API costs from vendors' published price lists, with cache-hit weighting and off-peak rates."},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does this calculator work?","acceptedAnswer":{"@type":"Answer","text":"Monthly cost = calls per day × 30 × (input tokens ÷ 1,000,000 × effective input price + output tokens ÷ 1,000,000 × output price). The effective input price is weighted by cache hit rate: hit rate × cache-hit price + (1 − hit rate) × standard price. Models without a published cache price are billed at the standard input price."}},{"@type":"Question","name":"When do DeepSeek off-peak rates apply?","acceptedAnswer":{"@type":"Answer","text":"DeepSeek uses time-based pricing. Peak hours are weekdays 9:00–12:00 and 14:00–18:00; all other times (nights, early mornings, weekends and public holidays) use the off-peak rate, which is about half the peak rate. Scheduling batch jobs off-peak directly reduces cost."}},{"@type":"Question","name":"What does cache hit rate mean?","acceptedAnswer":{"@type":"Answer","text":"The cache hit rate is the share of input tokens that hit the context cache. Hit tokens are billed at a much lower cache-hit price; the rest are billed at the standard input price. Keeping a stable prompt prefix (such as a fixed system prompt) raises the hit rate and lowers input cost."}}]}]}
+  active="cost"
+  crumb={"/ Cost Calculator"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script src=\"../../assets/cost-core.js\"></script>"} />
+<section class="hero">
+      <h1>AI Model API Cost Calculator</h1>
+      <p class="tagline">Official list prices · off-peak rates · cache-hit weighting · USD converted at a verified reference rate</p>
+    </section>
+
+    <p class="lede">
+      LLM API cost is driven by four variables: input tokens, output tokens, cache hit rate, and whether the vendor
+      prices by time of day (peak vs off-peak). This tool applies your usage to each vendor's published price list
+      and estimates a monthly cost in the original billing currency, so models can be compared on one screen.
+      Prices are official list prices per 1M tokens in CNY or USD — they are not converted into USD unless the
+      vendor bills in USD. Estimates are for budgeting and do not equal a vendor's invoice.
+    </p>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Select models (multi-select)</h2>
+        <button type="button" class="toggle-models" id="btnToggleModels">Show all ▾</button>
+      </div>
+      <div class="selected-chips" id="selChips"></div>
+      <div class="model-grid collapsed" id="modelGrid"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Your usage</h2>
+      <div class="field-grid">
+        <div class="field">
+          <label for="inCalls">Calls per day</label>
+          <input type="number" id="inCalls" min="0" step="100" value="100">
+        </div>
+        <div class="field">
+          <label for="inTokens">Avg input tokens per call</label>
+          <input type="number" id="inTokens" min="0" step="100" value="2000">
+        </div>
+        <div class="field">
+          <label for="outTokens">Avg output tokens per call</label>
+          <input type="number" id="outTokens" min="0" step="100" value="800">
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="switch-row">
+          <span class="switch">
+            <input type="checkbox" id="swOffpeak" checked>
+            <span class="slider-ui"></span>
+          </span>
+          <span class="s-label">Off-peak: price at the off-peak rate</span>
+          <span class="s-hint">Only affects time-based priced models</span>
+        </div>
+        <div class="slider-row" style="margin-top:8px">
+          <span class="s-label" style="white-space:nowrap">Cache hit rate</span>
+          <input type="range" id="rgCache" min="0" max="100" step="1" value="30">
+          <span class="s-val num" id="cacheVal">30%</span>
+        </div>
+        <p class="s-hint" style="margin-top:2px">Only applies to models with a published cache-hit price</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Reference: estimated monthly cost at default usage</h2>
+      <p class="s-hint">Assumptions: 100 calls/day · 2,000 input tokens per call · 800 output tokens per call · off-peak rates on · 30% cache hit rate · 30-day month · amounts in the original billing currency (CNY). Results are estimates, not purchase advice.</p>
+      
+<CostTable models={models} fx={fx} en />
+
+    </section>
+
+    <section id="resultArea" aria-live="polite"></section>
+
+    <section class="panel">
+      <h2>Variables, formula and a worked example</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>Input tokens</strong>: the content sent to the model per call (including the system prompt and conversation history). <strong>Output tokens</strong>: the content the model generates. They are billed separately; output is usually priced higher than input.</p>
+        <p><strong>Cache hit rate</strong>: the share of input tokens served from context cache, billed at the lower cache-hit price. It only applies to models with a published cache price; for the others the standard input price is used and no cache discount is assumed.</p>
+        <p><strong>Off-peak (time-based pricing)</strong>: some vendors (e.g. DeepSeek) price by time of day. Outside peak hours — nights, lunch hours, weekends and public holidays — the off-peak rate is about half the peak rate.</p>
+        <p><strong>Formula</strong>: monthly cost = calls/day × 30 days × (input tokens ÷ 1,000,000 × effective input price + output tokens ÷ 1,000,000 × output price), where effective input price = hit rate × cache-hit price + (1 − hit rate) × standard price. Prices are in each vendor's original currency (CNY or USD per 1M tokens); cross-currency comparison converts USD to CNY at a reference rate, which is indicative only.</p>
+      </div>
+      
+<CostExample models={models} en />
+
+      <p class="s-hint">Not covered: free tiers, resource packs, subscription discounts and limited-time promos are not included; tiered models are estimated at the tier your input length falls into; an estimate is not a vendor's actual invoice and does not constitute purchase advice.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Frequently asked questions</h2>
+      <h3 style="font-size:15px;margin:14px 0 6px">How does this calculator work?</h3>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted)">Monthly cost = calls per day × 30 × (input tokens ÷ 1,000,000 × effective input price + output tokens ÷ 1,000,000 × output price). The effective input price is weighted by cache hit rate: hit rate × cache-hit price + (1 − hit rate) × standard price. Models without a published cache price are billed at the standard input price.</p>
+      <h3 style="font-size:15px;margin:14px 0 6px">When do DeepSeek off-peak rates apply?</h3>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted)">DeepSeek uses time-based pricing. Peak hours are weekdays 9:00–12:00 and 14:00–18:00; all other times (nights, early mornings, weekends and public holidays) use the off-peak rate, which is about half the peak rate. Scheduling batch jobs off-peak directly reduces cost.</p>
+      <h3 style="font-size:15px;margin:14px 0 6px">What does cache hit rate mean?</h3>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted)">The cache hit rate is the share of input tokens that hit the context cache. Hit tokens are billed at a much lower cache-hit price; the rest are billed at the standard input price. Keeping a stable prompt prefix (such as a fixed system prompt) raises the hit rate and lowers input cost.</p>
+    </section>
+
+    <div class="sticky-summary" id="stickySummary" role="button" tabindex="0"></div>
+    <div class="toast" id="toast"></div>
+    <script>
+      import '../../../scripts/cost-calculator';
+    </script>
+</Layout>

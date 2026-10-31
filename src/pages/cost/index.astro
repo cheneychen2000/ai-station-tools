@@ -1,0 +1,118 @@
+---
+/**
+ * 手写页（迁移自 cost/index.html，源码即产物 → Astro 源文件）。
+ * 语言：zh-CN；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../layouts/SiteLayout.astro';
+import { getSiteData } from '../../lib/data';
+import CostTable from '../../components/cost/CostTable.astro';
+import CostExample from '../../components/cost/CostExample.astro';
+
+const { models, fx } = await getSiteData();
+---
+
+<Layout title={"AI 大模型 API 成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub"}
+  desc={"输入日均调用量与 Token 用量，一键估算 DeepSeek、GLM、Kimi、Qwen、GPT、Claude、Gemini 等国内外大模型 API 的每月成本，支持错峰低谷价与缓存命中率加权，数据定期核验。"}
+  ogTitle={"AI大模型API成本计算器 - DeepSeek/GLM/Kimi/Qwen 比价 | Reflex Hub"}
+  ogDescription={"输入日均调用量与 Token 用量，一键估算 DeepSeek、GLM、Kimi、Qwen、GPT、Claude、Gemini 等国内外大模型 API 的每月成本，支持错峰低谷价与缓存命中率加权。"}
+  canonicalPath="/cost/"
+  jsonld={[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI大模型API成本计算器","url":"https://www.reflex-hub.com/cost/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"description":"按厂商公开价目估算大模型 API 月成本，支持错峰低谷价与缓存命中率加权。"},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"这个计算器怎么算？","acceptedAnswer":{"@type":"Answer","text":"月成本 = 日均调用次数 × 30 ×（单次输入Token数 ÷ 100万 × 输入有效单价 + 单次输出Token数 ÷ 100万 × 输出单价）。输入有效单价按缓存命中率加权：命中率 × 缓存命中价 +（1 - 命中率）× 未命中价；未公开缓存价的模型直接按未命中价计。"}},{"@type":"Question","name":"DeepSeek 低谷价什么时候适用？","acceptedAnswer":{"@type":"Answer","text":"DeepSeek 采用分时段定价，高峰时段为工作日 9:00-12:00 与 14:00-18:00，其余时段（夜间、凌晨、节假日全天）适用低谷价。低谷价约为高峰价的一半，把批量任务调度到低谷时段即可直接降本。"}},{"@type":"Question","name":"缓存命中率是什么意思？","acceptedAnswer":{"@type":"Answer","text":"缓存命中率指请求中命中上下文缓存的输入 Token 比例。命中部分按远低于标准价的缓存价计费，未命中部分按标准输入价计费。保持稳定的Prompt前缀（如固定系统提示词）可显著提高命中率，从而降低输入成本。"}}]}]}
+  active="cost"
+  crumb={"/ 成本计算器"}>
+  <Fragment slot="bodyend" set:html={"\n\n  <script src=\"../assets/cost-core.js\"></script>"} />
+<section class="hero">
+      <h1>AI 大模型 API 成本计算器</h1>
+      <p class="tagline">国内外主流模型 · 错峰低谷价 · 缓存命中率加权 · 美元按中间价折算</p>
+    </section>
+
+    <p class="lede">
+      大模型 API 的成本由四个变量决定：输入 Token 量、输出 Token 量、缓存命中率，以及厂商是否分时段定价（高峰/低谷）。
+      本工具按各厂商公开价目，代入你的实际用量，估算每款模型的每月人民币成本，便于横向比价。
+      计算原理、单位换算与常见误区见指南<a href="../guides/llm-api-cost/">《如何计算 LLM API 成本》</a>；
+      价格数据的来源与核验口径见<a href="../pricing-methodology/">定价方法论</a>。
+    </p>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>选择模型（可多选）</h2>
+        <button type="button" class="toggle-models" id="btnToggleModels">展开全部 ▾</button>
+      </div>
+      <div class="selected-chips" id="selChips"></div>
+      <div class="model-grid collapsed" id="modelGrid"></div>
+    </section>
+
+    <section class="panel">
+      <h2>你的用量</h2>
+      <div class="field-grid">
+        <div class="field">
+          <label for="inCalls">日均调用次数</label>
+          <input type="number" id="inCalls" min="0" step="100" value="100">
+        </div>
+        <div class="field">
+          <label for="inTokens">单次平均输入 Token</label>
+          <input type="number" id="inTokens" min="0" step="100" value="2000">
+        </div>
+        <div class="field">
+          <label for="outTokens">单次平均输出 Token</label>
+          <input type="number" id="outTokens" min="0" step="100" value="800">
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <div class="switch-row">
+          <span class="switch">
+            <input type="checkbox" id="swOffpeak" checked>
+            <span class="slider-ui"></span>
+          </span>
+          <span class="s-label">错峰：按低谷价计算</span>
+          <span class="s-hint">仅影响分时段定价的模型</span>
+        </div>
+        <div class="slider-row" style="margin-top:8px">
+          <span class="s-label" style="white-space:nowrap">缓存命中率</span>
+          <input type="range" id="rgCache" min="0" max="100" step="1" value="30">
+          <span class="s-val num" id="cacheVal">30%</span>
+        </div>
+        <p class="s-hint" style="margin-top:2px">仅对有公开缓存价的模型生效</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>默认用量下的模型月成本参考</h2>
+      <p class="s-hint">估算口径：日均调用 100 次 · 单次平均输入 2000 Token · 单次平均输出 800 Token · 错峰（低谷价）启用 · 缓存命中率 30% · 月度按 30 天估算 · 金额以人民币计。结果仅为估算，不构成采购建议。</p>
+
+      <CostTable models={models} fx={fx} />
+
+    </section>
+
+    <section id="resultArea" aria-live="polite"></section>
+
+    <section class="panel">
+      <h2>计算变量、公式与示例</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>输入 Token</strong>：每次调用发送给模型的内容量（含系统提示词与历史对话）；<strong>输出 Token</strong>：模型生成的内容量。两者分开计价，输出价通常高于输入价。</p>
+        <p><strong>缓存命中率</strong>：输入中命中上下文缓存的比例，命中部分按更低的缓存命中价计费；仅对有公开缓存价的模型生效，未公开的模型按未命中价计，不假设缓存折扣。</p>
+        <p><strong>错峰（峰谷定价）</strong>：部分厂商（如 DeepSeek）分时段计价，高峰时段外（夜间、午间、周末与法定节假日全天）按约为高峰一半的低谷价计费。</p>
+        <p><strong>计算公式</strong>：月成本 = 日均调用 × 30 天 ×（单次输入 Token ÷ 1,000,000 × 输入有效单价 + 单次输出 Token ÷ 1,000,000 × 输出单价），其中输入有效单价 = 命中率 × 缓存命中价 +（1 − 命中率）× 未命中价。价格单位为各厂商官方原币种（人民币或美元 / 百万 Token），跨币种比价时按参考汇率折算为人民币，折算值仅供参考。</p>
+      </div>
+
+      <CostExample models={models} />
+
+      <p class="s-hint">不适用情形：估算基于上述固定假设，未计入免费额度、资源包、套餐折扣与限免活动；分档计价模型按页面标注档位估算；估算不等于服务商实际账单，不构成采购建议。</p>
+    </section>
+
+    <section class="panel">
+      <h2>常见问题</h2>
+      <h3 style="font-size:15px;margin:14px 0 6px">这个计算器怎么算？</h3>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted)">月成本 = 日均调用次数 × 30 ×（单次输入Token数 ÷ 100万 × 输入有效单价 + 单次输出Token数 ÷ 100万 × 输出单价）。输入有效单价按缓存命中率加权：命中率 × 缓存命中价 +（1 - 命中率）× 未命中价；未公开缓存价的模型直接按未命中价计。</p>
+      <h3 style="font-size:15px;margin:14px 0 6px">DeepSeek 低谷价什么时候适用？</h3>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted)">DeepSeek 采用分时段定价，高峰时段为工作日 9:00-12:00 与 14:00-18:00，其余时段（夜间、凌晨、节假日全天）适用低谷价。低谷价约为高峰价的一半，把批量任务调度到低谷时段即可直接降本。</p>
+      <h3 style="font-size:15px;margin:14px 0 6px">缓存命中率是什么意思？</h3>
+      <p style="font-size:14px;line-height:1.8;color:var(--muted)">缓存命中率指请求中命中上下文缓存的输入 Token 比例。命中部分按远低于标准价的缓存价计费，未命中部分按标准输入价计费。保持稳定的Prompt前缀（如固定系统提示词）可显著提高命中率，从而降低输入成本。</p>
+    </section>
+
+    <div class="sticky-summary" id="stickySummary" role="button" tabindex="0"></div>
+    <div class="toast" id="toast"></div>
+    <script>
+      import '../../scripts/cost-calculator';
+    </script>
+</Layout>

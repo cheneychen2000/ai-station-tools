@@ -1,0 +1,29 @@
+---
+/** 模型详情页规格档案面板（规格表 + 同厂商收录 + 相关对比）。 */
+import type { ModelDetailView } from '../../lib/domain/model-view';
+
+interface Props { view: ModelDetailView; m: import('../../lib/data/schemas').Model; en?: boolean }
+const { view, m, en = false } = Astro.props;
+---
+
+<section class="panel">
+  <h2>{en ? 'Specifications' : '规格档案'}</h2>
+  <div class="table-scroll">
+    <table class="spec">
+      <tbody>
+        <tr><th>{en ? 'Context window' : '上下文窗口'}</th><td class="num">{m.context}K{en && ' tokens'}</td></tr>
+        <tr><th>{en ? 'Modalities' : '支持模态'}</th><td>{view.modText}</td></tr>
+        <tr><th>{en ? 'Noted features' : '特点'}</th><td>{view.featText}</td></tr>
+        <tr><th>{en ? 'Vendor / channel' : '厂商 / 渠道'}</th><td>{view.vendor}</td></tr>
+        <tr><th>{en ? 'Price source' : '数据来源'}</th><td>{view.srcUrl ? <a href={view.srcUrl} target="_blank" rel="noopener">{view.srcLabel}</a> : view.srcLabel}</td></tr>
+        <tr><th>{en ? 'Verified' : '核验日期'}</th><td class="num">{m.verifiedAt}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  {!en && view.siblings.length > 0 && (
+    <p class="lib-meta">同厂商收录：{view.siblings.map((s, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={`../${s.id}/`}>{s.name}</a></Fragment>))}</p>
+  )}
+  {!en && view.compareLinks.length > 0 && (
+    <p class="lib-meta">相关对比：{view.compareLinks.map((l, i) => (<Fragment>{i > 0 ? ' · ' : ''}<a href={l.href}>{l.text}</a></Fragment>))}</p>
+  )}
+</section>

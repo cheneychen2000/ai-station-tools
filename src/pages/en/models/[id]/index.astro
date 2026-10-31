@@ -1,0 +1,78 @@
+---
+/**
+ * 英文模型详情页（/en/models/<id>/）：与中文页同一份 models.json 事实数据，
+ * 展示文案经 i18n 字典呈现（EN_MODELS 白名单之外不生成路由）。
+ */
+import SiteLayout from '../../../../layouts/SiteLayout.astro';
+import { getModels, getCompares, getFx } from '../../../../lib/data';
+import { buildModelDetail } from '../../../../lib/domain/model-view';
+import ModelTags from '../../../../components/model/ModelTags.astro';
+import ModelPriceSection from '../../../../components/model/ModelPriceSection.astro';
+import ModelSpecTable from '../../../../components/model/ModelSpecTable.astro';
+import { EN_MODELS } from '../../../../lib/i18n/locales';
+
+export async function getStaticPaths() {
+  const models = await getModels();
+  return models.filter(m => EN_MODELS.includes(m.id)).map(m => ({ params: { id: m.id }, props: { id: m.id } }));
+}
+
+const m = (await getModels()).find(x => x.id === Astro.props.id);
+if (!m) throw new Error(`model not found: ${Astro.props.id}`);
+const fx = getFx();
+const view = buildModelDetail(m, await getModels(), getCompares(), true);
+---
+
+<SiteLayout
+  title={view.title}
+  desc={view.desc}
+  canonicalPath={view.canonicalPath}
+  jsonld={view.jsonld}
+  active={view.active}
+  crumb={view.crumb}
+  inlineScript={view.inlineScript}
+>
+    <section class="hero" style="text-align:left;padding-bottom:0">
+      <h1 style="font-size:26px">{view.displayName}</h1>
+      <p class="tagline">{view.vendor} · {view.featText}</p>
+      <ModelTags m={m} en />
+    </section>
+
+    <p class="lede">{view.lede}</p>
+
+    <ModelPriceSection m={m} fx={fx} en />
+
+    <ModelSpecTable view={view} m={m} en />
+
+    {view.enCost && (
+    <section class="panel">
+      <h2>Site calculation: estimated monthly cost at default usage</h2>
+      <p class="s-hint">{view.enCost.assumptionsLead}<a href="../../cost/">cost calculator</a>{view.enCost.assumptionsTrail}</p>
+      <div class="table-scroll">
+        <table class="spec">
+          <tbody>
+            <tr><th>Effective input price</th><td class="num">{view.enCost.effInLine}</td></tr>
+            <tr><th>Input cost</th><td class="num">{view.enCost.inCostLine}</td></tr>
+            <tr><th>Output cost</th><td class="num">{view.enCost.outCostLine}</td></tr>
+            <tr><th>Estimated monthly cost</th><td class="num"><strong>{view.enCost.totalLine}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    )}
+
+    <section class="panel">
+      <h2>Notes and limitations</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>· Prices are official published list prices per 1M tokens in the original billing currency (here CNY). Limited-time promotions, resource packs and subscription discounts are not included; the vendor's console prevails.</p>
+        <p>· "Verified" is the date this page's figures were last checked against the official source linked above. Pricing changes over time — confirm on the source page before making decisions.</p>
+        <p>· The monthly cost above is this site's own calculation under fixed usage assumptions. It is not a vendor quote and does not constitute purchase advice.</p>
+        <p>· This page records no benchmark results and claims no leadership on any task. {view.enCost?.useNote}</p>
+      </div>
+    </section>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href={`../../cost/?models=${m.id}`}>Estimate it in the cost calculator →</a>
+      <a class="btn btn-ghost" href="../../cost/">Cost calculator</a>
+      <a class="btn btn-ghost" href="../../">English home</a>
+    </div>
+</SiteLayout>

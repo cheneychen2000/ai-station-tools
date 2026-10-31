@@ -1,0 +1,12 @@
+---
+/**
+ * Breadcrumbs：Header 内的面包屑行。
+ * crumb 为受信任的小段面包屑 HTML（页面传入的 / 模型库 / 当前项 链接片段），
+ * 不是用户输入；完整面包屑语义仍由每页 JSON-LD BreadcrumbList 提供。
+ */
+interface Props { crumb?: string }
+const { crumb = '' } = Astro.props;
+---
+
+{crumb &&
+<div class="wrap crumb-row"><span class="crumb" set:html={crumb}></span></div>}

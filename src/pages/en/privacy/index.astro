@@ -1,0 +1,103 @@
+---
+/**
+ * 手写页（迁移自 en/privacy/index.html，源码即产物 → Astro 源文件）。
+ * 语言：en；标记注入区已改为 frontmatter 函数调用（同一数据源/同一公式）；
+ * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
+ */
+import Layout from '../../../layouts/SiteLayout.astro';
+---
+
+<Layout title={"Privacy Policy | Reflex Hub"}
+  desc={"Reflex Hub privacy policy: no registration and no personal-data collection, tools compute locally in your browser; local storage usage, analytics status, third-party links and affiliate handling."}
+  ogDescription={"No registration and no personal-data collection; local storage usage, analytics status, third-party links and affiliate handling."}
+  canonicalPath="/en/privacy/"
+  jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"Privacy Policy","url":"https://www.reflex-hub.com/en/privacy/","inLanguage":"en","description":"Reflex Hub privacy policy: data collection, local storage, analytics status and third-party links."},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.reflex-hub.com/en/"},{"@type":"ListItem","position":2,"name":"Privacy Policy","item":"https://www.reflex-hub.com/en/privacy/"}]}]}
+  crumb={"/ Privacy Policy"}>
+<section class="hero">
+      <h1>Privacy policy</h1>
+      <p class="tagline">What we collect, what we don't, and the current status of analytics</p>
+    </section>
+
+    <p class="lede">
+      Reflex Hub is a registration-free static tool site. This page describes the data practices that actually exist
+      in the current deployment; services that are not enabled are not described as if they were. Last updated: 2026-10-28.
+    </p>
+
+    <section class="panel">
+      <h2>1. What we do not collect</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · There is no account system; we never ask for WeChat authorization, phone numbers, email or any personal profile;<br>
+        · Parameters you type into the calculator (call volume, token usage, etc.) are computed entirely in your browser
+        and are never uploaded to us;<br>
+        · No form data collection runs on this site, and we do not sell data (there is no data to sell).
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>2. Browser local storage</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · To remember your calculator preferences (selected models, off-peak toggle, cache hit rate), the calculator
+        stores settings in your browser's localStorage <strong>on your own device</strong>; the data never leaves it;<br>
+        · You can delete it anytime via "clear site data" in your browser; afterwards the tools return to default parameters;<br>
+        · This site does not use cookies (there is no server session to maintain).
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>3. Analytics (current status: disabled)</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · We plan to use Cloudflare Web Analytics for anonymous traffic statistics (no cookies, no personally
+        identifiable information, no cross-site tracking);<br>
+        · <strong>In the current deployment this feature is not enabled</strong>: no analytics beacon is loaded and
+        your visits are not recorded by any statistics script;<br>
+        · If it is ever enabled in the Cloudflare configuration, it will only be used to understand page traffic, and
+        this section will be updated — without any popup asking for consent (the analytics itself collects no personal data).
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>4. Hosting and server logs</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · This site is hosted on Cloudflare Pages. As the hosting and CDN provider, Cloudflare may process standard
+        access logs (such as IP address, access time and request path) under its own privacy policy for security and
+        traffic delivery;<br>
+        · This site has no self-managed backend, cannot inspect those logs, and does not use them for any user analysis.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>5. Third-party links</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · "Official source" and "official site" links on model profiles and tool pages lead to vendor or third-party
+        websites; once you click through, your visit is governed by their privacy policies, not ours;<br>
+        · Outbound links carry no tracking redirects and no promotional parameters; the GitHub Issues feedback link
+        likewise points to a third-party site.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>6. Advertising and affiliate promotion</h2>
+      <p style="font-size:14px;line-height:1.9">
+        · <strong>Current status: this site carries no advertising</strong> — no ad account, no publisher ID, no ad
+        scripts loaded (including Google AdSense), no ads.txt, no advertising cookies or identifiers;<br>
+        · Affiliate promotion is likewise zero: no affiliate links exist; candidate partnerships are only under
+        evaluation, as documented in the <a href="../affiliate-disclosure/">affiliate disclosure</a>;<br>
+        · <strong>If Google AdSense is ever introduced</strong>: ads may use cookies / device identifiers for frequency
+        capping and fraud prevention; if personalized ads are served to users in the EEA, UK or Switzerland, a
+        Google-certified consent management platform (CMP) will be deployed to collect and pass consent signals as
+        Google requires — <strong>a homemade cookie banner is not a compliant substitute</strong>; before enabling, this
+        page will be updated with an accurate list of the advertising and measurement technologies used;<br>
+        · With or without ads, model pricing data comes only from vendors' public list prices, and presentation and
+        ordering are unaffected by commercial relationships.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>7. Policy changes and contact</h2>
+      <p style="font-size:14px;line-height:1.9">
+        This page is updated when the site's actual behavior changes; the date in the opening paragraph marks the
+        latest update. For privacy questions, please open an issue on
+        <a href="https://github.com/cheneychen2000/ai-station-tools/issues" target="_blank" rel="noopener">GitHub</a>.
+      </p>
+    </section>
+</Layout>

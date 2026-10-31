@@ -1,0 +1,22 @@
+---
+/** Prompt 卡片：prompts.json 静态渲染（服务端输出，无客户端 fetch / innerHTML 拼接）。 */
+import { EN_PROMPT_TITLE, EN_PROMPT_SCENE, EN_PROMPT_TAG } from '../../lib/i18n/dictionaries.mjs';
+import type { Prompt } from '../../lib/data/schemas';
+
+interface Props { p: Prompt; en?: boolean }
+const { p, en = false } = Astro.props;
+
+const title = en ? (EN_PROMPT_TITLE[p.id] || p.title) : p.title;
+const scene = en ? (EN_PROMPT_SCENE[p.scene] || p.scene) : p.scene;
+const tags = p.tags.map(t => (en ? EN_PROMPT_TAG[t] || t : t));
+const text = en ? p.prompt.en : p.prompt.zh;
+---
+
+<div class="result-card" data-prompt-id={p.id}>
+  <div class="r-head">
+    <span class="r-name">{title}<span class="r-vendor">{scene}</span></span>
+    <button class="btn btn-primary btn-s copy-btn" type="button">{en ? 'Copy' : '复制'}</button>
+  </div>
+  <pre class="prompt-text">{text}</pre>
+  <span class="m-tags">{tags.map(t => <span class="tag tag-feat">{t}</span>)}</span>
+</div>

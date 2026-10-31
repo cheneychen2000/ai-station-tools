@@ -1,0 +1,12 @@
+{
+  "description": "静态参考汇率：仅用于站内跨币种折算展示（非交易汇率）。参与计算必须同时满足 rate>0、rateDate、verifiedAt 与来源齐全；任一项缺失视为未核实，不得参与计算。",
+  "rates": {
+    "USD_CNY": {
+      "rate": 6.718,
+      "source": "中国外汇交易中心人民币汇率中间价（中国人民银行授权公布）",
+      "sourceUrl": "https://www.chinamoney.com.cn/",
+      "rateDate": "2026-10-23",
+      "verifiedAt": "2026-10-28"
+    }
+  }
+}
