@@ -24,6 +24,7 @@ import { DIST, SITE } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
 import { loadData, isToolIndexable, comparePairs } from './lib/manifest.mjs';
 import { EN_MODELS, LOCALES, buildRouteMap, validateRouteMap, switchTarget, hreflangPairs, pageByUrl } from './lib/locales.mjs';
+import { articleRouteInputs } from './lib/content.mjs';
 import { assertEnCoverage, EN_VENDOR, EN_MODALITY, EN_FEATURE, EN_TIER_DESC, EN_PROMPT_SCENE, EN_PROMPT_TAG, EN_PROMPT_TITLE, EN_MODEL_NAME } from './lib/i18n.mjs';
 
 const R = createReporter('check-i18n');
@@ -45,7 +46,7 @@ const fileExistsForUrl = url => existsSync(join(DIST, url.replace(/^\//, ''), 'i
 
 /* I1 映射与字典（异常即构建级错误，这里转为 FAIL 记录） */
 let map = null, mapErr = null, dictErr = null;
-try { map = validateRouteMap(buildRouteMap(pagesMeta, models, comparePairs(models, compares.extraPairs || []), tools)); } catch (e) { mapErr = e.message; }
+try { map = validateRouteMap(buildRouteMap(pagesMeta, models, comparePairs(models, compares.extraPairs || []), tools, articleRouteInputs())); } catch (e) { mapErr = e.message; }
 try { assertEnCoverage(models); } catch (e) { dictErr = e.message; }
 R.check('I1 路由映射合法 + 英文字典覆盖全部事实枚举', !!map && !dictErr, (mapErr || dictErr) || '全部通过');
 if (!map) { R.summary(); process.exit(1); }

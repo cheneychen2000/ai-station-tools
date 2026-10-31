@@ -1,0 +1,26 @@
+---
+/**
+ * ArticleHeader：文章标题区（H1 + 摘要 + 元信息 + 可选封面）。
+ * 与站点既有 hero 视觉语言一致（hero + tagline）。
+ */
+import type { ArticleSummary, GuideLang } from '../../lib/data/guides';
+import ArticleMeta from './ArticleMeta.astro';
+
+interface Props { article: ArticleSummary; lang: GuideLang }
+const { article, lang } = Astro.props;
+---
+<section class="hero" style="text-align:left;padding-bottom:0">
+  <h1 style="font-size:26px">{article.title}</h1>
+  <p class="tagline">{article.description}</p>
+  <ArticleMeta article={article} lang={lang} />
+</section>
+
+{article.cover && (
+  <p>
+    <img class="article-cover" src={article.cover.src} alt={article.cover.alt} loading="lazy" decoding="async">
+  </p>
+)}
+
+<style>
+  .article-cover { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line, #E2E7F0); }
+</style>

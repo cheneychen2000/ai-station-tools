@@ -26,12 +26,28 @@ export interface RouteEntry {
   id: string;
   type: string;
   contentId: string | null;
-  routes: { 'zh-CN': string; en?: string };
+  /** 至少存在一种语言；英文单语文章不会伪造中文 URL（反之亦然） */
+  routes: { 'zh-CN'?: string; en?: string };
   indexable: boolean;
 }
 
+/** Markdown 文章的路由输入（按 translationKey 合并中英；无 key 时各自独立成条） */
+export interface ArticleRouteInput {
+  lang: Locale;
+  slug: string;
+  path: string;
+  indexable: boolean;
+  translationKey?: string | null;
+}
+
 /** 构建全站路由映射（语言 URL 对应关系的唯一事实来源） */
-export function buildRouteMap(pagesMeta: PagesFile, models: Model[], compares: ComparePair[] = [], tools: Tool[] = []): RouteEntry[] {
+export function buildRouteMap(
+  pagesMeta: PagesFile,
+  models: Model[],
+  compares: ComparePair[] = [],
+  tools: Tool[] = [],
+  articles: ArticleRouteInput[] = []
+): RouteEntry[] {
   const entries: RouteEntry[] = (pagesMeta.pages || []).map(p => ({
     id: p.id,
     type: p.type,
@@ -67,6 +83,19 @@ export function buildRouteMap(pagesMeta: PagesFile, models: Model[], compares: C
       indexable: t.indexable === true /* 严格继承中文页索引审核结论，英文页不放宽 */
     });
   }
+  /* Markdown 文章：同 translationKey 的中英两篇合并为一条路由记录（hreflang / 语言切换的唯一依据） */
+  const byKey = new Map<string, RouteEntry>();
+  for (const a of articles) {
+    const key = a.translationKey ? `tk:${a.translationKey}` : `solo:${a.lang}:${a.slug}`;
+    let entry = byKey.get(key);
+    if (!entry) {
+      entry = { id: `article-${key}`, type: 'article', contentId: a.slug, routes: {}, indexable: a.indexable };
+      byKey.set(key, entry);
+      entries.push(entry);
+    }
+    entry.routes[a.lang] = a.path;
+    if (a.lang === 'zh-CN') entry.contentId = a.slug;
+  }
   return entries;
 }
 
@@ -76,7 +105,8 @@ export function validateRouteMap(map: RouteEntry[]): RouteEntry[] {
   const seen = new Map<string, string>();
   for (const e of map) {
     if (!e.id) errors.push('存在缺 id 的页面记录');
-    if (!e.routes['zh-CN']) errors.push(`${e.id} 缺中文路由`);
+    /* 文章允许单语（只存在 en 的中文站文章不存在），但至少要有一条真实路由 */
+    if (!e.routes['zh-CN'] && !e.routes.en) errors.push(`${e.id} 缺全部语言路由`);
     for (const [lang, url] of Object.entries(e.routes)) {
       if (!LOCALES.includes(lang as Locale)) errors.push(`${e.id} 无效语言代码 ${lang}`);
       if (typeof url !== 'string' || !url.startsWith('/') || !url.endsWith('/')) errors.push(`${e.id} ${lang} URL 非法：${url}`);

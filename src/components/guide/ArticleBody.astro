@@ -1,0 +1,25 @@
+---
+/**
+ * ArticleBody：Markdown 正文容器（内容由页面 `<Content />` 渲染后经默认插槽传入）。
+ * 不自行解析 Markdown、不注入 innerHTML、不在客户端 fetch 正文。
+ */
+interface Props { lang?: 'zh-CN' | 'en' }
+const { lang = 'zh-CN' } = Astro.props;
+---
+<article class="article-body" lang={lang}>
+  <slot />
+</article>
+
+<style>
+  .article-body { font-size: 15px; line-height: 1.95; margin: 18px 0 24px; }
+  .article-body :global(h2) { font-size: 20px; margin: 26px 0 10px; scroll-margin-top: 16px; }
+  .article-body :global(h3) { font-size: 17px; margin: 20px 0 8px; scroll-margin-top: 16px; }
+  .article-body :global(p) { margin: 10px 0; }
+  .article-body :global(ul), .article-body :global(ol) { padding-left: 22px; margin: 10px 0; }
+  .article-body :global(code) { background: #F1F4F9; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+  .article-body :global(pre) { background: #F1F4F9; border: 1px solid var(--line, #E2E7F0); border-radius: 10px; padding: 14px; overflow-x: auto; }
+  .article-body :global(pre code) { background: none; padding: 0; }
+  .article-body :global(table) { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .article-body :global(th), .article-body :global(td) { border: 1px solid var(--line, #E2E7F0); padding: 8px 10px; text-align: left; }
+  .article-body :global(blockquote) { margin: 14px 0; padding: 8px 14px; border-left: 3px solid var(--line, #E2E7F0); color: var(--muted, #5C6575); }
+</style>

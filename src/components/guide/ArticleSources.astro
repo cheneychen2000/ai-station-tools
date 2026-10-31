@@ -1,0 +1,27 @@
+---
+/**
+ * ArticleSources：文章末尾参考资料（只输出 frontmatter 中真实填写的来源，不自动生成）。
+ * 外链统一 target="_blank" rel="noopener"（非推广链接，不加 sponsored）。
+ */
+import type { GuideSource } from '../../lib/data/schemas';
+interface Props { sources: GuideSource[]; lang?: 'zh-CN' | 'en' }
+const { sources, lang = 'zh-CN' } = Astro.props;
+const en = lang === 'en';
+---
+{sources.length > 0 && (
+  <section class="panel" aria-label={en ? 'References' : '参考资料'}>
+    <h2>{en ? 'References' : '参考资料'}</h2>
+    <ul class="article-sources">
+      {sources.map(s => (
+        <li>
+          <a href={s.url} target="_blank" rel="noopener">{s.title}</a>
+          {s.accessedAt && <span class="lib-meta">{en ? ` (accessed ${s.accessedAt})` : `（访问于 ${s.accessedAt}）`}</span>}
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .article-sources { margin: 0; padding-left: 20px; font-size: 14px; line-height: 2; }
+</style>

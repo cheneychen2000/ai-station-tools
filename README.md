@@ -85,7 +85,18 @@ npm run check          # 全量检查（构建 + 20 个检查/审计脚本）
 npm run check:migrate  # 迁移回归：dist 与迁移前基线快照对拍（URL/SEO/资产契约）
 npm run check:types    # astro check（TypeScript 零错误零警告）
 npm run check:unit     # pricing 公式对拍单测（TS 实现 vs 检查脚本副本）
+npm run check:content  # Markdown 内容体系检查（路由/草稿/sitemap/TOC/hreflang/死链）
 ```
+
+### 内容管理（新增文章）
+
+指南/教程/案例/分析类文章采用 Markdown 内容体系：**新增文章 = 新建一个 `.md` 文件并填写 Frontmatter**，路由、布局、SEO、中英映射、目录、指南首页收录与 sitemap 全部自动生成。
+
+- 中文：`src/content/guides/zh-CN/<slug>.md` → `/guides/<slug>/`
+- 英文：`src/content/guides/en/<slug>.md` → `/en/guides/<slug>/`
+- 写作规则、字段说明、发布流程与常见错误：[`docs/content-authoring.md`](docs/content-authoring.md)
+
+既有复杂指南页（含数据表/广告位）继续用 Astro 页面维护，两类内容共享同一布局与 SEO 规范。
 
 目录约定（Astro 原生架构）：
 

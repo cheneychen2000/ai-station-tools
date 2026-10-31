@@ -1,0 +1,23 @@
+---
+/**
+ * ArticleCard：指南首页的文章卡片（标题/简介/分类/标签/发布日期/详情链接）。
+ * 视觉语言与站点既有 module-card 一致；href 由调用方按所在目录层级传入。
+ */
+import type { ArticleSummary, GuideLang } from '../../lib/data/guides';
+import { categoryLabel } from '../../lib/i18n/categories';
+
+interface Props { article: ArticleSummary; lang: GuideLang; href: string }
+const { article, lang, href } = Astro.props;
+const en = lang === 'en';
+---
+<a class="module-card active" href={href}>
+  <h3>{article.title}</h3>
+  <p>{article.description}</p>
+  <p class="lib-meta">
+    {categoryLabel(article.category, lang)} · {en ? 'Published ' : '发布于 '}{article.publishedAt}
+  </p>
+  {article.tags.length > 0 && (
+    <p class="m-tags">{article.tags.map(t => <span class="tag tag-feat">{t}</span>)}</p>
+  )}
+  <span class="go">{en ? 'Read article →' : '阅读全文 →'}</span>
+</a>

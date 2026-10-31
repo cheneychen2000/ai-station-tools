@@ -55,12 +55,16 @@ export const modelContentDate = (m: Model): string | null => m.contentUpdatedAt 
 
 export interface ManifestEntry { path: string; lastmod: string | null }
 
-/** 生成 sitemap 条目清单 [{ path, lastmod }]；noindex 页面（第三方薄工具页）不进入清单 */
-export function buildManifest({ models, tools, pagesMeta, compares }: {
+/** Markdown 文章条目（只含已发布且 indexable 的文章；lastmod = 文章 updatedAt，禁止构建日期） */
+export interface ManifestArticle { path: string; lastmod: string | null }
+
+/** 生成 sitemap 条目清单 [{ path, lastmod }]；noindex 页面（第三方薄工具页 / noindex 文章）不进入清单 */
+export function buildManifest({ models, tools, pagesMeta, compares, articles = [] }: {
   models: Model[];
   tools: Tool[];
   pagesMeta: PagesFile;
   compares?: ComparesFile;
+  articles?: ManifestArticle[];
 }): ManifestEntry[] {
   const byId = Object.fromEntries(models.map(m => [m.id, m]));
   const modelsContent = maxDate(models.map(modelContentDate));
@@ -103,5 +107,7 @@ export function buildManifest({ models, tools, pagesMeta, compares }: {
       }
     }
   }
+  /* Markdown 文章：元数据只在 frontmatter 维护，此处按已发布清单追加（确定性顺序 = 传入顺序） */
+  for (const a of articles) push(a.path, a.lastmod);
   return entries;
 }

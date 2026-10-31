@@ -15,7 +15,8 @@ import {
   type PagesFile, type ComparesFile, type FxFile, type Partner, type AdsConfig
 } from './schemas';
 import { comparePairs, type ComparePair } from '../domain/manifest';
-import { buildRouteMap, validateRouteMap, type RouteEntry } from '../i18n/locales';
+import { buildRouteMap, validateRouteMap, type RouteEntry, type ArticleRouteInput } from '../i18n/locales';
+import { getVisibleArticles, validateGuides, type ArticleSummary } from './guides';
 
 const DATA_DIR = join(process.cwd(), 'public', 'assets', 'data');
 
@@ -72,6 +73,8 @@ export interface SiteData {
   compares: ComparesFile;
   /** 全部对比组合（a<b 归一；17 款模型两两全组合 = 136 组） */
   pairs: ComparePair[];
+  /** Markdown 指南文章（生产构建不含草稿；开发服务器含草稿） */
+  articles: ArticleSummary[];
   /** 全站语言 URL 唯一事实来源；任一校验失败直接中断构建 */
   routeMap: RouteEntry[];
 }
@@ -82,13 +85,28 @@ let siteDataPromise: Promise<SiteData> | null = null;
 export function getSiteData(): Promise<SiteData> {
   if (!siteDataPromise) {
     siteDataPromise = (async () => {
-      const [models, tools] = await Promise.all([getModels(), getTools()]);
+      const [models, tools, zh, en] = await Promise.all([getModels(), getTools(), getVisibleArticles('zh-CN'), getVisibleArticles('en')]);
       const pagesMeta = getPagesMeta();
       const compares = getCompares();
       const fx = getFx();
       const pairs = comparePairs(models, compares.extraPairs || []);
-      const routeMap = validateRouteMap(buildRouteMap(pagesMeta, models, pairs, tools));
-      return { models, tools, pagesMeta, fx, compares, pairs, routeMap };
+      const articles = [...zh.map(a => a.summary), ...en.map(a => a.summary)];
+
+      /* Markdown 文章冲突检测：slug 规范/保留字、与 pages.json 静态页路径冲突、同语言 translationKey 重复 */
+      const conflicts = await validateGuides((pagesMeta.pages || []).map(p => p.path).concat((pagesMeta.pages || []).flatMap(p => (p.en ? [p.en] : []))));
+      if (conflicts.errors.length) {
+        throw new Error('Markdown 指南冲突校验失败：\n  - ' + conflicts.errors.join('\n  - '));
+      }
+
+      const articleRoutes: ArticleRouteInput[] = articles.map(a => ({
+        lang: a.lang,
+        slug: a.slug,
+        path: a.path,
+        indexable: a.indexable,
+        translationKey: a.translationKey || null
+      }));
+      const routeMap = validateRouteMap(buildRouteMap(pagesMeta, models, pairs, tools, articleRoutes));
+      return { models, tools, pagesMeta, fx, compares, pairs, articles, routeMap };
     })();
   }
   return siteDataPromise;

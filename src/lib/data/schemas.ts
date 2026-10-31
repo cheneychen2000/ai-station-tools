@@ -156,6 +156,65 @@ export const adsFileSchema = z.object({
   slots: z.record(z.string(), z.object({ format: z.string().optional(), placement: z.string().optional() }).catchall(z.unknown())).optional()
 }).catchall(z.unknown());
 
+/* ============================ Markdown 指南文章 ============================ */
+
+/** 稳定分类 ID（中英显示名见 src/lib/i18n/categories.ts） */
+export const GUIDE_CATEGORIES = ['guide', 'tutorial', 'case-study', 'analysis', 'cost-optimization', 'model-selection'] as const;
+export type GuideCategory = typeof GUIDE_CATEGORIES[number];
+
+/** 文件名即路由 slug：小写英文/数字/连字符，不允许空格与路径穿越字符 */
+export const GUIDE_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const httpUrl = z.string().refine(v => {
+  try {
+    const u = new URL(v);
+    return u.protocol === 'https:' || u.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}, { message: '必须是合法的 http/https URL' });
+
+export const guideSourceSchema = z.object({
+  title: z.string().min(1, '参考资料标题不能为空'),
+  url: httpUrl,
+  accessedAt: isoDate.optional()
+});
+
+export const guideCoverSchema = z.object({
+  /** 必须是站内本地资源路径（/assets/ 或 /images/ 下的图片） */
+  src: z.string().regex(/^\/(assets|images)\/[A-Za-z0-9._\-/]+\.(png|jpe?g|webp|avif)$/, '封面必须是 /assets/ 或 /images/ 下的本地图片路径'),
+  alt: z.string().min(1, '封面 alt 不能为空')
+});
+
+/**
+ * 指南文章 Frontmatter（中英共用同一结构；文件名派生 slug，不设 slug 字段）。
+ * 文章元数据唯一来源就是本 frontmatter——不再登记到 pages.json。
+ */
+export const guideSchema = z.object({
+  title: z.string().trim().min(1, 'title 不能为空'),
+  description: z.string().trim().min(1, 'description 不能为空'),
+  publishedAt: isoDate,
+  updatedAt: isoDate,
+  category: z.enum(GUIDE_CATEGORIES),
+  tags: z.array(z.string().min(1)),
+  draft: z.boolean(),
+  indexable: z.boolean(),
+  author: z.string().trim().min(1).optional(),
+  /** 中英文对应标识：同 key 的 zh/en 两篇视为同一篇文章的两个语言版本 */
+  translationKey: z.string().regex(GUIDE_SLUG_RE, 'translationKey 只允许小写英文/数字/连字符').nullable().optional(),
+  cover: guideCoverSchema.optional(),
+  /** 相关文章：同语言内的 slug 列表（渲染时只保留真实存在且已发布的） */
+  relatedArticles: z.array(z.string().regex(GUIDE_SLUG_RE)).optional(),
+  sources: z.array(guideSourceSchema).optional()
+}).refine(v => v.updatedAt >= v.publishedAt, {
+  message: 'updatedAt 不能早于 publishedAt',
+  path: ['updatedAt']
+});
+
+export type GuideSource = z.infer<typeof guideSourceSchema>;
+export type GuideCover = z.infer<typeof guideCoverSchema>;
+export type GuideFrontmatter = z.infer<typeof guideSchema>;
+
 export type PriceTier = z.infer<typeof priceTierSchema>;
 export type PeakOffpeak = z.infer<typeof peakOffpeakSchema>;
 export type Model = z.infer<typeof modelSchema>;

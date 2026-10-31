@@ -13,7 +13,6 @@ import Layout from '../../layouts/SiteLayout.astro';
   canonicalPath="/about/"
   jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"关于 Reflex Hub","url":"https://www.reflex-hub.com/about/","mainEntity":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/","description":"独立维护的大模型 API 成本估算与模型选型工具项目，提供成本计算器、模型库、模型对比等免费工具。"}}]}
   crumb={"/ 关于本站"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>"} />
 <section class="hero">
       <h1>关于 Reflex Hub</h1>
       <p class="tagline">独立维护的 AI 开发者工具项目</p>

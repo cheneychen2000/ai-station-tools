@@ -85,9 +85,25 @@ if (cmd === 'capture') {
   const diffs = [];
   const baseUrls = Object.keys(base.pages), curUrls = Object.keys(cur.pages);
   for (const u of baseUrls) if (!cur.pages[u]) diffs.push(`页面缺失: ${u}`);
-  for (const u of curUrls) if (!base.pages[u]) diffs.push(`新增页面: ${u}`);
+  /* Phase 3 起允许"由已发布 Markdown 文章带来"的新增页面：以 dist 的 content-manifest 为白名单，
+     清单之外的新增页面一律失败（异常增加检测）。历史页面缺失仍逐条失败（异常删除检测）。 */
+  const manifestFile = join(DIST, 'assets/data/content-manifest.json');
+  const allowedArticles = new Set();
+  if (existsSync(manifestFile)) {
+    const manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+    for (const a of manifest.articles || []) if (a.path) allowedArticles.add(a.path);
+  }
+  for (const u of curUrls) {
+    if (base.pages[u]) continue;
+    if (!allowedArticles.has(u)) diffs.push(`异常新增页面（既不属历史基线也不属已发布 Markdown）: ${u}`);
+  }
+  for (const p of allowedArticles) {
+    if (!cur.pages[p]) diffs.push(`文章清单中存在但页面缺失: ${p}`);
+  }
+  let historicalOk = 0;
   for (const u of baseUrls) {
-    if (!cur.pages[u]) continue;
+    if (!cur.pages[u]) { diffs.push(`历史页面缺失: ${u}`); continue; }
+    historicalOk++;
     /* &#39; ↔ ' 为等价 HTML 转义（esc() 与 Astro 插值的单引号策略差异），比对时归一化 */
     const norm = s => s.replace(/&#39;/g, "'");
     const a = norm(JSON.stringify(base.pages[u].seo)), b = norm(JSON.stringify(cur.pages[u].seo));
@@ -99,12 +115,21 @@ if (cmd === 'capture') {
      assets/lib-filter.js → src/scripts/model-filter.ts（打包模块） */
   const MIGRATED = new Set(['assets/style.css', 'assets/app.js', 'assets/lib-filter.js']);
   for (const rel of Object.keys(base.assets)) {
-    if (!cur.assets[rel]) { if (!MIGRATED.has(rel)) diffs.push(`资产缺失: ${rel}`); }
-    else if (cur.assets[rel] !== base.assets[rel]) diffs.push(`资产字节变化: ${rel}`);
+    if (!cur.assets[rel]) { if (!MIGRATED.has(rel)) diffs.push(`资产缺失: ${rel}`); continue; }
+    /* sitemap.xml 会因新增已发布文章而合法变化：改为"历史 URL 与 lastmod 逐条不变 + 新增项必须来自文章清单"语义比对 */
+    if (rel === 'sitemap.xml') continue;
+    if (cur.assets[rel] !== base.assets[rel]) diffs.push(`资产字节变化: ${rel}`);
   }
+
+  /* sitemap.xml 会因新增已发布文章而合法变化，故不做字节比对；
+     其语义完整性由 check-sitemap-lastmod（S8/S9 与 manifest 逐条一致）与 check-content C5a~C5c 覆盖。 */
+  /* Phase 3 新增的派生资产（构建期由 frontmatter 生成，与 compare-pairs.json 同性质） */
+  const NEW_DERIVED_ASSETS = new Set(['assets/data/content-manifest.json']);
   for (const rel of Object.keys(cur.assets)) {
-    if (!base.assets[rel] && !rel.startsWith('_astro/')) diffs.push(`新增资产: ${rel}`);
-    /* _astro/ 为 Vite 打包产物（哈希文件名天然不稳定），属重构预期新增，不逐字节比对 */
+    if (base.assets[rel]) continue;
+    if (rel.startsWith('_astro/')) continue; /* Vite 打包产物（哈希名不稳定），不逐字节比对 */
+    if (NEW_DERIVED_ASSETS.has(rel)) continue;
+    diffs.push(`异常新增资产: ${rel}`);
   }
   if (diffs.length) {
     console.log(`REFACTOR DIFF: ${diffs.length} 处`);
@@ -112,7 +137,7 @@ if (cmd === 'capture') {
     if (diffs.length > 60) console.log(`  …其余 ${diffs.length - 60} 处省略`);
     process.exit(1);
   }
-  console.log(`REFACTOR OK: ${curUrls.length} 页面 SEO 语义一致，${Object.keys(cur.assets).length} 资产字节一致`);
+  console.log(`REFACTOR OK: 历史 ${historicalOk}/${baseUrls.length} 页面完整且 SEO 一致；Markdown 文章新增 ${curUrls.length - baseUrls.length} 页（均来自 content-manifest）；${Object.keys(cur.assets).length} 资产字节一致`);
 } else {
   console.error('用法: node scripts/snapshot-site.mjs capture|compare <文件>');
   process.exit(2);

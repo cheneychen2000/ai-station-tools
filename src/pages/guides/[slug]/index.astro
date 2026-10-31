@@ -1,0 +1,74 @@
+---
+/**
+ * 中文 Markdown 指南文章：/guides/{slug}/
+ * 数据源 = guidesZh 集合（frontmatter 唯一元数据来源，不登记 pages.json）。
+ * 生产构建不含草稿（getVisibleArticles 已按 draft 过滤）；路由冲突由 getSiteData() 的 validateGuides 拦截。
+ */
+import { render } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { BRAND, SITE } from '../../../lib/config';
+import { getArticle, getRelatedArticles, getVisibleArticles, type GuideLang } from '../../../lib/data/guides';
+import { breadcrumb } from '../../../lib/seo/structured-data';
+import { articleSchemaType, categoryLabel } from '../../../lib/i18n/categories';
+import { esc } from '../../../lib/utils/escape';
+import ArticleHeader from '../../../components/guide/ArticleHeader.astro';
+import ArticleTOC from '../../../components/guide/ArticleTOC.astro';
+import ArticleBody from '../../../components/guide/ArticleBody.astro';
+import ArticleSources from '../../../components/guide/ArticleSources.astro';
+import ArticleRelated from '../../../components/guide/ArticleRelated.astro';
+
+const LANG: GuideLang = 'zh-CN';
+
+export async function getStaticPaths() {
+  const list = await getVisibleArticles('zh-CN');
+  return list.map(a => ({ params: { slug: a.summary.slug }, props: { slug: a.summary.slug } }));
+}
+
+const { slug } = Astro.props as { slug: string };
+const { summary, entry } = await getArticle(LANG, slug);
+const { Content, headings } = await render(entry);
+const related = await getRelatedArticles(LANG, summary.relatedSlugs);
+const path = summary.path;
+const robots = summary.indexable ? null : 'noindex,follow';
+
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': articleSchemaType(summary.category),
+    headline: summary.title,
+    description: summary.description,
+    datePublished: summary.publishedAt,
+    dateModified: summary.updatedAt,
+    inLanguage: 'zh-CN',
+    url: SITE + path,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': SITE + path },
+    articleSection: categoryLabel(summary.category, LANG),
+    keywords: summary.tags,
+    ...(summary.author ? { author: { '@type': 'Person', name: summary.author } } : {}),
+    ...(summary.cover ? { image: SITE + summary.cover.src } : {})
+  },
+  breadcrumb([
+    { name: '首页', path: '/' },
+    { name: '指南', path: '/guides/' },
+    { name: summary.title, path }
+  ])
+];
+---
+
+<SiteLayout
+  title={`${summary.title} | ${BRAND}`}
+  desc={summary.description}
+  canonicalPath={path}
+  robots={robots}
+  jsonld={ld}
+  active="guides"
+  crumb={`/ <a href="../" style="color:inherit">指南</a> / ${esc(summary.title)}`}
+>
+  <ArticleHeader article={summary} lang={LANG} />
+  <ArticleTOC headings={headings} lang={LANG} />
+  <ArticleBody lang={LANG}>
+    <Content />
+  </ArticleBody>
+  <ArticleSources sources={summary.sources} lang={LANG} />
+  <ArticleRelated items={related} lang={LANG} />
+</SiteLayout>

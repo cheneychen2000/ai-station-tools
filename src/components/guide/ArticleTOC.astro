@@ -1,0 +1,32 @@
+---
+/**
+ * ArticleTOC：文章目录（只用 render() 返回的 headings，H2 一级、H3 二级）。
+ * 锚点 id 直接取 heading.slug —— 与正文由同一 Markdown 渲染器生成，天然一致（含中文标题）。
+ * 没有任何 H2/H3 时整块不输出。
+ */
+interface Heading { depth: number; slug: string; text: string }
+interface Props { headings: Heading[]; lang?: 'zh-CN' | 'en' }
+const { headings, lang = 'zh-CN' } = Astro.props;
+const en = lang === 'en';
+const items = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+{items.length > 0 && (
+  <nav class="article-toc" aria-label={en ? 'Table of contents' : '文章目录'}>
+    <p class="article-toc-title">{en ? 'Contents' : '目录'}</p>
+    <ol>
+      {items.map(h => (
+        <li class={h.depth === 3 ? 'toc-h3' : 'toc-h2'}>
+          <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .article-toc { border: 1px solid var(--line, #E2E7F0); border-radius: 12px; padding: 14px 18px; margin: 20px 0; background: var(--card, #fff); }
+  .article-toc-title { font-weight: 600; margin: 0 0 8px; font-size: 14px; }
+  .article-toc ol { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.9; }
+  .article-toc li.toc-h3 { margin-left: 14px; list-style: circle; }
+  .article-toc a { color: inherit; }
+</style>

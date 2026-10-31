@@ -5,6 +5,20 @@
  * 联盟/广告占位注释原样保留，构建后由 placement 状态机重写。
  */
 import Layout from '../../layouts/SiteLayout.astro';
+import ArticleCard from '../../components/guide/ArticleCard.astro';
+import { getPublishedArticles } from '../../lib/data/guides';
+import { GUIDE_CATEGORIES } from '../../lib/data/schemas';
+import { categoryLabel } from '../../lib/i18n/categories';
+
+/* Markdown 文章（已发布；草稿不进列表）——确定性排序：publishedAt 降序 → slug 升序 */
+const articles = await getPublishedArticles('zh-CN');
+const latest = articles.slice(0, 3);
+const groups = GUIDE_CATEGORIES
+  .map(cat => ({ cat, label: categoryLabel(cat, 'zh-CN'), items: articles.filter(a => a.category === cat) }))
+  .filter(g => g.items.length > 0);
+const tagCounts = new Map();
+for (const a of articles) for (const t of a.tags) tagCounts.set(t, (tagCounts.get(t) || 0) + 1);
+const tags = [...tagCounts.entries()].sort((a, b) => (b[1] - a[1]) || (a[0] < b[0] ? -1 : 1));
 ---
 
 <Layout title={"LLM API 成本与模型选型指南 | Reflex Hub"}
@@ -14,7 +28,6 @@ import Layout from '../../layouts/SiteLayout.astro';
   jsonld={[{"@context":"https://schema.org","@type":"AboutPage","name":"LLM API 成本与模型选型指南","url":"https://www.reflex-hub.com/guides/","description":"LLM API 成本计算、模型定价比较与场景成本案例指南中心。"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"}]}]}
   active="guides"
   crumb={"/ 指南"}>
-  <Fragment slot="bodyend" set:html={"\n\n  <script>window.ASSETS_BASE = '../assets';</script>\n  <script src=\"../assets/app.js\"></script>"} />
 <section class="hero">
       <h1>LLM API 成本与模型选型指南</h1>
       <p class="tagline">算得明白 · 比得公平 · 估得准</p>
@@ -65,6 +78,32 @@ import Layout from '../../layouts/SiteLayout.astro';
         <span class="go">阅读指南 →</span>
       </a>
     </nav>
+
+    {articles.length > 0 && (
+      <>
+        <h2 class="group-title">最新文章</h2>
+        <nav class="module-grid" aria-label="最新文章">
+          {latest.map(a => <ArticleCard article={a} lang="zh-CN" href={a.slug + '/'} />)}
+        </nav>
+
+        <h2 class="group-title">按分类浏览</h2>
+        {groups.map(g => (
+          <>
+            <h3 style="font-size:15px;margin:14px 0 6px">{g.label}</h3>
+            <nav class="module-grid" aria-label={g.label}>
+              {g.items.map(a => <ArticleCard article={a} lang="zh-CN" href={a.slug + '/'} />)}
+            </nav>
+          </>
+        ))}
+
+        <section class="panel">
+          <h2>主题标签</h2>
+          <p class="m-tags">
+            {tags.map(([name, count]) => <span class="tag tag-feat">{name}（{count}）</span>)}
+          </p>
+        </section>
+      </>
+    )}
 
     <section class="panel">
       <h2>配套工具与口径说明</h2>

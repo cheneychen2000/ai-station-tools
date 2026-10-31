@@ -37,5 +37,10 @@ jobs:
       - name: Full build + all static checks (URL/SEO/routes/i18n/brand/affiliates/prompts)
         run: npm run check
 
-      - name: Migration regression (URL + SEO snapshot)
+      # 显式门禁：Markdown 内容体系（Schema 产物、路由、草稿排除、sitemap/lastmod、TOC、hreflang、死链）
+      # npm run check 已包含该脚本；此处单独运行便于在 CI 界面定位内容类失败。
+      - name: Content system checks (Markdown routing / draft exclusion / sitemap)
+        run: npm run check:content
+
+      - name: Migration regression (historical URL + SEO snapshot, new pages must come from published Markdown)
         run: npm run check:migrate

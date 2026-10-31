@@ -1,7 +1,7 @@
 /** 构建产物校验：幂等性、页面数量、URL 归一、sitemap 清单一致性、价格传播、静态内容、索引策略 */
 import { execSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, DIST } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
@@ -55,8 +55,12 @@ R.check('B3b 对比页 URL 全部归一（a<b）', normalized);
 
 const sitemap = readFileSync(join(DIST, 'sitemap.xml'), 'utf8');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
-const manifest = buildManifest({ models, tools, pagesMeta, compares });
-R.check(`B4 sitemap URL 数 = ${locs.length}（与页面清单 ${manifest.length} 一致）`, locs.length === manifest.length);
+/* Phase 3：sitemap 还需包含已发布且 indexable 的 Markdown 文章（清单来自 content-manifest 产物） */
+const contentManifestFile = join(DIST, 'assets/data/content-manifest.json');
+const contentManifest = existsSync(contentManifestFile) ? JSON.parse(readFileSync(contentManifestFile, 'utf8')) : { articles: [] };
+const articleEntries = (contentManifest.articles || []).filter(a => a.indexable).map(a => ({ path: a.path, lastmod: a.lastmod }));
+const manifest = buildManifest({ models, tools, pagesMeta, compares, articles: articleEntries });
+R.check(`B4 sitemap URL 数 = ${locs.length}（与页面清单 ${manifest.length} 一致，含 ${articleEntries.length} 篇 Markdown 文章）`, locs.length === manifest.length);
 
 const extTools = tools.filter(t => !t.own);
 const T = extTools.length;

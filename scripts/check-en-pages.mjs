@@ -18,6 +18,7 @@ import { DIST, SITE } from './lib/paths.mjs';
 import { createReporter } from './lib/report.mjs';
 import { loadData, comparePairs } from './lib/manifest.mjs';
 import { buildRouteMap, validateRouteMap } from './lib/locales.mjs';
+import { articleRouteInputs } from './lib/content.mjs';
 import { rateFor, monthly } from './lib/pricing.mjs';
 
 const R = createReporter('check-en-pages');
@@ -99,7 +100,7 @@ function walk(dir) {
   }
   return out;
 }
-const routeMap = validateRouteMap(buildRouteMap(pagesMeta, models, comparePairs(models, compares.extraPairs || []), tools));
+const routeMap = validateRouteMap(buildRouteMap(pagesMeta, models, comparePairs(models, compares.extraPairs || []), tools, articleRouteInputs()));
 const enAllowedUrls = new Set(routeMap.filter(e => e.routes.en).map(e => e.routes['zh-CN']));
 const urlOfRel = rel => '/' + rel.replace(/index\.html$/, '');
 let strayAlt = [];

@@ -11,6 +11,7 @@ const SCRIPTS = [
   ['selftest', 'scripts/selftest.mjs'],
   ['test-pricing', 'scripts/test-pricing.mjs'],
   ['check-migrate', 'scripts/check-migrate.mjs'],
+  ['check-content', 'scripts/check-content.mjs'],
   ['check-seo-pages', 'scripts/check-seo-pages.mjs'],
   ['check-en-pages', 'scripts/check-en-pages.mjs'],
   ['check-i18n', 'scripts/check-i18n.mjs'],

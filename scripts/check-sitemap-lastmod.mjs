@@ -37,9 +37,15 @@ const noindexed = locs.filter(u => /<meta name="robots" content="[^"]*noindex/.t
 R.check('S6 noindex 页面未被收录', noindexed.length === 0, noindexed.join(' | ') || '0 违规');
 R.check('S7 不含 404/测试页', locs.every(u => !/404|test|demo/i.test(new URL(u).pathname)));
 
-/* lastmod：与 manifest 规则逐条一致（路径集合 + 每条日期） */
+/* lastmod：与 manifest 规则逐条一致（路径集合 + 每条日期）
+   Phase 3 起 manifest 还要包含已发布且 indexable 的 Markdown 文章（lastmod = updatedAt，来自 content-manifest 产物） */
 const data = loadData();
-const manifest = buildManifest(data);
+const contentManifestPath = join(DIST, 'assets/data/content-manifest.json');
+const contentManifest = existsSync(contentManifestPath) ? JSON.parse(readFileSync(contentManifestPath, 'utf8')) : { articles: [] };
+const articleEntries = (contentManifest.articles || [])
+  .filter(a => a.indexable)
+  .map(a => ({ path: a.path, lastmod: a.lastmod }));
+const manifest = buildManifest({ ...data, articles: articleEntries });
 const xmlEntries = urlBlocks.map(b => ({
   loc: /<loc>([^<]+)<\/loc>/.exec(b)[1],
   lastmod: (b.match(/<lastmod>([^<]+)<\/lastmod>/) || [])[1] || null
