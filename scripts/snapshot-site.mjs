@@ -8,6 +8,8 @@
  * 比对口径（重构允许 HTML 空白/属性实现方式变化，不允许语义变化）：
  *  - HTML：URL 集合 + 每页 title/description/canonical/robots/hreflang/og:* /JSON-LD 逐字段相等；
  *  - assets/**（JS/CSS/JSON/图片/图标）：字节级 sha1 必须一致（公开 URL 契约）；
+ *    例外仅限"行尾符等价"：基线在 Windows(CRLF) 采集、CI 在 Linux(LF) 检出时，文本资产允许
+ *    LF/CRLF 归一化后哈希命中基线（逐条打印留痕）；内容任何差异仍然失败；
  *  - sitemap.xml：全文一致；
  *  - robots.txt / _headers / manifest.json：字节一致；
  *  - 404.html 存在。
@@ -114,11 +116,25 @@ if (cmd === 'capture') {
      assets/app.js    → src/scripts/app.ts（打包 /_astro/SiteLayout.*.js）
      assets/lib-filter.js → src/scripts/model-filter.ts（打包模块） */
   const MIGRATED = new Set(['assets/style.css', 'assets/app.js', 'assets/lib-filter.js']);
+  /* 行尾符等价判定：基线在 Windows（core.autocrlf=true）采集，部分文本资产工作区为 CRLF，
+     Linux CI 检出为 LF —— 内容相同、仅 EOL 不同。此处仅接受"归一化为 LF/CRLF 后哈希命中基线"的情形，
+     任何内容性差异（含空白/字段变化）仍然失败；命中时逐条打印，保留审计痕迹。 */
+  const TEXT_ASSET = /\.(json|js|css|html|xml|txt|svg|webmanifest)$/i;
+  const eolEquivalent = [];
+  const sha1 = buf => createHash('sha1').update(buf).digest('hex');
+  const eolVariants = buf => {
+    const lf = buf.toString('utf8').replace(/\r\n/g, '\n');
+    return [Buffer.from(lf, 'utf8'), Buffer.from(lf.replace(/\n/g, '\r\n'), 'utf8')];
+  };
   for (const rel of Object.keys(base.assets)) {
     if (!cur.assets[rel]) { if (!MIGRATED.has(rel)) diffs.push(`资产缺失: ${rel}`); continue; }
     /* sitemap.xml 会因新增已发布文章而合法变化：改为"历史 URL 与 lastmod 逐条不变 + 新增项必须来自文章清单"语义比对 */
     if (rel === 'sitemap.xml') continue;
-    if (cur.assets[rel] !== base.assets[rel]) diffs.push(`资产字节变化: ${rel}`);
+    if (cur.assets[rel] === base.assets[rel]) continue;
+    const file = join(DIST, rel);
+    const onlyEol = TEXT_ASSET.test(rel) && existsSync(file) && eolVariants(readFileSync(file)).some(v => sha1(v) === base.assets[rel]);
+    if (onlyEol) eolEquivalent.push(rel);
+    else diffs.push(`资产字节变化: ${rel}`);
   }
 
   /* sitemap.xml 会因新增已发布文章而合法变化，故不做字节比对；
@@ -137,7 +153,8 @@ if (cmd === 'capture') {
     if (diffs.length > 60) console.log(`  …其余 ${diffs.length - 60} 处省略`);
     process.exit(1);
   }
-  console.log(`REFACTOR OK: 历史 ${historicalOk}/${baseUrls.length} 页面完整且 SEO 一致；Markdown 文章新增 ${curUrls.length - baseUrls.length} 页（均来自 content-manifest）；${Object.keys(cur.assets).length} 资产字节一致`);
+  if (eolEquivalent.length) console.log(`行尾符等价（内容一致，仅 CRLF/LF 差异，已审计放行）: ${eolEquivalent.join(', ')}`);
+  console.log(`REFACTOR OK: 历史 ${historicalOk}/${baseUrls.length} 页面完整且 SEO 一致；Markdown 文章新增 ${curUrls.length - baseUrls.length} 页（均来自 content-manifest）；${Object.keys(cur.assets).length} 资产字节一致${eolEquivalent.length ? `（其中 ${eolEquivalent.length} 项为行尾符等价）` : ''}`);
 } else {
   console.error('用法: node scripts/snapshot-site.mjs capture|compare <文件>');
   process.exit(2);

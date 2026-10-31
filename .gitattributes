@@ -1,0 +1,3 @@
+# 统一数据 JSON 的行尾符，避免 Windows(CRLF) 与 CI(Linux, LF) 检出差异
+# 影响：迁移快照回归（scripts/snapshot-site.mjs 资产字节比对）与公开资源字节契约
+public/assets/data/*.json text eol=lf
