@@ -16,7 +16,7 @@ const { models } = await getSiteData();
   ogDescription={"LLM API 成本计算原理与步骤：输入/输出 Token 分开计价、缓存与峰谷定价处理、月度用量假设与可复核算例、常见误区。数据标注官方来源与核验日期。"}
   ogType="article"
   canonicalPath="/guides/llm-api-cost/"
-  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"如何计算 LLM API 成本：输入 Token、输出 Token、缓存与月度用量","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-28","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/llm-api-cost/"},{"@type":"ListItem","position":3,"name":"如何计算 LLM API 成本","item":"https://www.reflex-hub.com/guides/llm-api-cost/"}]}]}
+  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"如何计算 LLM API 成本：输入 Token、输出 Token、缓存与月度用量","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-31","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/llm-api-cost/"},{"@type":"ListItem","position":3,"name":"如何计算 LLM API 成本","item":"https://www.reflex-hub.com/guides/llm-api-cost/"}]}]}
   active="guides"
   crumb={"/ <a href=\"../../guides/\" style=\"color:inherit\">指南</a> / 成本计算"}>
 <section class="hero">
@@ -54,7 +54,58 @@ const { models } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>三、计算公式</h2>
+      <h2>三、Token 是怎么切出来的</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>第二节那句"1 个汉字约 1~2 个 Token"只是量级经验，不能当计费依据。Token 由厂商的分词器（tokenizer）决定，主流实现是 BPE 一类的子词切分：把高频子串收进词表，遇到词表外的内容就退回到更小的片段，最差情况退到字节级。OpenAI 开源的 tiktoken 在 README 里把这套性质写得很清楚——可逆无损、能处理任意文本（包括训练时没见过的文本）、压缩后比原始字节更短，"实践中平均 1 个 Token 约等于 4 字节"（该经验值针对其训练与评测所用的文本分布，不是普适常数）。</p>
+        <p>这里有两个直接后果。第一，<strong>同一段文字在不同厂商的分词器下 Token 数不同</strong>：编码表不同、合并规则不同，跨厂商用"字数 × 系数"互相换算必然出错。第二，<strong>文本的"信息密度"比长度更能决定 Token 数</strong>：自然语言散文的切分效率高，代码与结构化数据低。</p>
+        <p>几类容易低估的输入：</p>
+        <p>
+          · <strong>中文</strong>：常见汉字多落在词表内，但生僻字、异体字、繁体与全角标点常被拆成多个 Token；<br>
+          · <strong>代码</strong>：缩进空格、括号、下划线、驼峰命名的每一段都可能单独成 Token，同样的字符数下代码的 Token 数通常明显高于散文；<br>
+          · <strong>结构化数据</strong>：JSON 的引号与花括号、CSV 的分隔符、表格线都是额外 Token；<br>
+          · <strong>随机串</strong>：UUID、哈希、Base64、订单号这类高熵字符串几乎无法被合并，往往逐段甚至逐字节切分；<br>
+          · <strong>长空白与重复标点</strong>：连续空格、Markdown 缩进、装饰性分隔线都会被如实计量。
+        </p>
+        <p>所以正确做法不是估算，而是<strong>拿真实样本实测</strong>：调用对应厂商的分词接口，或对 OpenAI 系模型用 tiktoken 的 <code>encoding_for_model</code> 取该模型的编码再 <code>encode()</code> 计数。样本要覆盖你最长的输入形态（含 system prompt 与工具定义），而不是只测一句用户提问。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>四、一次请求的输入 Token 由什么拼成</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>计费的是<strong>序列化之后整包发送的内容</strong>，不是"用户这一句话"。一次请求的输入通常由四块拼成，其中后两块最容易被漏算：</p>
+        <p>
+          · <strong>系统提示词</strong>：角色设定、输出格式要求、few-shot 示例。它每次都发送，因此它的长度会按调用次数线性放大；<br>
+          · <strong>历史消息</strong>：多轮对话场景下，每轮都会把之前的输入与输出重新发送一遍，输入量随轮数近似线性增长（这也是多轮对话比单轮贵得多的原因）；<br>
+          · <strong>工具定义</strong>：Tool Calling 的函数名、描述与参数 JSON Schema 属于请求体的一部分，按输入 Token 计费；挂 20 个工具与挂 3 个工具，每轮输入都会差出一截，工具描述写得越啰嗦差得越多；<br>
+          · <strong>当前用户输入与附件</strong>：文本直接计入；图片、音频、视频是否折算成 Token、按什么公式折算，各家规则不同，本站模型库只在 <a href="../../models/">模型档案</a> 的 modalities 字段声明支持哪些模态，不声明折算系数——需要精确值时请查该厂商的多模态计费文档。
+        </p>
+        <p>输出侧还有一个常被忽略的边界：<strong>推理（reasoning）内容算不算输出 Token</strong>。部分模型默认开启思考模式，思考过程本身也要生成；它是否计入 usage 的输出量、是否单独计价，口径由厂商决定（例如 DeepSeek 的价格页把两种模式并列，并声明"按模型输入 + 输出 Token 总量"计费，但具体哪些内容进 output 仍以接口返回的 usage 为准）。估算时如果忽略了推理开销，输出项会系统性偏低。</p>
+        <p>一个可操作的估算顺序：把请求体完整序列化成 JSON → 用分词器测这段 JSON 的 Token 数 → 再乘调用次数。跳过第一步直接对"用户输入"估算，是最常见的低估来源。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、用响应里的 usage 字段核对假设</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>本文前面的公式是"从假设推成本"，真实账单是"从用量推成本"。两者能对上，前提是假设与 usage 口径一致。主流 API 都会在响应里返回本次调用的用量，但<strong>字段名与拆分粒度因厂商而异，没有任何一个是行业标准</strong>，不要照抄某一家的字段去解析另一家：</p>
+        <p>
+          · <strong>DeepSeek</strong>：输入侧拆成 <code>prompt_cache_hit_tokens</code> 与 <code>prompt_cache_miss_tokens</code>，两者之和即本次输入的 prompt Token 总量，可直接算命中率；命中部分与未命中部分的单价不同（核验于 2026-10-31 的官方 Context Caching 文档与价格页）；<br>
+          · <strong>Anthropic</strong>：官方定价页把"缓存读取"与"缓存写入"列为独立价格行，并注明缓存价格以 5 分钟 TTL 为基准、另有延长缓存的选项；响应中缓存与用量的具体字段名请以该厂商的 API 文档为准（本次核验只覆盖了定价页，接口字段未逐项核对）；<br>
+          · <strong>其他厂商</strong>：缓存命中量有的单独给字段，有的只给"输入总量"不再拆分，还有的把工具调用、图片、批量接口的计量放在独立对象里。接入前先把你要用的那几个字段打印出来看一遍，比读三篇博客可靠。
+        </p>
+        <p>拿到 usage 之后，做三步对照：</p>
+        <p>
+          · <strong>第一步，量级对照</strong>：把 30 天的 usage 输入总量除以真实请求数，得到"实测单次输入"，与你在 <a href="../../cost/">成本计算器</a> 里填的单次输入值比。差 2 倍以内通常是假设粗糙，差一个数量级说明漏算了 system prompt、历史或工具定义；<br>
+          · <strong>第二步，结构对照</strong>：把命中量除以（命中 + 未命中）得到实测命中率，替换计算器里的 30% 默认假设；若命中率长期接近 0，先检查前缀是否被时间戳、用户 ID、随机排序破坏，而不是先去调价格假设；<br>
+          · <strong>第三步，账单对照</strong>：用实测 usage 与官方单价重算一遍，与厂商账单比较。差额的常见来源是失败请求与重试（它们同样消耗 Token 甚至全额计费）、缓存写入费、跨档位计价、以及免费额度与资源包抵扣。差额持续存在时，先确认账单里的计价档位与时段，再怀疑公式。
+        </p>
+        <p>这三步做完，你手上的"单次输入 / 单次输出 / 命中率 / 调用次数"就不再是拍脑袋的假设，而是从自己日志里长出来的参数；本文的公式仍然成立，只是代入了你自己的数字。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>六、计算公式</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>输入与输出<strong>分开计算再相加</strong>：</p>
         <p>
@@ -69,7 +120,7 @@ const { models } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>四、上下文长度分档</h2>
+      <h2>七、上下文长度分档</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>部分模型按<strong>单次输入长度</strong>分档计价：例如 MiniMax M3 输入 ≤512K 适用低档（输入 ¥2.1 / 输出 ¥8.4 每百万 Token），&gt;512K 跳到高档（¥4.2 / ¥16.8）；Claude Haiku 5.5 以提示词 ≤100K 为界分 0.1 / 0.5 美元两档。计算时要先用你的单次输入长度选对档位，再代入公式。</p>
         <p><strong>未公开档位不补价</strong>：GPT-6 Luna 与 GPT-6.1 Sol 的 &gt;272K 长上下文档费率官方定价页未公布数值——该范围内估算必须如实返回"无法估算"，套用低档价格会得到偏低的虚假数字。本站计算器和对比页遇到未公开档位一律拒绝估算。</p>
@@ -78,18 +129,18 @@ const { models } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>五、一个可复核的算例</h2>
+      <h2>八、一个可复核的算例</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>下面用一个数据完整（含公开缓存价）的真实模型演示全部步骤。所有取值来自本站唯一数据源 models.json，模型页附官方来源与核验日期：</p>
       </div>
       
 <GuideExample models={models} />
 
-      <p class="s-hint">复算方法：把上表取值代入第三节公式即可手工验证；也可以到 <a href="../../cost/">成本计算器</a> 选中同一模型、使用相同参数（日均 100 次 · 输入 2000 · 输出 800 · 命中率 30%）对照结果。</p>
+      <p class="s-hint">复算方法：把上表取值代入第六节公式即可手工验证；也可以到 <a href="../../cost/">成本计算器</a> 选中同一模型、使用相同参数（日均 100 次 · 输入 2000 · 输出 800 · 命中率 30%）对照结果。</p>
     </section>
 
     <section class="panel">
-      <h2>六、缓存读写与峰谷价</h2>
+      <h2>九、缓存读写与峰谷价</h2>
       <div style="font-size:14px;line-height:1.9">
         <p><strong>缓存命中价</strong>：当请求的输入与历史请求有相同前缀时，厂商允许命中上下文缓存，命中部分按明显低于标准输入价的缓存价计费。保持稳定的系统提示词与文档前缀能提高命中率。只有官方公布了缓存命中价的模型才能享受这项折算；本站对未公开的模型一律按未命中价计，不假设存在缓存折扣。</p>
         <p><strong>缓存写入费</strong>是另一项容易被忽略的计费项：部分厂商对"写入缓存"单独收费（如 GPT-6 Luna 30 分钟档 $0.125 / 百万 Token、Claude 系列 5 分钟档 $0.125 起）。写入费与缓存保留时长相关、和调用量假设耦合，本站示例月成本未计入，各模型档案页已单独注明。</p>
@@ -98,7 +149,7 @@ const { models } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>七、从单次成本到月度估算</h2>
+      <h2>十、从单次成本到月度估算</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>月度估算 = 日均调用次数 × 30 天 × 单次成本。三个假设需要你按真实业务取值：</p>
         <p>
@@ -111,7 +162,7 @@ const { models } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>八、常见误区</h2>
+      <h2>十一、常见误区</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>
           · <strong>误区 1：输入输出同一个价</strong>。输出单价通常是输入的 2~4 倍，只按输入估价会严重低估；<br>
@@ -124,16 +175,22 @@ const { models } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>九、数据来源与核验</h2>
+      <h2>十二、数据来源与核验</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>
           Reflex Hub 的模型价格与参数维护在唯一数据源 models.json 中，每条数据标注官方来源链接与"最后核验日期"（verifiedAt），页面页脚汇总全部来源。<strong>价格核验时间 ≠ 页面内容更新时间</strong>：仅重新核验而价格未变时，页面与 sitemap 的更新日期保持不变（完整时间语义见<a href="../../pricing-methodology/">定价方法论</a>）。本站尽可能逐项复核，但仍存在两类限制：一是官方未公布的数值（如个别模型的上下文窗口）只能标记未决，不会编造；二是价格会随厂商调整而变化，引用本文算例时请回到对应官方页面确认最新价格。
+        </p>
+        <p>第三至第五节（Token 计量、输入构成、usage 核对）另参考以下官方资料，均于 2026-10-31 实际访问核验：
+          <a href="https://github.com/openai/tiktoken" target="_blank" rel="noopener">tiktoken README（BPE 分词与"平均 1 Token ≈ 4 字节"的经验值）</a>、
+          <a href="https://api-docs.deepseek.com/guides/kv_cache" target="_blank" rel="noopener">DeepSeek Context Caching 文档（usage 的命中/未命中字段）</a>、
+          <a href="https://claude.com/pricing" target="_blank" rel="noopener">Claude 定价页（缓存读取/写入单价与 5 分钟 TTL 基准）</a>。
+          各厂商的 usage 字段名与拆分粒度并不统一，本文不把任何一家称为行业标准。
         </p>
       </div>
     </section>
 
     <section class="panel">
-      <h2>十、下一步</h2>
+      <h2>十三、下一步</h2>
       <div style="font-size:14px;line-height:2">
         <p>
           · 代入你的真实用量，用 <a href="../../cost/">成本计算器</a> 估算各模型月成本；<br>

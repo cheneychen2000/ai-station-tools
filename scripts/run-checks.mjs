@@ -10,6 +10,7 @@ const SCRIPTS = [
   ['build', 'scripts/build.mjs'],
   ['selftest', 'scripts/selftest.mjs'],
   ['test-pricing', 'scripts/test-pricing.mjs'],
+  ['test-article-code', 'scripts/test-article-code.mjs'],
   ['check-content', 'scripts/check-content.mjs'],
   ['check-seo-pages', 'scripts/check-seo-pages.mjs'],
   ['check-en-pages', 'scripts/check-en-pages.mjs'],

@@ -17,7 +17,7 @@ const { models, fx } = await getSiteData();
   ogDescription={"同一用量假设下 17 款主流模型的估算月成本对比：官方原币单价、缓存价、上下文窗口与折算人民币排序，数据可逐步核验。"}
   ogType="article"
   canonicalPath="/guides/llm-api-pricing-comparison/"
-  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"大模型 API 定价比较：同用量下国内外模型月成本对比","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-28","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"},{"@type":"ListItem","position":3,"name":"定价比较","item":"https://www.reflex-hub.com/guides/llm-api-pricing-comparison/"}]}]}
+  jsonld={[{"@context":"https://schema.org","@type":"TechArticle","headline":"大模型 API 定价比较：同用量下国内外模型月成本对比","inLanguage":"zh-CN","datePublished":"2026-10-28","dateModified":"2026-10-31","author":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"},"publisher":{"@type":"Organization","name":"Reflex Hub","url":"https://www.reflex-hub.com/"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://www.reflex-hub.com/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://www.reflex-hub.com/guides/"},{"@type":"ListItem","position":3,"name":"定价比较","item":"https://www.reflex-hub.com/guides/llm-api-pricing-comparison/"}]}]}
   active="guides"
   crumb={"/ <a href=\"../../guides/\" style=\"color:inherit\">指南</a> / 定价比较"}>
 <section class="hero">
@@ -70,7 +70,71 @@ const { models, fx } = await getSiteData();
     </section>
 
     <section class="panel">
-      <h2>四、数据来源与限制</h2>
+      <h2>四、最低价格不等于最佳选择</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>把估算月成本排序之后，最常见的错误动作是"从最便宜的一行往上选"。这张表的用途是<strong>排除明显不适用的候选</strong>，而不是直接给出答案。原因有三层，且都与价格表本身无关。</p>
+        <p><strong>第一层：价格结构与任务结构不匹配。</strong>输入价便宜、输出价贵的模型适合"读得多、写得少"的任务——检索问答、分类打标、抽取字段、批量摘要；反过来，输出价占比低的模型更适合长文生成、代码补全、多轮改写。示例用量（输入 2000 / 输出 800）只是一个折中，如果你的实际比例是 30:1 或 1:5，同一张表的排序会翻转。判断方法很直接：先用自己日志里的输入输出比例替换示例比例，再看名次变化；变化大的模型就是"对这个任务价格结构不匹配"的模型。</p>
+        <p><strong>第二层：长上下文会把分档价格提前引爆。</strong>按输入长度分档计价的模型，档位边界是台阶不是斜坡：单次输入一旦越过边界，<em>整次请求</em>的单价跳到高档（本站 <a href="../../models/">模型库</a> 在各模型档案里列出全部档位与边界，例如 MiniMax M3 以 512K 输入为界、Claude Haiku 5.5 以 100K 提示为界，核验日期见档案页）。示例用量里 2000 Token 的输入永远落在低档，所以对比表看不出这个风险。要评估长文档任务，请把单次输入设成你的真实 P95 值再重算一次，并且注意：分档看的是单次请求长度，不是月累计量。</p>
+        <p><strong>第三层：缓存命中率是乘数，不是常数。</strong>示例统一按 30% 命中率折算输入有效单价，但真实命中率取决于业务形态：固定系统提示词 + 固定知识库前缀的客服机器人可能跑到 70% 以上，而每次请求都带不同用户上下文的应用可能接近 0。更关键的是<strong>缓存命中价的相对折扣差距大于未命中价的差距</strong>——同一份表里，不同厂商"命中价 / 未命中价"的比值并不相同，有的接近 1/50，有的只有 1/10 上下，命中率越高，这个比值带来的输入侧成本差越被放大。反过来，官方未公开缓存价的模型只能按未命中价计，它在高命中率场景里会被系统性高估，不能据此判它"贵"。</p>
+        <p>把这三层叠加起来，得到的结论很朴素：<strong>先用自己的真实输入输出比例、P95 输入长度与实测命中率重算一遍成本，再进入质量评估。</strong>用 <a href="../../cost/">成本计算器</a> 改这四个参数比读任何排名都有效。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>五、价格之外要看的四件事</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>成本只是约束条件之一。下面这张决策表把选型时需要回答的问题摊开，每一行都对应一类可以在上线前验证、而不是靠印象回答的问题：</p>
+        <table>
+          <thead>
+            <tr><th>评估维度</th><th>关注问题</th><th>怎么验证</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>成本</td><td>输入、输出、缓存读写、分档边界与真实月成本</td><td>用日志里的比例与 P95 输入重算（本文第四节）</td></tr>
+            <tr><td>质量</td><td>任务准确率、结构化输出能否稳定解析、工具调用成功率</td><td>自建测试集跑通过率，见本文第六节</td></tr>
+            <tr><td>延迟</td><td>首 Token 延迟（流式）与完整响应时间（非流式）</td><td>同地区、同输入长度压测，记录 P50/P95</td></tr>
+            <tr><td>稳定性</td><td>限流维度与配额、错误率、超时行为、是否支持幂等重试</td><td>读官方限流文档 + 生产前小流量观察</td></tr>
+            <tr><td>上下文</td><td>业务实际所需输入长度、最大输出、是否跨档</td><td>统计真实输入分布，与模型规格对齐</td></tr>
+            <tr><td>安全</td><td>数据处理位置、日志留存、密钥管理与合规边界</td><td>读服务条款与数据处理说明，见 <a href="../../pricing-methodology/">定价方法论</a> 的数据口径</td></tr>
+          </tbody>
+        </table>
+        <p>这张表里没有"综合评分"一列，是刻意的。本站不对模型质量做排名：<strong>没有可复现的实测基准，任何评分都是编的</strong>。质量只能由你自己的测试集回答，而测试集的构建成本远低于选错模型半年的返工成本。</p>
+        <p>延迟与限流值得单独提醒：RPM/TPM 这类限额是账号、套餐、模型与服务条件相关的，官方文档给出的示例值不是"所有用户的固定上限"；把某个数字当作常量写进容量规划，是最常见的生产事故来源之一。选型阶段至少要确认：限流命中时返回什么状态码、是否带 <code>Retry-After</code>、超额是排队还是直接拒绝。这些决定你能不能靠重试撑过峰值。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>六、用统一测试集替代印象</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>模型质量在你自己的任务上，与它在公开榜单上的位置往往关系不大。可操作的路径是抽一批真实请求做小测试集，规模不必大，30~100 条就足够区分明显不合适的候选。构建要点：</p>
+        <p>
+          · <strong>抽样要覆盖分布的两端</strong>：既要有典型请求，也要有最长的输入与最刁的输出格式，否则测出来的通过率没有参考价值；<br>
+          · <strong>为每条样本写"可判定的期望"</strong>：能自动判定的（字段是否齐全、JSON 能否解析、枚举值是否合法、数值是否落在区间）优先自动判，不能自动判的（措辞质量、摘要忠实度）抽样人工过一遍，不要给自己造一个需要全量人工的评测；<br>
+          · <strong>把成本与延迟一起记</strong>：同一批样本跑每个候选模型，记录通过率、单次平均成本、P50/P95 延迟，三列并排才能做取舍；<br>
+          · <strong>固定版本与参数</strong>：温度、最大输出、系统提示词全部冻结，否则差异无法归因；厂商更新模型时用同一批样本复跑，这就成了回归测试。
+        </p>
+        <p>三个维度怎么合成结论？不要算加权总分，用<strong>支配关系</strong>判断更稳：如果候选 A 在成本、通过率、延迟三项上都不差于 B，且至少一项更好，就淘汰 B；剩下的候选构成一条"前沿"，最终选择取决于你的业务更怕哪一种失败——怕超支就选前沿上成本最低的，怕答错就选通过率最高的。这个判断没法外包给排名表。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>七、一个可复用的选型流程</h2>
+      <div style="font-size:14px;line-height:1.9">
+        <p>把前面的内容收拢成七步，任何一次换模型都可以照着走一遍：</p>
+        <p>
+          · <strong>1. 明确约束</strong>：单次输入 P95、输出上限、并发峰值、可用预算上限、数据能否出境或离开内网；<br>
+          · <strong>2. 用硬约束先筛</strong>：上下文不够、模态不支持、区域不合规的候选直接出局，不要先比价格；<br>
+          · <strong>3. 用真实比例重算成本</strong>：替换示例用量，把分档与缓存命中率按实测值代入，得到候选集的月成本区间；<br>
+          · <strong>4. 建小测试集跑质量与延迟</strong>：同批样本、同参数、同地区，记录通过率与 P50/P95；<br>
+          · <strong>5. 在成本-质量-延迟上找前沿</strong>：淘汰被支配的候选，剩下的 2~3 个进入决策；<br>
+          · <strong>6. 验证工程可用性</strong>：限流返回形态、重试与超时语义、流式是否可用、错误码是否稳定可编程；<br>
+          · <strong>7. 留退路</strong>：抽象出可替换的调用层、双供应商灰度开关、以及"换模型后成本会不会失控"的监控口径。
+        </p>
+        <p>第 7 步最容易被跳过，但它决定了这次选型是一次性决策还是可持续决策。切换成本主要不在代码，而在提示词与解析逻辑对某个模型行为的隐式依赖——把这两者与调用层解耦，换模型的代价才降到可以按季度重新评估的水平。</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>八、数据来源与限制</h2>
       <div style="font-size:14px;line-height:1.9">
         <p>
           · 数据来自本站唯一数据源 models.json，每条记录标注官方来源链接；价格核验日期见表内"核验日期"列与各模型档案页（/models/ 目录）；<br>
@@ -78,11 +142,17 @@ const { models, fx } = await getSiteData();
           · 跨币种折算使用中国外汇交易中心人民币汇率中间价（静态参考汇率，非交易汇率）；<br>
           · 估算未计入免费额度、资源包、套餐折扣与限时活动，不等于服务商实际账单，不构成采购建议。
         </p>
+        <p>
+          · 第四至第七节的档位边界与缓存倍率均为定性引用，具体数值请以模型档案页与厂商官方页面为准。本文在 2026-10-31 实际访问核验了
+          <a href="https://claude.com/pricing" target="_blank" rel="noopener">Claude 定价页（缓存读取/写入价格、100K 分档、5 分钟 TTL 基准）</a>与
+          <a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek 价格页（上下文长度、最大输出与并发示例值）</a>；
+          OpenAI 与 Google 的官方文档在本次核验中无法访问（分别返回 403 与请求超时），因此本文不引用这两家的门槛与倍率，也不对模型质量做任何排名。
+        </p>
       </div>
     </section>
 
     <section class="panel">
-      <h2>五、下一步</h2>
+      <h2>九、下一步</h2>
       <div style="font-size:14px;line-height:2">
         <p>
           · 代入真实用量重算：<a href="../../cost/">成本计算器</a>（可勾选任意多款模型并排比较）；<br>
