@@ -7,6 +7,8 @@
     "checkJs": false,
     /* strictest 子集保留，但关闭 noUncheckedIndexedAccess：业务里大量经守卫/白名单的索引访问
        （zod 已校验的数据、路由映射）不需要 undefined 传染，避免成片的非空噪音断言 */
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
+    /* 允许显式 .ts 扩展名导入：同一批业务模块需被检查脚本经 Node 原生类型剥离直读 */
+    "allowImportingTsExtensions": true
   }
 }

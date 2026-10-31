@@ -11,7 +11,8 @@
  * 算法与迁移前 src/lib/manifest.mjs 逐行等价（仅增加类型约束）。
  */
 import type { Model, Tool, PagesFile, ComparesFile } from '../data/schemas';
-import { EN_MODELS } from '../i18n/locales';
+/* .ts 扩展名 + 仅可擦除语法：本模块可被检查脚本经 Node 原生类型剥离直接加载（scripts/lib 收敛层） */
+import { EN_MODELS } from '../i18n/locales.ts';
 
 /** ISO 日期（YYYY-MM-DD）字典序即时间序 */
 export const maxDate = (ds: Array<string | null | undefined>): string | null => ds.filter(Boolean).sort().pop() || null;

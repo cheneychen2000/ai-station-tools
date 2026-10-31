@@ -1,17 +1,14 @@
 /**
- * 广告位渲染闸（唯一出口）。安全规则：
- *  - 仅 enabled===true 且 publisherId 为正式格式（ca-pub-16位数字）且 slots 登记了该位置时才输出占位容器；
- *  - 其余任何情况输出空串——默认配置下页面零广告标记、零脚本；
- *  - 真正加载 adsense 脚本的运行时闸门在 dist/assets/app.js（另加生产域名与 CMP 同意两道闸）。
- * build.mjs 用本函数处理手写页中的 <!-- ADSLOT:name --> 标记。
+ * 广告位渲染：安全闸规则唯一实现源 = src/lib/placements/gates.ts（组件 AdSlot 与其共用同一判定）。
+ * 本文件只保留检查脚本所需的历史 HTML 片段形态（占位容器标记），无独立业务规则。
  */
+import { isValidPublisherId, adSlotAllowed } from '../../src/lib/placements/gates.ts';
 import { esc } from './escape.mjs';
 
-export const isValidPublisherId = s => typeof s === 'string' && /^ca-pub-\d{16}$/.test(s);
+export { isValidPublisherId };
 
 export function adSlotHtml(cfg, name) {
-  if (!cfg || cfg.enabled !== true || !isValidPublisherId(cfg.publisherId)) return '';
-  const slot = cfg.slots && cfg.slots[name];
-  if (!slot) return '';
-  return `<div class="ad-slot" data-ad-slot="${esc(name)}" data-ad-format="${esc(slot.format || 'auto')}"></div>`;
+  const ok = adSlotAllowed(cfg, name);
+  if (!ok) return '';
+  return `<div class="ad-slot" data-ad-slot="${esc(ok.name)}" data-ad-format="${esc(ok.format)}"></div>`;
 }

@@ -1,0 +1,49 @@
+# Deploy：仅 main 分支推送（或手动触发）发布到 Cloudflare Workers Static Assets。
+# 部署目标是 wrangler.jsonc 的 assets.directory = ./dist（不是 Cloudflare Pages）。
+# 需要的 GitHub Secrets（不写入仓库）：
+#   CLOUDFLARE_API_TOKEN   — 有 Workers 部署权限的 API Token
+#   CLOUDFLARE_ACCOUNT_ID  — Cloudflare 账号 ID
+# PR 不触发本工作流；全部检查通过后才允许部署。
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build, check and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run check:types
+
+      - name: Domain unit tests
+        run: npm run check:unit
+
+      - name: Full build + all checks (含构建幂等性)
+        run: npm run check
+
+      - name: Migration regression
+        run: npm run check:migrate
+
+      - name: Build for deploy
+        run: npm run build
+
+      - name: Deploy to Cloudflare Workers Static Assets
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

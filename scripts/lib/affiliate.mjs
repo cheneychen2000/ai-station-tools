@@ -1,22 +1,18 @@
 /**
- * 联盟 CTA 渲染（唯一出口）。安全规则：
- *  - 仅 status==='active' 且 referralUrl 通过 safeUrl 校验且存在 disclosureText 时才输出 CTA；
- *  - 其余状态（candidate/applied/approved/paused）一律输出空串——未批准项目不在公开页面显示；
- *  - 链接固定 rel="sponsored nofollow noopener" target="_blank"，披露文案随链接就近展示。
- * build.mjs 用本函数处理手写页中的 <!-- AFFILIATE:<partnerId> --> 标记。
+ * 联盟 CTA 渲染：安全闸规则唯一实现源 = src/lib/placements/gates.ts（组件 AffiliateCTA 与其共用同一判定）。
+ * 本文件只保留检查脚本所需的历史 HTML 片段形态（CTA 标记与披露文案），无独立业务规则。
  */
-import { esc, safeUrl } from './escape.mjs';
+import { affiliateCtaAllowed, partnerById } from '../../src/lib/placements/gates.ts';
+import { esc } from './escape.mjs';
 
 export function affiliateCtaHtml(p) {
-  if (!p || p.status !== 'active') return '';
-  const url = safeUrl(p.referralUrl);
-  if (!url || url === safeUrl(p.officialUrl)) return '';
-  if (!p.disclosureText) return '';
+  const ok = affiliateCtaAllowed(p);
+  if (!ok) return '';
   return `<div class="affiliate-cta">
-        <a class="btn btn-primary btn-s" href="${esc(url)}" target="_blank" rel="sponsored nofollow noopener" data-affiliate="${esc(p.partnerId)}">访问 ${esc(p.name)} 官网 →</a>
-        <p class="aff-note">${esc(p.disclosureText)}</p>
+        <a class="btn btn-primary btn-s" href="${esc(ok.url)}" target="_blank" rel="sponsored nofollow noopener" data-affiliate="${esc(ok.partnerId)}">访问 ${esc(ok.name)} 官网 →</a>
+        <p class="aff-note">${esc(ok.disclosureText)}</p>
       </div>`;
 }
 
 /** 按 partnerId 取对象（缺失返回 null，调用方按空串处理） */
-export const byId = (partners, id) => (partners || []).find(p => p.partnerId === id) || null;
+export const byId = partnerById;

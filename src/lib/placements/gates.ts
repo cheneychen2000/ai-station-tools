@@ -2,7 +2,7 @@
  * 联盟/广告安全闸（唯一判定出口，与 scripts/lib 下供检查脚本使用的副本同规则）。
  * 只负责"是否允许输出 + 输出所需数据"，HTML 由 components/placements 下的 Astro 组件生成。
  */
-import { safeUrl } from '../utils/escape';
+import { safeUrl } from '../utils/escape.ts';
 import type { Partner, AdsConfig } from '../data/schemas';
 
 export const isValidPublisherId = (s: unknown): boolean => typeof s === 'string' && /^ca-pub-\d{16}$/.test(s);

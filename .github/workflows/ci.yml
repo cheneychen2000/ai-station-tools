@@ -1,0 +1,41 @@
+# CI：类型检查 + Domain 单测 + 完整构建 + 全部静态产物门禁 + 迁移快照对拍。
+# Node 矩阵覆盖 package.json engines 声明的最低支持版本（22.23.4）与当前稳定版（24）。
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    name: Check (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.23.4', '24']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check (astro check)
+        run: npm run check:types
+
+      - name: Domain unit tests (pricing)
+        run: npm run check:unit
+
+      # npm run check 内部先构建一次（scripts/build.mjs 兼容包装），
+      # 随后对 dist 执行全部 20 项检查（含构建幂等性 B1：连跑两次构建产物 sha1 一致）。
+      # 不再单独跑 npm run build，避免重复完整构建。
+      - name: Full build + all static checks (URL/SEO/routes/i18n/brand/affiliates/prompts)
+        run: npm run check
+
+      - name: Migration regression (URL + SEO snapshot)
+        run: npm run check:migrate
